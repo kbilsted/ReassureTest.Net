@@ -2,7 +2,7 @@
 
 namespace ReassureTest.Net.AST
 {
-    class AstPrinter
+    public class AstPrinter
     {
         public string PrintRoot(IValue value)
         {

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
+using ReassureTest.Net.AST;
+using System.Linq;
 
 namespace ReassureTest.Net.Tests
 {
@@ -34,14 +36,25 @@ namespace ReassureTest.Net.Tests
         [Test]
         public void NonNestedObject()
         {
-            new SimpleTypes()
+            var simpleTypes = new SimpleTypes()
             {
                 I = 42,
                 L = 42978239382333L,
                 B = true,
                 S = "hello world",
                 S2 = "hello \"Quotes\""
-            }.Is("");
+            };
+            simpleTypes.Is("");
+
+            // token
+
+            var ast = new ObjectVisitor().Visit(simpleTypes);
+            string result = new AstPrinter().PrintRoot(ast);
+            var ts = new DSLParser().Parse(result);
+            Console.WriteLine("------------------");
+            Console.WriteLine("------------------");
+            Console.WriteLine("------------------");
+            Console.WriteLine(string.Join(", ", ts));
         }
 
         [Test]

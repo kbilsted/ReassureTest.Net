@@ -3,7 +3,7 @@ using System.Text;
 
 namespace ReassureTest.Net
 {
-    class IndentingStringBuilder
+    public class IndentingStringBuilder
     {
         private readonly StringBuilder sb = new StringBuilder();
         private const string indent = "    ";

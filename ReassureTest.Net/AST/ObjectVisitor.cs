@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ReassureTest.Net.AST
 {
-    class ObjectVisitor
+    public class ObjectVisitor
     {
         private readonly HashSet<object> seenBefore = new HashSet<object>();
 

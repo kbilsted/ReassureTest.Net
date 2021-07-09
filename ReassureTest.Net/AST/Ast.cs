@@ -2,14 +2,14 @@
 
 namespace ReassureTest.Net.AST
 {
-    interface IValue { }
+    public interface IValue { }
     
     enum ValueKind
     {
         Simple, Complex
     }
 
-    internal class AstSimpleValue : IValue
+    public class AstSimpleValue : IValue
     {
         public static readonly AstSimpleValue Null = new AstSimpleValue("null" );
         public static readonly AstSimpleValue SeenBefore = new AstSimpleValue("[[SEEN BEFORE]]");
@@ -22,7 +22,7 @@ namespace ReassureTest.Net.AST
         public object Value;
     }
 
-    internal class AstComplexValue : IValue
+    public class AstComplexValue : IValue
     {
         public Dictionary</*fieldname*/string, IValue> Values = new Dictionary<string, IValue>();
     }
