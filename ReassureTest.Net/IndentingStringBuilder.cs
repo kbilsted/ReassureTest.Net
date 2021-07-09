@@ -5,7 +5,7 @@ namespace ReassureTest.Net
 {
     class IndentingStringBuilder
     {
-        private StringBuilder sb = new StringBuilder();
+        private readonly StringBuilder sb = new StringBuilder();
         private const string indent = "    ";
         private int indentCount = 0;
 
@@ -39,20 +39,22 @@ namespace ReassureTest.Net
 
         public IndentingStringBuilder AddIndented(string s)
         {
-            for (int i = 0; i < indentCount; i++)
-                sb.Append(indent);
-
+            DoIndent();
             sb.Append(s);
             return this;
         }
 
         public IndentingStringBuilder AddLineIndented(string s)
         {
-            for (int i = 0; i < indentCount; i++)
-                sb.Append(indent);
-
+            DoIndent();
             sb.AppendLine(s);
             return this;
+        }
+
+        private void DoIndent()
+        {
+            for (int i = 0; i < indentCount; i++)
+                sb.Append(indent);
         }
 
         public override string ToString()

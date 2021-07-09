@@ -100,6 +100,28 @@ namespace ReassureTest.Net.Tests
             o.Is("");
         }
 
+        [Test]
+        public void Nestedarray()
+        {
+            var o = new NestedTopArray()
+            {
+                C = new NestedChildC[]
+                {
+                    new NestedChildC()
+                    {
+                        D = new NestedChildChildD() { G = Guid.NewGuid() },
+                        S = "some string"
+                    },new NestedChildC()
+                    {
+                        D = new NestedChildChildD() { G = Guid.NewGuid() },
+                        S = "hello world"
+                    }
+                }
+            };
+            o.Is("");
+        }
+
+
         class SimpleTypes
         {
             public int I { get; set; }
@@ -126,13 +148,17 @@ namespace ReassureTest.Net.Tests
             public Dictionary<string, int> S { get; set; }
         }
 
-
         class NestedTop
         {
             public NestedChildA A { get; set; }
             public NestedChildB B { get; set; }
             public NestedChildC C { get; set; }
             public string S2 { get; set; }
+        }
+
+        class NestedTopArray
+        {
+            public NestedChildC[] C { get; set; }
         }
 
         class NestedChildA
