@@ -50,8 +50,9 @@ namespace ReassureTest.Net.Tests
             new SimpleTypesArrays()
             {
                 I = new[]{42,43},
+                I2 = new []{new []{1,2,3}, new []{4,5}},
                 L = new[]{42978239382333L},
-                B = new[]{true},
+                B = new[]{true, false},
                 S = new[]{"hello world"},
             }.Is("");
         }
@@ -99,29 +100,6 @@ namespace ReassureTest.Net.Tests
             o.Is("");
         }
 
-        [Test]
-        public void METHOD()
-        {
-            object a = new
-            {
-                b = "s",
-                c = new[] { new { s = 2 }, new { s = 3 } }
-            };
-
-            mymethod(()=>a);
-        }
-
-        static void mymethod(Expression<Func<object>> o)
-        {
-            Console.WriteLine(o.Body.GetType());
-            Console.WriteLine("base:"+o.Body.GetType().BaseType);
-            MemberExpression m = (MemberExpression) o.Body;
-            
-            Console.WriteLine("member::"+string.Join(",", m.Member.GetType().GetProperties().Select(x => x.Name + ":::" + x.PropertyType)));
-            Console.WriteLine(string.Join(",", o.Body.GetType().GetProperties().Select(x => x.Name + ":::" + x.PropertyType)));
-        }
-
-
         class SimpleTypes
         {
             public int I { get; set; }
@@ -134,6 +112,7 @@ namespace ReassureTest.Net.Tests
         class SimpleTypesArrays
         {
             public int[] I { get; set; }
+            public int[][] I2 { get; set; }
             public long[] L { get; set; }
             public bool[] B { get; set; }
             public string[] S { get; set; }

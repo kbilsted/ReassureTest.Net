@@ -29,6 +29,8 @@ namespace ReassureTest.Net
             return this;
         }
 
+        public IndentingStringBuilder AddLine() => AddLine("");
+
         public IndentingStringBuilder AddLine(string s)
         {
             sb.AppendLine(s);
