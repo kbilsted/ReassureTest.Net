@@ -50,11 +50,18 @@ namespace ReassureTest.Net.Tests
 
             var ast = new ObjectVisitor().Visit(simpleTypes);
             string result = new AstPrinter().PrintRoot(ast);
-            var ts = new DSLParser().Parse(result);
+            var ts = new Tokenizer().Tokenize(result);
             Console.WriteLine("------------------");
             Console.WriteLine("------------------");
             Console.WriteLine("------------------");
             Console.WriteLine(string.Join(", ", ts));
+            
+            Console.WriteLine("##################");
+            Console.WriteLine("##################");
+            Console.WriteLine("##################");
+            var ast2 = new DSLParser().Parse(result);
+            string result2 = new AstPrinter().PrintRoot(ast);
+            Console.WriteLine(result2);
         }
 
         [Test]
@@ -70,7 +77,6 @@ namespace ReassureTest.Net.Tests
             }.Is("");
         }
 
-
         [Test]
         public void NonNestedObject_with_dictionary()
         {
@@ -82,13 +88,13 @@ namespace ReassureTest.Net.Tests
                 S = new Dictionary<string, int>(){ {"hello world",3 }},
             }.Is("");
         }
+
         [Test]
         public void NonNestedObject_is_null()
         {
             SimpleTypes st = null;
             st.Is("");
         }
-
 
         [Test]
         public void Nested()
