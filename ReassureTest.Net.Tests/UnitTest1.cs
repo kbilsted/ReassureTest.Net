@@ -39,6 +39,9 @@ namespace ReassureTest.Net.Tests
             var simpleTypes = new SimpleTypes()
             {
                 I = 42,
+                Dob = 42.0,
+                Float = 42.0f,
+                Dec = 42.0M,
                 L = 42978239382333L,
                 B = true,
                 S = "hello world",
@@ -59,7 +62,7 @@ namespace ReassureTest.Net.Tests
             Console.WriteLine("##################");
             Console.WriteLine("##################");
             Console.WriteLine("##################");
-            var ast2 = new DSLParser().Parse(result);
+            var ast2 = new DSLParser(new Tokenizer()).Parse(result);
             string result2 = new AstPrinter().PrintRoot(ast);
             Console.WriteLine(result2);
         }
@@ -144,6 +147,9 @@ namespace ReassureTest.Net.Tests
         class SimpleTypes
         {
             public int I { get; set; }
+            public double Dob { get; set; }
+            public decimal Dec { get; set; }
+            public float Float { get; set; }
             public long L { get; set; }
             public bool B { get; set; }
             public string S { get; set; }
