@@ -42,7 +42,7 @@ namespace ReassureTest.Net.Tests
                 L = 42978239382333L,
                 B = true,
                 S = "hello world",
-                S2 = "hello \"Quotes\""
+                S2 = "hello \"Quotes\"\\\\"
             };
             simpleTypes.Is("");
 

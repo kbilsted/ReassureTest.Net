@@ -166,7 +166,20 @@ namespace ReassureTest.Net
 
         bool IsMeta(string s, int i) => s[i] == '=' || s[i] == '[' || s[i] == ']' || s[i] == '{' || s[i] == '}' || s[i] == ',';
 
-        bool IsQuote(string s, int i) => i == 0 ? s[i] == '"' : s[i] == '"' && s[i - 1] != '\\';
+        bool IsQuote(string s, int i)
+        {
+            if (s[i] != '"')
+                return false;
+
+            int j = i - 1, backslashCount = 0;
+            while (j > 0 && s[j] == '\\')
+            {
+                j--;
+                backslashCount++;
+            }
+
+            return backslashCount % 2 == 0;
+        }
 
         bool IsSeparator(string s, int i) => char.IsWhiteSpace(s[i]) || IsMeta(s, i) || IsQuote(s, i);
 
