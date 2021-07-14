@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace ReassureTest.Net
+namespace ReassureTest.Net.AST
 {
     public class IndentingStringBuilder
     {
@@ -18,7 +18,7 @@ namespace ReassureTest.Net
         public IndentingStringBuilder Dedent()
         {
             if (indentCount == 0)
-                throw new Exception("Indention level is 0, cannot decrease");
+                throw new Exception("Indention level can not go below 0");
             indentCount--;
             return this;
         }

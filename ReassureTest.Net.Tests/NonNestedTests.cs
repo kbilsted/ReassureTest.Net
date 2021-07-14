@@ -27,7 +27,7 @@ namespace ReassureTest.Net.Tests
             val.I = 38938;
 
             var ex = Assert.Throws<AssertException>(() => val.Is(NewSimpleTypesExpected));
-            Assert.AreEqual("Path 'I'.\n  Expected: 42\r\n  But was:  38938\r\n", ex.Message);
+            Assert.AreEqual("Path: 'I'. Expected: 42\r\n  But was:  38938\r\n", ex.Message);
         }
 
         [Test]
@@ -84,6 +84,13 @@ namespace ReassureTest.Net.Tests
     B = [ True, False ]
     S = [ ""hello world"" ]
 }");
+        }
+
+        [Test]
+        public void Array_null()
+        {
+            var ex = Assert.Throws<AssertException>(() => new SimpleTypesArrays().Is(@"{ I = [ 42, 43 ]}"));
+            Assert.AreEqual("Path: 'I'. Expected: not null\nBut was: null", ex.Message);
         }
 
         [Test]
@@ -148,7 +155,7 @@ namespace ReassureTest.Net.Tests
             }.Is(@"{    I = [
                     {            Key = 42            Value = 43        },
                     {            Key = 111           Value = 222        }    ]}"));
-            Assert.AreEqual("Path 'I[0].Key'.\n  Expected: 42\r\n  But was:  111\r\n", ex.Message);
+            Assert.AreEqual("Path: 'I[0].Key'. Expected: 42\r\n  But was:  111\r\n", ex.Message);
         }
 
         [Test]
@@ -164,7 +171,7 @@ namespace ReassureTest.Net.Tests
                        I = ?
                        L = [        {             Key = 4297842978             Value = 1        }    ]}"));
 
-            Assert.AreEqual("Path 'L[0].Key'.\n  Expected: 4297842978\r\n  But was:  4\r\n", ex.Message);
+            Assert.AreEqual("Path: 'L[0].Key'. Expected: 4297842978\r\n  But was:  4\r\n", ex.Message);
         }
 
         [Test]

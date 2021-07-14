@@ -7,7 +7,7 @@ namespace ReassureTest.Net.AST
         public string PrintRoot(IValue value)
         {
             if (value == null)
-                throw new ArgumentNullException(nameof(value), "fool!");
+                throw new ArgumentNullException(nameof(value));
 
             IndentingStringBuilder sb = new IndentingStringBuilder();
             PrintIValue(value, sb);
@@ -72,7 +72,7 @@ namespace ReassureTest.Net.AST
             if (v.Value is string str)
             {
                 var quoted = str.Replace("\"", "\\\"");
-                sb.Add($"\"{quoted}\"");
+                sb.Add($"`{quoted}`");
             }
             else
             {

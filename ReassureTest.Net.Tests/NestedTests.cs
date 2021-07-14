@@ -1,10 +1,10 @@
+using System.Diagnostics.Tracing;
 using NUnit.Framework;
 
 namespace ReassureTest.Net.Tests
 {
     public class NestedTests
     {
-           
         [Test]
         public void Nested()
         {
@@ -41,6 +41,14 @@ namespace ReassureTest.Net.Tests
     S2 = ""s2s2s2""
 }
 ");
+        }
+
+        [Test]
+        public void Nested_null()
+        {
+            var o = new NestedTop();
+            var ex = Assert.Throws<AssertException>(()=>o.Is(@"{ A = { I = 33 }}"));
+            Assert.AreEqual("Path: 'A'. Expected: not null\nBut was: null", ex.Message);
         }
 
         [Test]
