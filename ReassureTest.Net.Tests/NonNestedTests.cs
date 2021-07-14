@@ -7,21 +7,6 @@ namespace ReassureTest.Net.Tests
 {
     public class NonNestedTests
     {
-        // TODO consider
-        //[Test]
-        //public void SimpleAsserts()
-        //{
-        //    new DateTime(2022, 3, 4, 5, 6, 7).Is(new DateTime(2022, 3, 4, 5, 6, 7));
-        //    (TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(2)).Is(TimeSpan.FromMinutes(3));
-        //    Guid g = Guid.NewGuid();
-        //    1.Is(1);
-        //    2L.Is(2L);
-        //    true.Is(true);
-        //    "ss".Is("ss");
-        //    g.Is(g);
-        //}
-
-
         [Test]
         public void SimpleAsserts()
         {
@@ -29,6 +14,7 @@ namespace ReassureTest.Net.Tests
             g.Is(g.ToString());
             1.Is("1");
             2L.Is("2");
+            2M.Is("2");
             true.Is("True");
             false.Is("False");
             "ss".Is("ss");
@@ -40,12 +26,8 @@ namespace ReassureTest.Net.Tests
             var val = NewSimpleTypes();
             val.I = 38938;
 
-            var d = new List<(string expect, string actual)>();
-            void Ass(object expected, object actual) => d.Add((expected.ToString(), actual.ToString()));
-
-            new ReassureTestTester().Is(val, NewSimpleTypesExpected, Ass);
-
-            d.Single(x => x.actual == "38938" && x.expect == "42");
+            var ex = Assert.Throws<AssertException>(() => val.Is(NewSimpleTypesExpected));
+            Assert.AreEqual("Path 'I'.\n  Expected: 42\r\n  But was:  38938\r\n", ex.Message);
         }
 
         [Test]
