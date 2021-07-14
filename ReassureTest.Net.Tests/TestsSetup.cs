@@ -10,6 +10,7 @@ namespace ReassureTest.Net.Tests
         public void Setup()
         {
             ReassureSetup.Assert = Assert.AreEqual;
+            ReassureSetup.EnableDebugPrint = true;
         }
     }
 }

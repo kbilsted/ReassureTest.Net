@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace ReassureTest.Net.DSL
 {
@@ -24,6 +25,8 @@ namespace ReassureTest.Net.DSL
                 Value = dec;
             else if (Guid.TryParse(value, out var guid))
                 Value = guid;
+            else if (DateTime.TryParseExact(value, ReassureSetup.DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime))
+                Value = dateTime;
         }
 
         public override string ToString() => $"{{{Kind}:{Value} (@ {Pos})}}";

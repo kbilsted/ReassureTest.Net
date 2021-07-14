@@ -20,5 +20,7 @@ namespace ReassureTest.Net
 
         public static bool EnableDebugPrint = false;
 
+        public static string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
+
     }
 }

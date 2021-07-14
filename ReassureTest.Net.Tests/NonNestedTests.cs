@@ -48,6 +48,7 @@ namespace ReassureTest.Net.Tests
     G = 123e4567-e89b-12d3-a456-426614174000
     S = `hello world`
     S2 = `hello ""Quotes""`
+    D = 2021-06-27T12:13:55
 }";
 
         private static SimpleTypes NewSimpleTypes() =>
@@ -61,7 +62,8 @@ namespace ReassureTest.Net.Tests
                 B = true,
                 G = Guid.Parse("123e4567-e89b-12d3-a456-426614174000"),
                 S = "hello world",
-                S2 = "hello \"Quotes\""
+                S2 = "hello \"Quotes\"",
+                D = new DateTime(2021,6,27,12,13,55),
             };
 
         [Test]
@@ -192,6 +194,7 @@ namespace ReassureTest.Net.Tests
             public Guid G { get; set; }
             public string S { get; set; }
             public string S2 { get; set; }
+            public DateTime D { get; set; }
         }
 
         class SimpleTypesArrays
