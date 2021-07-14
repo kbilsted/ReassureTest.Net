@@ -9,12 +9,12 @@ namespace ReassureTest.Net.AST
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            IndentingStringBuilder sb = new IndentingStringBuilder();
+            var sb = new IndentingStringBuilder(ReassureSetup.Indention);
             PrintIValue(value, sb);
             return sb.ToString();
         }
 
-        public void PrintIValue(IValue value, IndentingStringBuilder sb)
+        void PrintIValue(IValue value, IndentingStringBuilder sb)
         {
             if (value is AstSimpleValue simpleValue)
                 PrintSimple(simpleValue, sb);
@@ -26,7 +26,7 @@ namespace ReassureTest.Net.AST
                 throw new Exception($"this can never happen, please report as a bug\nv: {value} is of type: {value.GetType()}");
         }
 
-        public void PrintComplex(AstComplexValue value, IndentingStringBuilder sb)
+        void PrintComplex(AstComplexValue value, IndentingStringBuilder sb)
         {
             sb.AddLine("{").Indent();
             foreach (var c in value.Values)

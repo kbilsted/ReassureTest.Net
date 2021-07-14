@@ -6,8 +6,13 @@ namespace ReassureTest.Net.AST
     public class IndentingStringBuilder
     {
         private readonly StringBuilder sb = new StringBuilder();
-        private const string indent = "    ";
+        private readonly string indent;
         private int indentCount = 0;
+
+        public IndentingStringBuilder(string indent)
+        {
+            this.indent = indent;
+        }
 
         public IndentingStringBuilder Indent()
         {
