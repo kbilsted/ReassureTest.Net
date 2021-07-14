@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace ReassureTest.Net
+namespace ReassureTest.Net.DSL
 {
     public class DslTokenizer
     {
@@ -15,7 +14,7 @@ namespace ReassureTest.Net
 
         public void WriteLine(string s)
         {
-            if (print != null)
+            if (ReassureSetup.EnableDebugPrint && print != null)
                 print(s);
         }
 
@@ -41,7 +40,7 @@ namespace ReassureTest.Net
             }
 
             var result = backslashCount % 2 == 0;
-            WriteLine($"backslashCount {backslashCount} result {result}");
+            WriteLine($"IsQuote backslashCount {backslashCount} result {result}");
 
             return result;
         }
@@ -99,8 +98,6 @@ namespace ReassureTest.Net
                 } while (pos < s.Length && !IsSeparator(s, pos));
                 Add(new DslToken(TokenKind.Value, s.Substring(start, pos - start), start));
                 continue;
-
-              
             }
 
             return tokens;

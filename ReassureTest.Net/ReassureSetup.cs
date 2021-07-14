@@ -17,5 +17,8 @@ namespace ReassureTest.Net
         public static Action<string> Print { get; set; } = Console.WriteLine;
 
         public static string Indention = "    ";
+
+        public static bool EnableDebugPrint = false;
+
     }
 }

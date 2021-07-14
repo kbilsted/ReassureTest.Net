@@ -1,7 +1,7 @@
 ﻿using System;
 using ReassureTest.Net.AST;
 
-namespace ReassureTest.Net
+namespace ReassureTest.Net.DSL
 {
     public class DslParser
     {

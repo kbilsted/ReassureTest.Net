@@ -1,5 +1,6 @@
 ﻿using System;
 using ReassureTest.Net.AST;
+using ReassureTest.Net.DSL;
 
 namespace ReassureTest.Net
 {
@@ -11,9 +12,7 @@ namespace ReassureTest.Net
         public void Is(object actual, string expected, Action<string> print, Action</*expected*/object, /*actual*/object> assert)
         {
             IValue astActual = new ObjectVisitor().Visit(actual);
-
-            IValue expectedAst = new DslParser(new DslTokenizer(Console.WriteLine
-                                                             )).Parse(expected);
+            IValue expectedAst = new DslParser(new DslTokenizer(print)).Parse(expected);
 
             if (expectedAst == null)
             {

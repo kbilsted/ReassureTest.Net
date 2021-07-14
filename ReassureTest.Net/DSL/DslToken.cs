@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReassureTest.Net
+namespace ReassureTest.Net.DSL
 {
     public class DslToken
     {
