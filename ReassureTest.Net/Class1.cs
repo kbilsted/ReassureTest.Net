@@ -7,32 +7,56 @@ namespace ReassureTest.Net
 {
     public static class ReassureSetup
     {
-        public static void Is_old(this object o, object actual)
+        public static void Is(this object actual, string expected)
         {
-            var sb = new IndentingStringBuilder();
-            new Visitor().Visit(sb, o);
-            Console.WriteLine(sb);
-        }
-
-        public static void Is(this object o, object actual)
-        {
-            Is_old(o, actual);
-
-            Console.WriteLine("!!!!!!!!!!!!!");
-            Console.WriteLine("!!!!!!!!!!!!!");
-            Console.WriteLine("!!!!!!!!!!!!!");
-
-            var ast = new ObjectVisitor().Visit(o);
-            Console.WriteLine(new AstPrinter().PrintRoot(ast));
+            new ReassureTestTester().Is(actual, expected, Print, Assert);
         }
 
         /// <summary>
         /// excpected, actual
         /// </summary>
-        public static Action<object, object> Assert { get; set; }
+        public static Action</*expected*/object, /*actual*/object> Assert { get; set; }
+
+        public static Action<string> Print { get; set; } = Console.WriteLine;
     }
 
-    public class DSLParser
+    /// <summary>
+    /// Use this when testing ReassureTest.Net
+    /// </summary>
+    public class ReassureTestTester
+    {
+        public void Is(object actual, string expected, Action<string> print, Action</*expected*/object, /*actual*/object> assert)
+        {
+            IValue astActual = new ObjectVisitor().Visit(actual);
+
+            IValue expectedAst = new DslParser(new Tokenizer(Console.WriteLine
+                                                             )).Parse(expected);
+
+            if (expectedAst == null)
+            {
+                string graph = new AstPrinter().PrintRoot(astActual);
+                print($"Actual is:\n{graph}");
+
+                assert(graph, expected);
+                return;
+            }
+
+            var executor = new MatchExecutor(assert);
+            try
+            {
+                executor.Match(expectedAst as IAssertEvaluator, astActual);
+            }
+            catch (Exception e)
+            {
+                string graph = new AstPrinter().PrintRoot(astActual);
+                print($"Actual is:\n{graph}");
+                throw;
+            }
+        }
+
+        public void Is(object actual, string expected, Action</*expected*/object, /*actual*/object> assert) => Is(actual, expected, Console.WriteLine, assert);
+    }
+
     {
         private readonly Tokenizer tokenizer;
         private int i = 0;
