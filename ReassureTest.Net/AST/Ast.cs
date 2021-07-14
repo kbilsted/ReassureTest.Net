@@ -11,7 +11,7 @@ namespace ReassureTest.Net.AST
 
     public class AstSimpleValue : IValue
     {
-        public static readonly AstSimpleValue Null = new AstSimpleValue("null" );
+        public static readonly AstSimpleValue Null = new AstSimpleValue("null");
         public static readonly AstSimpleValue SeenBefore = new AstSimpleValue("[[SEEN BEFORE]]");
 
         public AstSimpleValue(object o)

@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using NUnit.Framework;
-using ReassureTest.Net.AST;
-using System.Linq;
 
 namespace ReassureTest.Net.Tests
 {
@@ -39,9 +36,9 @@ namespace ReassureTest.Net.Tests
             var simpleTypes = new SimpleTypes()
             {
                 I = 42,
-                Dob = 42.0,
-                Float = 42.0f,
-                Dec = 42.0M,
+                Dob = 43.0,
+                Float = 44.0f,
+                Dec = 45.0M,
                 L = 42978239382333L,
                 B = true,
                 S = "hello world",
@@ -72,11 +69,11 @@ namespace ReassureTest.Net.Tests
         {
             new SimpleTypesArrays()
             {
-                I = new[]{42,43},
-                I2 = new []{new []{1,2,3}, new []{4,5}},
-                L = new[]{42978239382333L},
-                B = new[]{true, false},
-                S = new[]{"hello world"},
+                I = new[] { 42, 43 },
+                I2 = new[] { new[] { 1, 2, 3 }, new[] { 4, 5 } },
+                L = new[] { 42978239382333L },
+                B = new[] { true, false },
+                S = new[] { "hello world" },
             }.Is("");
         }
 
@@ -85,10 +82,10 @@ namespace ReassureTest.Net.Tests
         {
             new SimpleTypesDictionaries()
             {
-                I = new Dictionary<int, int>() { {42, 43 }, { 111, 222 } },
-                L = new Dictionary<long, int>() { {42978239382333L,1 }},
-                B = new Dictionary<bool, int>(){ {true,2 }},
-                S = new Dictionary<string, int>(){ {"hello world",3 }},
+                I = new Dictionary<int, int>() { { 42, 43 }, { 111, 222 } },
+                L = new Dictionary<long, int>() { { 42978239382333L, 1 } },
+                B = new Dictionary<bool, int>() { { true, 2 } },
+                S = new Dictionary<string, int>() { { "hello world", 3 } },
             }.Is("");
         }
 
@@ -114,7 +111,7 @@ namespace ReassureTest.Net.Tests
                 },
                 C = new NestedChildC()
                 {
-                    D = new NestedChildChildD() {G = Guid.NewGuid()},
+                    D = new NestedChildChildD() { G = Guid.NewGuid() },
                     S = "some string"
                 },
                 S2 = "s2s2s2"
