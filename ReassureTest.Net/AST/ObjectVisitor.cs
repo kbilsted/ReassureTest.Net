@@ -13,7 +13,8 @@ namespace ReassureTest.Net.AST
             {
                 {typeof(int).ToString(), o => new AstSimpleValue(o)},
                 {typeof(bool).ToString(), o => new AstSimpleValue(o)},
-                {typeof(string).ToString(), o => new AstSimpleValue($"\"{((string)o).Replace("\"","\\\"")}\"")},
+                //{typeof(string).ToString(), o => new AstSimpleValue($"\"{((string)o).Replace("\"","\\\"")}\"")},
+                {typeof(string).ToString(), o => new AstSimpleValue(o)},
                 {typeof(long).ToString(), o => new AstSimpleValue(o)},
                 {typeof(float).ToString(), o => new AstSimpleValue(o)},
                 {typeof(double).ToString(), o => new AstSimpleValue(o)},

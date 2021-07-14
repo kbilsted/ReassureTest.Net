@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
 
 namespace ReassureTest.Net.Tests
@@ -17,85 +15,7 @@ namespace ReassureTest.Net.Tests
 
     public class Tests2
     {
-        [Test]
-        public void SimpleAsserts()
-        {
-            new DateTime(2022, 3, 4, 5, 6, 7).Is(new DateTime(2022, 3, 4, 5, 6, 7));
-            (TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(2)).Is(TimeSpan.FromMinutes(3));
-            Guid g = Guid.NewGuid();
-            1.Is(1);
-            2L.Is(2L);
-            true.Is(true);
-            "ss".Is("ss");
-            g.Is(g);
-        }
-
-        [Test]
-        public void NonNestedObject()
-        {
-            var simpleTypes = new SimpleTypes()
-            {
-                I = 42,
-                Dob = 43.0,
-                Float = 44.0f,
-                Dec = 45.0M,
-                L = 42978239382333L,
-                B = true,
-                S = "hello world",
-                S2 = "hello \"Quotes\"\\\\"
-            };
-            simpleTypes.Is("");
-
-            // token
-
-            var ast = new ObjectVisitor().Visit(simpleTypes);
-            string result = new AstPrinter().PrintRoot(ast);
-            var ts = new Tokenizer().Tokenize(result);
-            Console.WriteLine("------------------");
-            Console.WriteLine("------------------");
-            Console.WriteLine("------------------");
-            Console.WriteLine(string.Join(", ", ts));
-            
-            Console.WriteLine("##################");
-            Console.WriteLine("##################");
-            Console.WriteLine("##################");
-            var ast2 = new DSLParser(new Tokenizer()).Parse(result);
-            string result2 = new AstPrinter().PrintRoot(ast);
-            Console.WriteLine(result2);
-        }
-
-        [Test]
-        public void NonNestedObject_with_array()
-        {
-            new SimpleTypesArrays()
-            {
-                I = new[] { 42, 43 },
-                I2 = new[] { new[] { 1, 2, 3 }, new[] { 4, 5 } },
-                L = new[] { 42978239382333L },
-                B = new[] { true, false },
-                S = new[] { "hello world" },
-            }.Is("");
-        }
-
-        [Test]
-        public void NonNestedObject_with_dictionary()
-        {
-            new SimpleTypesDictionaries()
-            {
-                I = new Dictionary<int, int>() { { 42, 43 }, { 111, 222 } },
-                L = new Dictionary<long, int>() { { 42978239382333L, 1 } },
-                B = new Dictionary<bool, int>() { { true, 2 } },
-                S = new Dictionary<string, int>() { { "hello world", 3 } },
-            }.Is("");
-        }
-
-        [Test]
-        public void NonNestedObject_is_null()
-        {
-            SimpleTypes st = null;
-            st.Is("");
-        }
-
+           
         [Test]
         public void Nested()
         {
@@ -111,12 +31,27 @@ namespace ReassureTest.Net.Tests
                 },
                 C = new NestedChildC()
                 {
-                    D = new NestedChildChildD() { G = Guid.NewGuid() },
+                    D = new NestedChildChildD() { G = 5 },
                     S = "some string"
                 },
                 S2 = "s2s2s2"
             };
-            o.Is("");
+            o.Is(@"{
+    A = {
+        I = 33
+    }
+    B = {
+        B = True
+    }
+    C = {
+        S = ""some string""
+        D = {
+            G = *
+        }
+    }
+    S2 = ""s2s2s2""
+}
+");
         }
 
         [Test]
@@ -124,51 +59,39 @@ namespace ReassureTest.Net.Tests
         {
             var o = new NestedTopArray()
             {
-                C = new NestedChildC[]
+                C = new[]
                 {
                     new NestedChildC()
                     {
-                        D = new NestedChildChildD() { G = Guid.NewGuid() },
+                        D = new NestedChildChildD() { G = 3 },
                         S = "some string"
                     },new NestedChildC()
                     {
-                        D = new NestedChildChildD() { G = Guid.NewGuid() },
+                        D = new NestedChildChildD() { G = 4 },
                         S = "hello world"
                     }
                 }
             };
-            o.Is("");
-        }
-
-
-        class SimpleTypes
+            o.Is(@"{
+    C = [
         {
-            public int I { get; set; }
-            public double Dob { get; set; }
-            public decimal Dec { get; set; }
-            public float Float { get; set; }
-            public long L { get; set; }
-            public bool B { get; set; }
-            public string S { get; set; }
-            public string S2 { get; set; }
+            S = ""some string""
+            D = {
+                G = 3
+            }
+        },
+        {
+            S = ""hello world""
+            D = {
+                G = 4
+            }
+        }
+    ]
+}");
         }
 
-        class SimpleTypesArrays
-        {
-            public int[] I { get; set; }
-            public int[][] I2 { get; set; }
-            public long[] L { get; set; }
-            public bool[] B { get; set; }
-            public string[] S { get; set; }
-        }
 
-        class SimpleTypesDictionaries
-        {
-            public Dictionary<int, int> I { get; set; }
-            public Dictionary<long, int> L { get; set; }
-            public Dictionary<bool, int> B { get; set; }
-            public Dictionary<string, int> S { get; set; }
-        }
+    
 
         class NestedTop
         {
@@ -201,7 +124,7 @@ namespace ReassureTest.Net.Tests
 
         class NestedChildChildD
         {
-            public Guid G { get; set; }
+            public int G { get; set; }
         }
 
     }

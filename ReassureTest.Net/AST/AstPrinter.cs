@@ -69,7 +69,15 @@ namespace ReassureTest.Net.AST
 
         void PrintSimple(AstSimpleValue v, IndentingStringBuilder sb)
         {
-            sb.Add(v.Value);
+            if (v.Value is string str)
+            {
+                var quoted = str.Replace("\"", "\\\"");
+                sb.Add($"\"{quoted}\"");
+            }
+            else
+            {
+                sb.Add(v.Value ?? "null");
+            }
         }
 
     }

@@ -1,0 +1,225 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
+
+namespace ReassureTest.Net.Tests
+{
+    public class NonNestedTests
+    {
+        // TODO consider
+        //[Test]
+        //public void SimpleAsserts()
+        //{
+        //    new DateTime(2022, 3, 4, 5, 6, 7).Is(new DateTime(2022, 3, 4, 5, 6, 7));
+        //    (TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(2)).Is(TimeSpan.FromMinutes(3));
+        //    Guid g = Guid.NewGuid();
+        //    1.Is(1);
+        //    2L.Is(2L);
+        //    true.Is(true);
+        //    "ss".Is("ss");
+        //    g.Is(g);
+        //}
+
+
+        [Test]
+        public void SimpleAsserts()
+        {
+            Guid g = Guid.NewGuid();
+            g.Is(g.ToString());
+            1.Is("1");
+            2L.Is("2");
+            true.Is("True");
+            false.Is("False");
+            "ss".Is("ss");
+        }
+
+        [Test]
+        public void Wrong_int()
+        {
+            var val = NewSimpleTypes();
+            val.I = 38938;
+
+            var d = new List<(string expect, string actual)>();
+            void Ass(object expected, object actual) => d.Add((expected.ToString(), actual.ToString()));
+
+            new ReassureTestTester().Is(val, NewSimpleTypesExpected, Ass);
+
+            d.Single(x => x.actual == "38938" && x.expect == "42");
+        }
+
+        [Test]
+        public void NonNestedObject()
+        {
+            var simpleTypes = NewSimpleTypes();
+            simpleTypes.Is(NewSimpleTypesExpected);
+        }
+
+        private const string NewSimpleTypesExpected = @"
+{
+    I = 42
+    Dob = 43
+    Dec = 45.0
+    Float = 44
+    L = 42978239382333
+    B = True
+    G = 123e4567-e89b-12d3-a456-426614174000
+    S = ""hello world""
+    S2 = ""hello \""Quotes\""""
+}";
+
+        private static SimpleTypes NewSimpleTypes() =>
+            new SimpleTypes()
+            {
+                I = 42,
+                Dob = 43.0,
+                Float = 44.0f,
+                Dec = 45.0M,
+                L = 42978239382333L,
+                B = true,
+                G = Guid.Parse("123e4567-e89b-12d3-a456-426614174000"),
+                S = "hello world",
+                S2 = "hello \"Quotes\""
+            };
+
+        [Test]
+        public void Array()
+        {
+            new SimpleTypesArrays()
+            {
+                I = new[] { 42, 43 },
+                I2 = new[] { new[] { 1, 2, 3 }, new[] { 4, 5 } },
+                L = new[] { 42978239382333L },
+                B = new[] { true, false },
+                S = new[] { "hello world" },
+            }.Is(@"{
+    I = [ 42, 43 ]
+    I2 = [
+        [ 1, 2, 3 ],
+        [ 4, 5 ]
+    ]
+    L = [ 42978239382333 ]
+    B = [ True, False ]
+    S = [ ""hello world"" ]
+}");
+        }
+
+        [Test]
+        public void Dictionary()
+        {
+            new SimpleTypesDictionaries()
+            {
+                I = new Dictionary<int, int>() { { 42, 43 }, { 111, 222 } },
+                L = new Dictionary<long, int>() { { 42978239382333L, -1 } },
+                B = new Dictionary<bool, int>() { { true, 2 } },
+                S = new Dictionary<string, int>() { { "hello world", 3 } },
+            }.Is(@"{
+    I = [
+        {
+            Key = 42
+            Value = 43
+        },
+        {
+            Key = 111
+            Value = 222
+        }
+    ]
+    L = [
+        {
+            Key = 42978239382333
+            Value = -1
+        }
+    ]
+    B = [
+        {
+            Key = True
+            Value = 2
+        }
+    ]
+    S = [
+        {
+            Key = ""hello world""
+            Value = 3
+        }
+    ]
+}");
+        }
+
+        [Test]
+        public void Dictionary_missing_second_value()
+        {
+            var ex = Assert.Throws<AssertException>(() => new SimpleTypesDictionaries
+            {
+                I = new Dictionary<int, int>() { { 42, 43 } },
+            }.Is(@"{    I = [
+                    {            Key = 42            Value = 43        },
+                    {            Key = 111           Value = 222        }]}"));
+            Assert.AreEqual("Path: 'I[1]'. Array length mismatch. Expected array lengh: 2 actual array lenght: 1.", ex.Message);
+        }
+
+        [Test]
+        public void Dictionary_missing_first_value()
+        {
+            var ex = Assert.Throws<AssertException>(() => new SimpleTypesDictionaries
+            {
+                I = new Dictionary<int, int>() { { 111, 222 } },
+            }.Is(@"{    I = [
+                    {            Key = 42            Value = 43        },
+                    {            Key = 111           Value = 222        }    ]}"));
+            Assert.AreEqual("Path 'I[0].Key'.\n  Expected: 42\r\n  But was:  111\r\n", ex.Message);
+        }
+
+        [Test]
+        public void Dictionary_with_wrong_non_first_value()
+        {
+            var simple = new SimpleTypesDictionaries()
+            {
+                L = new Dictionary<long, int>() { { 4, 222221 } },
+            };
+
+            var ex = Assert.Throws<AssertException>(() =>
+            simple.Is(@"{
+                       I = ?
+                       L = [        {             Key = 4297842978             Value = 1        }    ]}"));
+
+            Assert.AreEqual("Path 'L[0].Key'.\n  Expected: 4297842978\r\n  But was:  4\r\n", ex.Message);
+        }
+
+        [Test]
+        public void Null()
+        {
+            SimpleTypes st = null;
+            st.Is("null");
+        }
+
+        class SimpleTypes
+        {
+            public int I { get; set; }
+            public double Dob { get; set; }
+            public decimal Dec { get; set; }
+            public float Float { get; set; }
+            public long L { get; set; }
+            public bool B { get; set; }
+            public Guid G { get; set; }
+            public string S { get; set; }
+            public string S2 { get; set; }
+        }
+
+        class SimpleTypesArrays
+        {
+            public int[] I { get; set; }
+            public int[][] I2 { get; set; }
+            public long[] L { get; set; }
+            public bool[] B { get; set; }
+            public string[] S { get; set; }
+        }
+
+        class SimpleTypesDictionaries
+        {
+            public Dictionary<int, int> I { get; set; }
+            public Dictionary<long, int> L { get; set; }
+            public Dictionary<bool, int> B { get; set; }
+            public Dictionary<string, int> S { get; set; }
+        }
+    }
+}
