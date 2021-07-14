@@ -34,12 +34,12 @@ namespace ReassureTest.Net
             else if (expected is AstAnyMatcher any)
                 AnyMatch(any, actual, path);
             else if (expected is AstSomeMatcher some)
-                SomeMatch(some, actual, path);
+                SomeMatch(actual, path);
             else
                 throw new AssertException($"Internal error. Do not understand '{expected.GetType()}' to be compared with '{actual}'. Path: '{path}'");
         }
 
-        private void SomeMatch(AstSomeMatcher someMatcher, IValue actual, string path)
+        private void SomeMatch(IValue actual, string path)
         {
             if (actual == AstSimpleValue.Null)
                 throw new AssertException($"Path: '{path}'. Expected: not null\nBut was: null");
@@ -52,8 +52,7 @@ namespace ReassureTest.Net
 
         void ArrayMatch(AstArrayMatcher array, IValue actual, string path)
         {
-            if (actual == AstSimpleValue.Null)
-                throw new AssertException($"Path: '{path}'. Expected: not null\nBut was: null");
+            SomeMatch(actual, path);
 
             if (actual is AstArray arrayActual)
             {
@@ -63,7 +62,7 @@ namespace ReassureTest.Net
                 {
                     newPath = AddPath(path, $"[{i}]");
                     if (arrayActual.Values.Count - 1 < i)
-                        throw new AssertException($"Path: '{newPath}'. Array length mismatch. Expected array lengh: {array.Value.Values.Count} actual array lenght: {arrayActual.Values.Count}.");
+                        throw new AssertException($"Path: '{newPath}'. Array length mismatch. Expected array lengh: {array.Value.Values.Count} but was: {arrayActual.Values.Count}.");
                     var theActual = arrayActual.Values[i];
 
                     var theExpected = (IAssertEvaluator)array.Value.Values[i];
@@ -72,7 +71,7 @@ namespace ReassureTest.Net
 
                 newPath = AddPath(path, $"[{array.Value.Values.Count + 1}]");
                 if (arrayActual.Values.Count > array.Value.Values.Count)
-                    throw new AssertException($"Path: '{newPath}'. Array length mismatch. Expected array lengh: {array.Value.Values.Count} actual array lenght: {arrayActual.Values.Count}.");
+                    throw new AssertException($"Path: '{newPath}'. Array length mismatch. Expected array lengh: {array.Value.Values.Count} but was: {arrayActual.Values.Count}.");
             }
             else
             {
@@ -82,8 +81,7 @@ namespace ReassureTest.Net
 
         void ComplexMatch(AstComplexMatcher complex, IValue actual, string path)
         {
-            if (actual == AstSimpleValue.Null)
-                throw new AssertException($"Path: '{path}'. Expected: not null\nBut was: null");
+            SomeMatch(actual, path);
 
             if (actual is AstComplexValue complexActual)
             {

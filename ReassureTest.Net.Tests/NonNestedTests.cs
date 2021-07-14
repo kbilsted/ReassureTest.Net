@@ -12,12 +12,19 @@ namespace ReassureTest.Net.Tests
         {
             Guid g = Guid.NewGuid();
             g.Is(g.ToString());
+            
             1.Is("1");
             2L.Is("2");
             2M.Is("2");
             true.Is("True");
             false.Is("False");
             "ss".Is("ss");
+
+            string s = null;
+            s.Is("null");
+
+            SimpleTypes st = null;
+            st.Is("null");
         }
 
         [Test]
@@ -57,6 +64,49 @@ namespace ReassureTest.Net.Tests
             simpleTypes.Is(NewSimpleTypesExpected);
         }
 
+        [Test]
+        public void NonNestedObjectNullable()
+        {
+            var simpleTypes = NewSimpleTypesNullable();
+            simpleTypes.Is(NewSimpleTypesExpected);
+        }
+
+        [Test]
+        public void NonNestedObject_with_null_fields()
+        {
+            new SimpleTypes().Is(@"{
+    I = 0
+    Dob = 0
+    Dec = 0
+    Float = 0
+    L = 0
+    B = false
+    G = 00000000-0000-0000-0000-000000000000
+    S = null
+    S2 = null
+    D = 0001-01-01T00:00:00
+}");
+        }
+
+
+        [Test]
+        public void NonNestedObject_nullable_with_null_fields()
+        {
+            new SimpleTypesNullable().Is(@"{
+    I = null
+    Dob = null
+    Dec = null
+    Float = null
+    L = null
+    B = null
+    G = null
+    S = null
+    S2 = null
+    D = null
+}");
+        }
+
+
         private const string NewSimpleTypesExpected = @"
 {
     I = 42
@@ -73,6 +123,20 @@ namespace ReassureTest.Net.Tests
 
         private static SimpleTypes NewSimpleTypes() =>
             new SimpleTypes()
+            {
+                I = 42,
+                Dob = 43.0,
+                Float = 44.0f,
+                Dec = 45.0M,
+                L = 42978239382333L,
+                B = true,
+                G = Guid.Parse("123e4567-e89b-12d3-a456-426614174000"),
+                S = "hello world",
+                S2 = "hello \"Quotes\"",
+                D = new DateTime(2021, 6, 27, 12, 13, 55),
+            };
+        private static SimpleTypesNullable NewSimpleTypesNullable() =>
+            new SimpleTypesNullable()
             {
                 I = 42,
                 Dob = 43.0,
@@ -109,10 +173,22 @@ namespace ReassureTest.Net.Tests
         }
 
         [Test]
-        public void Array_null()
+        public void Array_when_expecting_values_and_is_null_Then_fail()
         {
             var ex = Assert.Throws<AssertException>(() => new SimpleTypesArrays().Is(@"{ I = [ 42, 43 ]}"));
             Assert.AreEqual("Path: 'I'. Expected: not null\nBut was: null", ex.Message);
+        }
+
+        [Test]
+        public void Array_when_expecting_null_values_and_is_null_Then_succeed()
+        {
+            new SimpleTypesArrays().Is(@"{
+    I = null
+    I2 = null
+    L = null
+    B = null
+    S = null
+}");
         }
 
         [Test]
@@ -165,7 +241,7 @@ namespace ReassureTest.Net.Tests
             }.Is(@"{    I = [
                     {            Key = 42            Value = 43        },
                     {            Key = 111           Value = 222        }]}"));
-            Assert.AreEqual("Path: 'I[1]'. Array length mismatch. Expected array lengh: 2 actual array lenght: 1.", ex.Message);
+            Assert.AreEqual("Path: 'I[1]'. Array length mismatch. Expected array lengh: 2 but was: 1.", ex.Message);
         }
 
         [Test]
@@ -196,13 +272,6 @@ namespace ReassureTest.Net.Tests
             Assert.AreEqual("Path: 'L[0].Key'. Expected: 4297842978\r\n  But was:  4\r\n", ex.Message);
         }
 
-        [Test]
-        public void Null()
-        {
-            SimpleTypes st = null;
-            st.Is("null");
-        }
-
         class SimpleTypes
         {
             public int I { get; set; }
@@ -215,6 +284,20 @@ namespace ReassureTest.Net.Tests
             public string S { get; set; }
             public string S2 { get; set; }
             public DateTime D { get; set; }
+        }
+
+        class SimpleTypesNullable
+        {
+            public int? I { get; set; }
+            public double? Dob { get; set; }
+            public decimal? Dec { get; set; }
+            public float? Float { get; set; }
+            public long? L { get; set; }
+            public bool? B { get; set; }
+            public Guid? G { get; set; }
+            public string S { get; set; }
+            public string S2 { get; set; }
+            public DateTime? D { get; set; }
         }
 
         class SimpleTypesArrays
