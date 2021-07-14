@@ -30,7 +30,7 @@ namespace ReassureTest.Net.Tests
         I = 33
     }
     B = {
-        B = True
+        B = true
     }
     C = {
         S = `some string`
@@ -39,8 +39,7 @@ namespace ReassureTest.Net.Tests
         }
     }
     S2 = `s2s2s2`
-}
-");
+}");
         }
 
         [Test]

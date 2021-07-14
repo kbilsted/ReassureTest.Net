@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using ReassureTest.Net.DSL;
 
 namespace ReassureTest.Net.AST
@@ -73,6 +74,10 @@ namespace ReassureTest.Net.AST
             if (v.Value is string str)
             {
                 sb.Add($"`{str}`");
+            }
+            else if (v.Value is bool b)
+            {
+                sb.Add(b.ToString().ToLower(CultureInfo.InvariantCulture));
             }
             else if (v.Value is DateTime dateTime)
             {

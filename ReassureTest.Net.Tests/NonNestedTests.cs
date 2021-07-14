@@ -31,6 +31,26 @@ namespace ReassureTest.Net.Tests
         }
 
         [Test]
+        public void NonNestedObject_printAst()
+        {
+            string printed = null;
+            new ReassureTestTester().Is(NewSimpleTypes(), "", s => printed = s, (a, b) => { });
+            Assert.AreEqual(@"Actual is:
+{
+    I = 42
+    Dob = 43
+    Dec = 45.0
+    Float = 44
+    L = 42978239382333
+    B = true
+    G = 123e4567-e89b-12d3-a456-426614174000
+    S = `hello world`
+    S2 = `hello ""Quotes""`
+    D = 2021-06-27T12:13:55
+}", printed);
+        }
+
+        [Test]
         public void NonNestedObject()
         {
             var simpleTypes = NewSimpleTypes();
@@ -63,7 +83,7 @@ namespace ReassureTest.Net.Tests
                 G = Guid.Parse("123e4567-e89b-12d3-a456-426614174000"),
                 S = "hello world",
                 S2 = "hello \"Quotes\"",
-                D = new DateTime(2021,6,27,12,13,55),
+                D = new DateTime(2021, 6, 27, 12, 13, 55),
             };
 
         [Test]

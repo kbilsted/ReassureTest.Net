@@ -17,7 +17,8 @@ namespace ReassureTest.Net
             if (expectedAst == null)
             {
                 string graph = new AstPrinter().PrintRoot(astActual);
-                print($"Actual is:\n{graph}");
+                print(@$"Actual is:
+{graph}");
 
                 assert(graph, expected);
                 return;
@@ -31,7 +32,8 @@ namespace ReassureTest.Net
             catch (Exception)
             {
                 string graph = new AstPrinter().PrintRoot(astActual);
-                print($"Actual is:\n{graph}");
+                print(@$"Actual is:
+{graph}");
                 throw;
             }
         }
