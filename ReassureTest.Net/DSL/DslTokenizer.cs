@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ReassureTest.Net
 {
@@ -27,7 +28,7 @@ namespace ReassureTest.Net
 
         bool IsQuote(string s, int i)
         {
-            if (s[i] != '"')
+            if (s[i] != '`')
                 return false;
 
             WriteLine($"IsQuote @{i} '{s[i]}'");
@@ -49,10 +50,7 @@ namespace ReassureTest.Net
 
         public List<DslToken> Tokenize(string s)
         {
-            if (s == null)
-                throw new ArgumentNullException(s);
-
-            WriteLine($"Tokenizing: {s}");
+            WriteLine($"Tokenizing: '{s}'");
 
             var tokens = new List<DslToken>();
 
@@ -84,13 +82,12 @@ namespace ReassureTest.Net
                         pos++;
                         if (pos >= s.Length)
                         {
-                            var preview = PreviewString();
-                            throw new Exception($"Unmatched quote starting at pos: {start}\n...{preview}...\n               ^");
+                            var preview = StringUtl.PreviewString(s, start);
+                            throw new Exception($"Unmatched quote starting at pos: {start}\n{preview}\n");
                         }
                     } while (!IsQuote(s, pos));
 
                     var substring = s.Substring(start + 1, pos - start - 1);
-                    substring = substring.Replace("\\", "\\\\").Replace("\\\"", "\"");
                     Add(new DslToken(TokenKind.String, substring, start));
                     pos++;
                     continue;
@@ -103,13 +100,7 @@ namespace ReassureTest.Net
                 Add(new DslToken(TokenKind.Value, s.Substring(start, pos - start), start));
                 continue;
 
-                string PreviewString()
-                {
-                    return s[new Range(Math.Max(0, start - 22), Math.Min(start + 22, s.Length))]
-                        .Replace('\n', ' ')
-                        .Replace('\r', ' ')
-                        .Replace('\t', ' ');
-                }
+              
             }
 
             return tokens;
@@ -120,5 +111,23 @@ namespace ReassureTest.Net
                 tokens.Add(t);
             }
         }
+    }
+
+    class StringUtl
+    {
+        public static string PreviewString(string s, int start)
+        {
+            var prefix = Math.Max(0, start - 33);
+            var postfix = Math.Min(start + 33, s.Length);
+
+            return
+                (prefix > 0 ? "..." : "")
+                + s[new Range(prefix, postfix)]
+                    .Replace('\n', ' ')
+                    .Replace('\r', ' ')
+                    .Replace('\t', ' ')
+                + "...";
+        }
+
     }
 }

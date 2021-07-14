@@ -33,12 +33,12 @@ namespace ReassureTest.Net.Tests
         B = True
     }
     C = {
-        S = ""some string""
+        S = `some string`
         D = {
             G = *
         }
     }
-    S2 = ""s2s2s2""
+    S2 = `s2s2s2`
 }
 ");
         }
@@ -72,13 +72,13 @@ namespace ReassureTest.Net.Tests
             o.Is(@"{
     C = [
         {
-            S = ""some string""
+            S = `some string`
             D = {
                 G = 3
             }
         },
         {
-            S = ""hello world""
+            S = `hello world`
             D = {
                 G = 4
             }
@@ -87,8 +87,6 @@ namespace ReassureTest.Net.Tests
 }");
         }
 
-
-    
 
         class NestedTop
         {
@@ -123,6 +121,5 @@ namespace ReassureTest.Net.Tests
         {
             public int G { get; set; }
         }
-
     }
 }

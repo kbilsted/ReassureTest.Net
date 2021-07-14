@@ -46,8 +46,8 @@ namespace ReassureTest.Net.Tests
     L = 42978239382333
     B = True
     G = 123e4567-e89b-12d3-a456-426614174000
-    S = ""hello world""
-    S2 = ""hello \""Quotes\""""
+    S = `hello world`
+    S2 = `hello ""Quotes""`
 }";
 
         private static SimpleTypes NewSimpleTypes() =>
@@ -82,7 +82,7 @@ namespace ReassureTest.Net.Tests
     ]
     L = [ 42978239382333 ]
     B = [ True, False ]
-    S = [ ""hello world"" ]
+    S = [ `hello world` ]
 }");
         }
 
@@ -127,7 +127,7 @@ namespace ReassureTest.Net.Tests
     ]
     S = [
         {
-            Key = ""hello world""
+            Key = `hello world`
             Value = 3
         }
     ]

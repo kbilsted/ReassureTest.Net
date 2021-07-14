@@ -8,6 +8,7 @@ namespace ReassureTest.Net
         private readonly DslTokenizer tokenizer;
         private int i = 0;
         DslToken[] tokens;
+        private string input;
 
         public DslParser(DslTokenizer tokenizer)
         {
@@ -16,6 +17,7 @@ namespace ReassureTest.Net
 
         public IValue Parse(string s)
         {
+            input = s;
             tokens = tokenizer.Tokenize(s).ToArray();
             if (tokens.Length == 0)
                 return null;
@@ -45,7 +47,7 @@ namespace ReassureTest.Net
             if (!PeekMeta(s))
             {
                 DslToken t = tokens[i];
-                throw new Exception($"Expected '{s}' got '{t.Value}' of kind '{t.Kind}' at token: {i}");
+                throw new Exception($"Expected '{s}' got '{t.Value}' position: {t.Pos} (of kind '{t.Kind}' at token: {i})\n{StringUtl.PreviewString(input, t.Pos)}");
             }
             i++;
         }
@@ -54,7 +56,7 @@ namespace ReassureTest.Net
         {
             DslToken t = tokens[i];
             if (t.Kind != DslTokenizer.TokenKind.Value)
-                throw new Exception($"Expected a word got '{t.Value}' of kind '{t.Kind}' at token: {i}");
+                throw new Exception($"Expected a word got '{t.Value}' position: {t.Pos} (of kind '{t.Kind}' at token: {i})\n{StringUtl.PreviewString(input, t.Pos)}");
             i++;
             return t.Value;
         }
@@ -63,7 +65,7 @@ namespace ReassureTest.Net
         {
             DslToken t = tokens[i];
             if (t.Kind != DslTokenizer.TokenKind.Value && t.Kind != DslTokenizer.TokenKind.String)
-                throw new Exception($"Expected a word or string got '{t.Value}' of kind '{t.Kind}' at token: {i}");
+                throw new Exception($"Expected a word or string got '{t.Value}' position: {t.Pos} (of kind '{t.Kind}' at token: {i})\n{StringUtl.PreviewString(input, t.Pos)}");
             i++;
             return t.Value;
         }
@@ -78,7 +80,7 @@ namespace ReassureTest.Net
                 return ParseSimple();
 
             DslToken t = tokens[i];
-            throw new Exception($"Unparseable '{t.Value}' of kind '{t.Kind}' at token: '{i}'");
+            throw new Exception($"Unparseable '{t.Value}' position: {t.Pos} (of kind '{t.Kind}' at token: '{i}')\n{StringUtl.PreviewString(input, t.Pos)}");
         }
 
         private IAssertEvaluator ParseSimple()
