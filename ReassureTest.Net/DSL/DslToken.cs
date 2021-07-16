@@ -7,13 +7,15 @@ namespace ReassureTest.Net.DSL
     {
         public readonly DslTokenizer.TokenKind Kind;
         public readonly object Value;
-        public readonly int Pos;
+        public readonly int PosStart;
+        public readonly int PosEnd;
 
-        public DslToken(DslTokenizer.TokenKind kind, string value, int pos)
+        public DslToken(DslTokenizer.TokenKind kind, string value, int posStart, int posEnd)
         {
             Kind = kind;
             Value = value;
-            Pos = pos;
+            PosStart = posStart;
+            PosEnd = posEnd;
 
             if (value == "null")
                 Value = null;
@@ -29,6 +31,6 @@ namespace ReassureTest.Net.DSL
                 Value = dateTime;
         }
 
-        public override string ToString() => $"{{{Kind}:{Value} (@ {Pos})}}";
+        public override string ToString() => $"{{{Kind}:{Value} (@{PosStart}..{PosEnd})}}";
     }
 }

@@ -14,7 +14,7 @@ namespace ReassureTest.Net.DSL
 
         public void WriteLine(string s)
         {
-            if (ReassureSetup.EnableDebugPrint && print != null)
+            if (Setup.EnableDebugPrint && print != null)
                 print(s);
         }
 
@@ -57,6 +57,7 @@ namespace ReassureTest.Net.DSL
                 return tokens;
 
             int pos = 0;
+                int start = -1;
             while (pos < s.Length)
             {
                 if (char.IsWhiteSpace(s[pos]))
@@ -65,14 +66,14 @@ namespace ReassureTest.Net.DSL
                     continue;
                 }
 
+                start = pos;
+
                 if (IsMeta(s, pos))
                 {
-                    Add(new DslToken(TokenKind.Meta, s[pos].ToString(), pos));
+                    Add(new DslToken(TokenKind.Meta, s[pos].ToString(), start, pos));
                     pos++;
                     continue;
                 }
-
-                int start = pos;
 
                 if (IsQuote(s, pos))
                 {
@@ -87,7 +88,7 @@ namespace ReassureTest.Net.DSL
                     } while (!IsQuote(s, pos));
 
                     var substring = s.Substring(start + 1, pos - start - 1);
-                    Add(new DslToken(TokenKind.String, substring, start));
+                    Add(new DslToken(TokenKind.String, substring, start, pos));
                     pos++;
                     continue;
                 }
@@ -96,7 +97,7 @@ namespace ReassureTest.Net.DSL
                 {
                     pos++;
                 } while (pos < s.Length && !IsSeparator(s, pos));
-                Add(new DslToken(TokenKind.Value, s.Substring(start, pos - start), start));
+                Add(new DslToken(TokenKind.Value, s.Substring(start, pos - start), start, pos));
                 continue;
             }
 
@@ -104,7 +105,7 @@ namespace ReassureTest.Net.DSL
 
             void Add(DslToken t)
             {
-                WriteLine($"New token @{pos} {t.Value}");
+                WriteLine($"New token {t}");
                 tokens.Add(t);
             }
         }
