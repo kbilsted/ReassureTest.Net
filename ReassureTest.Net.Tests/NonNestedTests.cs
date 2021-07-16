@@ -12,19 +12,73 @@ namespace ReassureTest.Net.Tests
         {
             Guid g = Guid.NewGuid();
             g.Is(g.ToString());
-            
+
             1.Is("1");
             2L.Is("2");
             2M.Is("2");
-            true.Is("True");
-            false.Is("False");
-            "ss".Is("ss");
-
-            string s = null;
-            s.Is("null");
-
+            true.Is("true");
+            false.Is("false");
             SimpleTypes st = null;
             st.Is("null");
+        }
+
+        [Test]
+        public void string_tests()
+        {
+            "null".Is("`null`");
+
+            // for the moment we support simple strings - but this is really never a case in real-life
+            "ss".Is("ss");
+        }
+
+        [Test]
+        public void string_null_compared_to_null()
+        {
+            string s = null;
+            s.Is("null");
+        }
+
+        [Test]
+        public void string_null_compared_to_value()
+        {
+            string s = null;
+
+            var ex = Assert.Throws<AssertException>(() => s.Is("ddd"));
+
+            Assert.IsTrue(ex.Message.StartsWith("Path: ''. Expected: \"ddd\"\r\n  But was:  null"));
+        }
+
+        [Test]
+        public void DateTimeTests_now()
+        {
+            DateTime.Now.Is("now");
+            DateTime.Now.AddSeconds(-1.0).Is("now");
+            DateTime.Now.AddSeconds(1.0).Is("now");
+
+            var ex = Assert.Throws<AssertException>(() => DateTime.Now.AddSeconds(10.0).Is("now"));
+            Assert.IsTrue(ex.Message.StartsWith(@"Path: ''. Expected: 20"));
+        }
+
+        [Test]
+        public void DateTimeTests_dates()
+        {
+            var time = new DateTime(1999, 9, 19, 12, 54, 02);
+            time.Is("1999-09-19T12:54:02");
+            time.Is("1999-09-19T12:54:01");
+            time.Is("1999-09-19T12:54:03");
+
+            var ex = Assert.Throws<AssertException>(() => time.AddSeconds(10.0).Is("1999-09-19T12:54:02"));
+            Assert.AreEqual("Path: ''. Expected: 1999-09-19 12:54:02\r\n  But was:  1999-09-19 12:54:12\r\n", ex.Message);
+        }
+
+        [Test]
+        public void DateTimeTests_null()
+        {
+            DateTime? t = null;
+
+            var ex = Assert.Throws<AssertException>(() => t.Is("1999-09-19T12:54:02"));
+
+            Assert.AreEqual("Path: ''. Expected: not null\r\nBut was: null", ex.Message);
         }
 
         [Test]
@@ -176,7 +230,7 @@ namespace ReassureTest.Net.Tests
         public void Array_when_expecting_values_and_is_null_Then_fail()
         {
             var ex = Assert.Throws<AssertException>(() => new SimpleTypesArrays().Is(@"{ I = [ 42, 43 ]}"));
-            Assert.AreEqual("Path: 'I'. Expected: not null\nBut was: null", ex.Message);
+            Assert.AreEqual("Path: 'I'. Expected: not null\r\nBut was: null", ex.Message);
         }
 
         [Test]

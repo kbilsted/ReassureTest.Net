@@ -25,7 +25,9 @@ namespace ReassureTest.Net
 
         void Match(IAssertEvaluator expected, IValue actual, string path)
         {
-            if (expected is AstSimpleMatcher simple)
+            if (expected is AstDateTimeMatcher dateTime)
+                DateTimeMatch(dateTime, actual, path);
+            else if (expected is AstSimpleMatcher simple)
                 SimpleMatch(simple, actual, path);
             else if (expected is AstComplexMatcher complex)
                 ComplexMatch(complex, actual, path);
@@ -42,7 +44,7 @@ namespace ReassureTest.Net
         private void SomeMatch(IValue actual, string path)
         {
             if (actual == AstSimpleValue.Null)
-                throw new AssertException($"Path: '{path}'. Expected: not null\nBut was: null");
+                throw new AssertException($"Path: '{path}'. Expected: not null\r\nBut was: null");
         }
 
         private void AnyMatch(AstAnyMatcher anyMatcher, IValue actual, string path)
@@ -103,22 +105,54 @@ namespace ReassureTest.Net
             }
         }
 
-        void SimpleMatch(AstSimpleMatcher simple, IValue actual, string path)
+        private void DateTimeMatch(AstDateTimeMatcher dateTimeMatcher, IValue actual, string path)
         {
+            SomeMatch(actual, path);
+
             if (actual is AstSimpleValue simpleActual)
             {
-                try
-                {
-                    assert(simple.UnderlyingValue.Value, simpleActual.Value);
-                }
-                catch (Exception e)
-                {
-                    throw new AssertException($"Path: '{path}'. {e.Message.TrimStart()}");
-                }
+                if (!(dateTimeMatcher.UnderlyingValue.Value is DateTime expectedDate))
+                    throw new AssertException($"Path: '{path}'. Expected {dateTimeMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
+
+                if (!(simpleActual.Value is DateTime actualDate))
+                    throw new AssertException($"Path: '{path}'. Expected {dateTimeMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
+
+                if ((expectedDate - actualDate).Duration() > dateTimeMatcher.AcceptedSlack)
+                    CallUnitTestingFramework(dateTimeMatcher.UnderlyingValue.Value, simpleActual.Value, path);
             }
             else
             {
                 throw new AssertException($"Wrong type. Expected simple value got {actual.GetType()}. Path: '{path}'");
+            }
+        }
+
+        void SimpleMatch(AstSimpleMatcher simple, IValue actual, string path)
+        {
+            if (actual is AstSimpleValue simpleActual)
+            {
+                CallUnitTestingFramework(simple.UnderlyingValue.Value, simpleActual.Value, path);
+            }
+            else
+            {
+                throw new AssertException($"Wrong type. Expected simple value got {actual.GetType()}. Path: '{path}'");
+            }
+        }
+
+        /// <summary>
+        /// calling the underlying assert has advantages
+        /// * errors looks like the rest of the test output / is familiar
+        /// * errors respect locale, e.g. formatting dates printed when mis-matching
+        /// * when errors, frameworks tend to print a nice arrow pointing to the difference
+        /// </summary>
+        void CallUnitTestingFramework(object expected, object actual, string path)
+        {
+            try
+            {
+                assert(expected, actual);
+            }
+            catch (Exception e)
+            {
+                throw new AssertException($"Path: '{path}'. {e.Message.TrimStart()}");
             }
         }
     }

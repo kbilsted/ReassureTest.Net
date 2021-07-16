@@ -9,8 +9,8 @@ namespace ReassureTest.Net.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            ReassureSetup.Assert = Assert.AreEqual;
-            ReassureSetup.EnableDebugPrint = true;
+            ReassureTest.Net.Setup.Assert = Assert.AreEqual;
+            ReassureTest.Net.Setup.EnableDebugPrint = true;
         }
     }
 }

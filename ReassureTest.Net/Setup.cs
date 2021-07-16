@@ -2,7 +2,7 @@
 
 namespace ReassureTest.Net
 {
-    public static class ReassureSetup
+    public static class Setup
     {
         public static void Is(this object actual, string expected)
         {
@@ -21,6 +21,8 @@ namespace ReassureTest.Net
         public static bool EnableDebugPrint = false;
 
         public static string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
+
+        public static TimeSpan DateTimeSlack = TimeSpan.FromSeconds(3);
 
     }
 }

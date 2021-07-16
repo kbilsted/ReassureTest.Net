@@ -94,8 +94,12 @@ namespace ReassureTest.Net.DSL
                         return new AstAnyMatcher();
                     case "*":
                         return new AstSomeMatcher();
+                    case "now":
+                        return new AstDateTimeMatcher(new AstSimpleValue(DateTime.Now), Setup.DateTimeSlack);
                 }
             }
+            else if (token is DateTime datetime)
+                return new AstDateTimeMatcher(new AstSimpleValue(token), Setup.DateTimeSlack);
 
             return new AstSimpleMatcher(new AstSimpleValue(token));
         }

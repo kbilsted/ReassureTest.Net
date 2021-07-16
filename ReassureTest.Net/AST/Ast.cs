@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using ReassureTest.Net.DSL;
 
 namespace ReassureTest.Net.AST
 {
@@ -16,6 +18,9 @@ namespace ReassureTest.Net.AST
 
         public AstSimpleValue(object o)
         {
+            if (o is DslToken || o is DslToken[])
+                throw new ArgumentException($"Internal error: Illegal input data of type {o.GetType()}");
+
             Value = o;
         }
 
@@ -69,6 +74,18 @@ namespace ReassureTest.Net.AST
         public AstSimpleMatcher(AstSimpleValue value)
         {
             UnderlyingValue = value;
+        }
+    }
+
+    class AstDateTimeMatcher : IAssertEvaluator
+    {
+        public AstSimpleValue UnderlyingValue { get; set; }
+        public readonly TimeSpan AcceptedSlack;
+
+        public AstDateTimeMatcher(AstSimpleValue value, TimeSpan acceptedSlack)
+        {
+            UnderlyingValue = value;
+            AcceptedSlack = acceptedSlack;
         }
     }
 

@@ -11,7 +11,7 @@ namespace ReassureTest.Net.AST
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            var sb = new IndentingStringBuilder(ReassureSetup.Indention);
+            var sb = new IndentingStringBuilder(Setup.Indention);
             PrintIValue(value, sb);
             return sb.ToString();
         }
@@ -81,7 +81,7 @@ namespace ReassureTest.Net.AST
             }
             else if (v.Value is DateTime dateTime)
             {
-                sb.Add(dateTime.ToString(ReassureSetup.DateTimeFormat));
+                sb.Add(dateTime.ToString(Setup.DateTimeFormat));
             }
             else
             {
