@@ -1,7 +1,6 @@
-using System;
 using NUnit.Framework;
 
-namespace ReassureTest.Net.Tests
+namespace ReassureTest.Tests
 {
     [SetUpFixture]
     public class TestsSetup
@@ -9,8 +8,8 @@ namespace ReassureTest.Net.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            ReassureTest.Net.Setup.Assert = Assert.AreEqual;
-            ReassureTest.Net.Setup.EnableDebugPrint = true;
+            ReassureTest.Setup.Assert = Assert.AreEqual;
+            ReassureTest.Setup.EnableDebugPrint = true;
         }
     }
 }

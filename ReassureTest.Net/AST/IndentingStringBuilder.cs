@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace ReassureTest.Net.AST
+namespace ReassureTest.AST
 {
     public class IndentingStringBuilder
     {

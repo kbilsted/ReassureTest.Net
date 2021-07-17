@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using ReassureTest.Net.DSL;
+using ReassureTest.DSL;
 
-namespace ReassureTest.Net.AST
+namespace ReassureTest.AST
 {
     public interface IValue { }
     
@@ -16,6 +16,8 @@ namespace ReassureTest.Net.AST
         public static readonly AstSimpleValue Null = new AstSimpleValue(null);
         public static readonly AstSimpleValue SeenBefore = new AstSimpleValue("[[SEEN BEFORE]]");
 
+        public object Value;
+
         public AstSimpleValue(object o)
         {
             if (o is DslToken || o is DslToken[])
@@ -23,8 +25,6 @@ namespace ReassureTest.Net.AST
 
             Value = o;
         }
-
-        public object Value;
     }
 
     public class AstComplexValue : IValue

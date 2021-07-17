@@ -1,7 +1,6 @@
-using System.Diagnostics.Tracing;
 using NUnit.Framework;
 
-namespace ReassureTest.Net.Tests
+namespace ReassureTest.Tests
 {
     public class NestedTests
     {

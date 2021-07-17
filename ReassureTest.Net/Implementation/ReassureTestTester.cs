@@ -1,8 +1,8 @@
 ﻿using System;
-using ReassureTest.Net.AST;
-using ReassureTest.Net.DSL;
+using ReassureTest.AST;
+using ReassureTest.DSL;
 
-namespace ReassureTest.Net
+namespace ReassureTest.Implementation
 {
     /// <summary>
     /// Use this when testing ReassureTest.Net

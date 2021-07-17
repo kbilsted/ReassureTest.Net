@@ -1,6 +1,7 @@
 ﻿using System;
+using ReassureTest.Implementation;
 
-namespace ReassureTest.Net
+namespace ReassureTest
 {
     public static class Setup
     {

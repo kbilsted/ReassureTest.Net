@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using ReassureTest.Net.DSL;
 
-namespace ReassureTest.Net.AST
+namespace ReassureTest.AST
 {
     public class AstPrinter
     {
@@ -72,22 +71,13 @@ namespace ReassureTest.Net.AST
         void PrintSimple(AstSimpleValue v, IndentingStringBuilder sb)
         {
             if (v.Value is string str)
-            {
                 sb.Add($"`{str}`");
-            }
             else if (v.Value is bool b)
-            {
                 sb.Add(b.ToString().ToLower(CultureInfo.InvariantCulture));
-            }
             else if (v.Value is DateTime dateTime)
-            {
                 sb.Add(dateTime.ToString(Setup.DateTimeFormat));
-            }
             else
-            {
                 sb.Add(v.Value ?? "null");
-            }
         }
-
     }
 }

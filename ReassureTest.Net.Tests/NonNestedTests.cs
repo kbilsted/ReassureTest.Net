@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using NUnit.Framework;
+using ReassureTest.Implementation;
 
-namespace ReassureTest.Net.Tests
+namespace ReassureTest.Tests
 {
     public class NonNestedTests
     {

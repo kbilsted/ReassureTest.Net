@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ReassureTest.Net.AST
+namespace ReassureTest.AST
 {
     public class ObjectVisitor
     {

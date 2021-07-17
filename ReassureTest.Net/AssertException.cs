@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReassureTest.Net
+namespace ReassureTest
 {
     public class AssertException : Exception
     {

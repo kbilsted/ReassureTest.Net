@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReassureTest.Net.DSL
+namespace ReassureTest.DSL
 {
     class StringUtl
     {

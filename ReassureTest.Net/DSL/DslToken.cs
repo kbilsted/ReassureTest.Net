@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace ReassureTest.Net.DSL
+namespace ReassureTest.DSL
 {
     public class DslToken
     {

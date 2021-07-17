@@ -6,6 +6,7 @@
     <PackageProjectUrl>https://github.com/kbilsted/ReassureTest.Net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kbilsted/ReassureTest.Net</RepositoryUrl>
     <PackageTags>test unittest DSL</PackageTags>
+    <RootNamespace>ReassureTest</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ReassureTest.Net.DSL
+namespace ReassureTest.DSL
 {
     public class DslTokenizer
     {

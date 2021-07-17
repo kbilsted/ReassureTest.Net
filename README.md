@@ -1,4 +1,4 @@
-# ReassureTest.Net
+# ReassureTest
 Automate unit testing with code generation and DSL
 
 The goals are
@@ -64,7 +64,7 @@ And ReassureTest prints the string for you to copy
 
 
 
-## Lenient matching
+## Fuzzy  matching
 
 At times it is convenient to assert values leniently rather than strictly. It enables us to write asserts that are "good enough" to be valuable but without requiring complete control over all dependences.
 
