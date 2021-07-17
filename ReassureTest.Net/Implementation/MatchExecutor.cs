@@ -1,5 +1,6 @@
 ﻿using System;
 using ReassureTest.AST;
+using ReassureTest.AST.Expected;
 
 namespace ReassureTest.Implementation
 {
