@@ -10,35 +10,35 @@ namespace ReassureTest.Implementation
     /// </summary>
     public class ReassureTestTester
     {
-        public void Is(object actual, string expected, Action<string> print, Action</*expected*/object, /*actual*/object> assert)
+        public void Is(object actual, string expected) => Is(actual, expected, Defaults.CreateConfiguration());
+
+        public void Is(object actual, string expected, Configuration cfg)
         {
             IValue astActual = new ObjectVisitor().Visit(actual);
-            IValue expectedAst = new DslParser(new DslTokenizer(print)).Parse(expected);
+            IValue expectedAst = new DslParser(new DslTokenizer(cfg), cfg).Parse(expected);
 
             if (expectedAst == null)
             {
-                string graph = new AstPrinter().PrintRoot(astActual);
-                print(@$"Actual is:
+                string graph = new AstPrinter(cfg).PrintRoot(astActual);
+                cfg.Outputting.Print(@$"Actual is:
 {graph}");
 
-                assert(graph, expected);
+                cfg.Assertion.Assert(graph, expected);
                 return;
             }
 
             try
             {
-                var executor = new MatchExecutor(assert);
+                var executor = new MatchExecutor(cfg.Assertion.Assert);
                 executor.MatchGraph(expectedAst as IAssertEvaluator, astActual);
             }
             catch (Exception)
             {
-                string graph = new AstPrinter().PrintRoot(astActual);
-                print(@$"Actual is:
+                string graph = new AstPrinter(cfg).PrintRoot(astActual);
+                cfg.Outputting.Print(@$"Actual is:
 {graph}");
                 throw;
             }
         }
-
-        public void Is(object actual, string expected, Action</*expected*/object, /*actual*/object> assert) => Is(actual, expected, Console.WriteLine, assert);
     }
 }

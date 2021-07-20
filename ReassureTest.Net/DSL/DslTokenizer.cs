@@ -5,16 +5,18 @@ namespace ReassureTest.DSL
 {
     public class DslTokenizer
     {
+        private readonly Configuration configuration;
         private readonly Action<string> print;
 
-        public DslTokenizer(Action<string> print = null)
+        public DslTokenizer(Configuration configuration)
         {
-            this.print = print;
+            this.configuration = configuration;
+            this.print = configuration.Outputting.Print;
         }
 
         public void WriteLine(string s)
         {
-            if (Setup.EnableDebugPrint && print != null)
+            if (configuration.Outputting.EnableDebugPrint && print != null)
                 print(s);
         }
 
@@ -57,7 +59,6 @@ namespace ReassureTest.DSL
                 return tokens;
 
             int pos = 0;
-                int start = -1;
             while (pos < s.Length)
             {
                 if (char.IsWhiteSpace(s[pos]))
@@ -66,11 +67,11 @@ namespace ReassureTest.DSL
                     continue;
                 }
 
-                start = pos;
+                int start = pos;
 
                 if (IsMeta(s, pos))
                 {
-                    Add(new DslToken(TokenKind.Meta, s[pos].ToString(), start, pos));
+                    Add(new DslToken(TokenKind.Meta, s[pos].ToString(), start, pos, configuration));
                     pos++;
                     continue;
                 }
@@ -88,7 +89,7 @@ namespace ReassureTest.DSL
                     } while (!IsQuote(s, pos));
 
                     var substring = s.Substring(start + 1, pos - start - 1);
-                    Add(new DslToken(TokenKind.String, substring, start, pos));
+                    Add(new DslToken(TokenKind.String, substring, start, pos, configuration));
                     pos++;
                     continue;
                 }
@@ -97,7 +98,7 @@ namespace ReassureTest.DSL
                 {
                     pos++;
                 } while (pos < s.Length && !IsSeparator(s, pos));
-                Add(new DslToken(TokenKind.Value, s.Substring(start, pos - start), start, pos));
+                Add(new DslToken(TokenKind.Value, s.Substring(start, pos - start), start, pos, configuration));
                 continue;
             }
 

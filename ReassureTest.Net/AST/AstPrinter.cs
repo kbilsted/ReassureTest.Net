@@ -5,12 +5,19 @@ namespace ReassureTest.AST
 {
     public class AstPrinter
     {
+        private readonly Configuration configuration;
+
+        public AstPrinter(Configuration configuration)
+        {
+            this.configuration = configuration;
+        }
+
         public string PrintRoot(IValue value)
         {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            var sb = new IndentingStringBuilder(Setup.Indention);
+            var sb = new IndentingStringBuilder(configuration.Outputting.Indention);
             PrintIValue(value, sb);
             return sb.ToString();
         }
@@ -75,7 +82,7 @@ namespace ReassureTest.AST
             else if (v.Value is bool b)
                 sb.Add(b.ToString().ToLower(CultureInfo.InvariantCulture));
             else if (v.Value is DateTime dateTime)
-                sb.Add(dateTime.ToString(Setup.DateTimeFormat));
+                sb.Add(dateTime.ToString(configuration.Assertion.DateTimeFormat));
             else
                 sb.Add(v.Value ?? "null");
         }

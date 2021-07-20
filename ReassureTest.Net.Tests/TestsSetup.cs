@@ -8,8 +8,8 @@ namespace ReassureTest.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            ReassureTest.Setup.Assert = Assert.AreEqual;
-            ReassureTest.Setup.EnableDebugPrint = true;
+            ReassureTest.Defaults.Assert = Assert.AreEqual;
+            ReassureTest.Defaults.EnableDebugPrint = true;
         }
     }
 }

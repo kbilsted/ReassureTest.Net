@@ -95,7 +95,10 @@ namespace ReassureTest.Tests
         public void NonNestedObject_printAst()
         {
             string printed = null;
-            new ReassureTestTester().Is(NewSimpleTypes(), "", s => printed = s, (a, b) => { });
+            var cfg = Defaults.CreateConfiguration();
+            cfg.Outputting.Print = s => printed = s;
+            cfg.Assertion.Assert = (a, b) => { };
+            new ReassureTestTester().Is(NewSimpleTypes(), "", cfg);
             Assert.AreEqual(@"Actual is:
 {
     I = 42

@@ -10,7 +10,7 @@ namespace ReassureTest.DSL
         public readonly int PosStart;
         public readonly int PosEnd;
 
-        public DslToken(DslTokenizer.TokenKind kind, string value, int posStart, int posEnd)
+        public DslToken(DslTokenizer.TokenKind kind, string value, int posStart, int posEnd, Configuration configuration)
         {
             Kind = kind;
             Value = value;
@@ -30,7 +30,7 @@ namespace ReassureTest.DSL
                 Value = dec;
             else if (Guid.TryParse(value, out var guid))
                 Value = guid;
-            else if (DateTime.TryParseExact(value, Setup.DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime))
+            else if (DateTime.TryParseExact(value, configuration.Assertion.DateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime))
                 Value = dateTime;
         }
 

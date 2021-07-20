@@ -36,7 +36,7 @@ namespace ReassureTest.Implementation
                 ArrayMatch(array, actual, path);
             else if (expected is AstAnyMatcher any)
                 AnyMatch(any, actual, path);
-            else if (expected is AstSomeMatcher some)
+            else if (expected is AstSomeMatcher)
                 SomeMatch(actual, path);
             else
                 throw new AssertException($"Internal error. Do not understand '{expected.GetType()}' to be compared with '{actual}'. Path: '{path}'");

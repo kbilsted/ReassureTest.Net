@@ -7,13 +7,15 @@ namespace ReassureTest.DSL
     public class DslParser
     {
         private readonly DslTokenizer tokenizer;
+        private readonly Configuration configuration;
         private int i = 0;
         DslToken[] tokens;
         private string input;
 
-        public DslParser(DslTokenizer tokenizer)
+        public DslParser(DslTokenizer tokenizer, Configuration configuration)
         {
             this.tokenizer = tokenizer;
+            this.configuration = configuration;
         }
 
         public IValue Parse(string s)
@@ -96,11 +98,11 @@ namespace ReassureTest.DSL
                     case "*":
                         return new AstSomeMatcher();
                     case "now":
-                        return new AstDateTimeMatcher(new AstSimpleValue(DateTime.Now), Setup.DateTimeSlack);
+                        return new AstDateTimeMatcher(new AstSimpleValue(DateTime.Now), configuration.Assertion.DateTimeSlack);
                 }
             }
-            else if (token is DateTime datetime)
-                return new AstDateTimeMatcher(new AstSimpleValue(token), Setup.DateTimeSlack);
+            else if (token is DateTime)
+                return new AstDateTimeMatcher(new AstSimpleValue(token), configuration.Assertion.DateTimeSlack);
 
             return new AstSimpleMatcher(new AstSimpleValue(token));
         }
