@@ -6,6 +6,8 @@
     <IsPackable>false</IsPackable>
 
     <RootNamespace>ReassureTest.Tests</RootNamespace>
+
+    <AssemblyName>ReassureTest.Tests</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

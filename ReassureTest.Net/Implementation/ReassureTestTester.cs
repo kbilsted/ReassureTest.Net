@@ -20,7 +20,7 @@ namespace ReassureTest.Implementation
             if (expectedAst == null)
             {
                 string graph = new AstPrinter(cfg).PrintRoot(astActual);
-                cfg.Outputting.Print(@$"Actual is:
+                cfg.Outputting.Print($@"Actual is:
 {graph}");
 
                 cfg.Assertion.Assert(graph, expected);
@@ -35,7 +35,7 @@ namespace ReassureTest.Implementation
             catch (Exception)
             {
                 string graph = new AstPrinter(cfg).PrintRoot(astActual);
-                cfg.Outputting.Print(@$"Actual is:
+                cfg.Outputting.Print($@"Actual is:
 {graph}");
                 throw;
             }

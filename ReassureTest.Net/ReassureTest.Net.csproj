@@ -1,12 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1;netstandard2.0;net45</TargetFrameworks>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/kbilsted/ReassureTest.Net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kbilsted/ReassureTest.Net</RepositoryUrl>
     <PackageTags>test unittest DSL</PackageTags>
     <RootNamespace>ReassureTest</RootNamespace>
+    <AssemblyName>ReassureTest</AssemblyName>
+    <Authors>Kasper B. Graversen</Authors>
+    <Product>ReassureTest.Net</Product>
+    <Description>Simplify unit testing</Description>
+    <Version>0.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>

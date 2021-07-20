@@ -11,7 +11,7 @@ namespace ReassureTest.DSL
 
             return
                 (prefix > 0 ? "..." : "")
-                + s[new Range(prefix, postfix)]
+                + s.Substring(prefix, postfix - prefix)
                     .Replace('\n', ' ')
                     .Replace('\r', ' ')
                     .Replace('\t', ' ')
