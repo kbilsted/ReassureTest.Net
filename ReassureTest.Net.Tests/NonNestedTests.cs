@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using ReassureTest.Implementation;
 
 namespace ReassureTest.Tests
 {
@@ -23,7 +22,7 @@ namespace ReassureTest.Tests
         }
 
         [Test]
-        public void string_tests()
+        public void String_tests()
         {
             "null".Is("`null`");
 
@@ -32,7 +31,14 @@ namespace ReassureTest.Tests
         }
 
         [Test]
-        public void string_null_compared_to_null()
+        public void String_tests_unequal()
+        {
+            var ex = Assert.Throws<AssertException>(() => "other".Is("`asdf`"));
+            Assert.AreEqual("Path: ''. Expected string length 4 but was 5. Strings differ at index 0.\r\n  Expected: \"asdf\"\r\n  But was:  \"other\"\r\n  -----------^\r\n", ex.Message);
+        }
+
+        [Test]
+        public void String_null_compared_to_null()
         {
             string s = null;
             s.Is("null");
@@ -82,7 +88,17 @@ namespace ReassureTest.Tests
         }
 
         [Test]
-        public void Wrong_int()
+        public void DateTimeTests_unequal()
+        {
+            DateTime t = new DateTime(2020,2,2,2,2,2);
+
+            var ex = Assert.Throws<AssertException>(() => t.Is("1999-09-19T12:54:02"));
+
+            Assert.AreEqual("Path: ''. Expected: 1999-09-19 12:54:02\r\n  But was:  2020-02-02 02:02:02\r\n", ex.Message);
+        }
+
+        [Test]
+        public void int_unequal()
         {
             var val = NewSimpleTypes();
             val.I = 38938;
@@ -91,14 +107,25 @@ namespace ReassureTest.Tests
             Assert.AreEqual("Path: 'I'. Expected: 42\r\n  But was:  38938\r\n", ex.Message);
         }
 
+
+        [Test]
+        public void decimal_unequal()
+        {
+            var val = NewSimpleTypes();
+            val.Dec = 38938.3M;
+
+            var ex = Assert.Throws<AssertException>(() => val.Is(NewSimpleTypesExpected));
+            Assert.AreEqual("Path: 'Dec'. Expected: 45m\r\n  But was:  38938.3m\r\n", ex.Message);
+        }
+
         [Test]
         public void NonNestedObject_printAst()
         {
             string printed = null;
-            var cfg = Defaults.CreateConfiguration();
+            var cfg = Reassure.CreateConfiguration();
             cfg.Outputting.Print = s => printed = s;
             cfg.Assertion.Assert = (a, b) => { };
-            new ReassureTestTester().Is(NewSimpleTypes(), "", cfg);
+            NewSimpleTypes().Is("", cfg);
             Assert.AreEqual(@"Actual is:
 {
     I = 42

@@ -10,12 +10,12 @@ namespace ReassureTest.DSL
             var postfix = Math.Min(start + 33, s.Length);
 
             return
-                (prefix > 0 ? "..." : "")
+                ((prefix > 0 ? "..." : "")
                 + s.Substring(prefix, postfix - prefix)
-                    .Replace('\n', ' ')
-                    .Replace('\r', ' ')
-                    .Replace('\t', ' ')
-                + "...";
+               + (postfix < s.Length-1 ? "..." : ""))
+                .Replace('\n', ' ')
+                .Replace('\r', ' ')
+                .Replace('\t', ' ');
         }
     }
 }

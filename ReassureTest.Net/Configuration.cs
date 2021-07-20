@@ -39,10 +39,6 @@ namespace ReassureTest
                 EnableDebugPrint = enableDebugPrint;
                 Print = print;
             }
-
-
         }
-
     }
-
 }
