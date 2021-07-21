@@ -90,7 +90,7 @@ namespace ReassureTest.Tests
         [Test]
         public void DateTimeTests_unequal()
         {
-            DateTime t = new DateTime(2020,2,2,2,2,2);
+            DateTime t = new DateTime(2020, 2, 2, 2, 2, 2);
 
             var ex = Assert.Throws<AssertException>(() => t.Is("1999-09-19T12:54:02"));
 
@@ -107,6 +107,22 @@ namespace ReassureTest.Tests
             Assert.AreEqual("Path: 'I'. Expected: 42\r\n  But was:  38938\r\n", ex.Message);
         }
 
+        [Test]
+        public void Exceptions_are_mapped_to_simpler_type()
+        {
+            try
+            {
+                int i = 0;
+                Console.WriteLine(2 / i);
+            }
+            catch (Exception e)
+            {
+                e.Is(@"{
+                    Message = `Attempted to divide by zero.`
+                    Data = [  ]
+                } ");
+            }
+        }
 
         [Test]
         public void decimal_unequal()

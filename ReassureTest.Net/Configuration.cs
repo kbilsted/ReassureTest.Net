@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ReassureTest
 {
@@ -6,11 +7,13 @@ namespace ReassureTest
     {
         public readonly OutputtingCfg Outputting;
         public readonly AssertionCfg Assertion;
+        public readonly HarvestingCfg Harvesting;
 
-        public Configuration(OutputtingCfg outputting, AssertionCfg assertion)
+        public Configuration(OutputtingCfg outputting, AssertionCfg assertion, HarvestingCfg harvesting)
         {
-            this.Outputting = outputting;
-            this.Assertion = assertion;
+            Outputting = outputting;
+            Assertion = assertion;
+            Harvesting = harvesting;
         }
 
         public class AssertionCfg
@@ -22,8 +25,18 @@ namespace ReassureTest
             public AssertionCfg(Action<object, object> assert, TimeSpan dateTimeSlack, string dateTimeFormat)
             {
                 Assert = assert;
-                this.DateTimeSlack = dateTimeSlack;
-                this.DateTimeFormat = dateTimeFormat;
+                DateTimeSlack = dateTimeSlack;
+                DateTimeFormat = dateTimeFormat;
+            }
+        }
+
+        public class HarvestingCfg
+        {
+            public List<Func<object, object>> FieldValueTranslators { get; set; }
+         
+            public HarvestingCfg(List<Func<object, object>> fieldValueTranslators)
+            {
+                FieldValueTranslators = fieldValueTranslators;
             }
         }
 

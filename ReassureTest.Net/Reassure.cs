@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using ReassureTest.AST;
 using ReassureTest.AST.Expected;
 using ReassureTest.DSL;
@@ -12,7 +14,7 @@ namespace ReassureTest
 
         public static void Is(this object actual, string expected, Configuration cfg)
         {
-            IValue astActual = new ObjectVisitor().Visit(actual);
+            IValue astActual = new ObjectVisitor(cfg).Visit(actual);
             IValue expectedAst = new DslParser(new DslTokenizer(cfg), cfg).Parse(expected);
 
             if (expectedAst == null)
@@ -43,28 +45,65 @@ namespace ReassureTest
         {
             return new Configuration(
                 new Configuration.OutputtingCfg(
-                    Indention, 
-                    EnableDebugPrint, 
-                    Print),
+                    DefaultConfiguration.Outputting.Indention,
+                    DefaultConfiguration.Outputting.EnableDebugPrint,
+                    DefaultConfiguration.Outputting.Print),
                 new Configuration.AssertionCfg(
-                    Assert, 
-                    DateTimeSlack, 
-                    DateTimeFormat));
+                    DefaultConfiguration.Assertion.Assert,
+                    DefaultConfiguration.Assertion.DateTimeSlack,
+                    DefaultConfiguration.Assertion.DateTimeFormat),
+                new Configuration.HarvestingCfg(DefaultConfiguration.Harvesting.FieldValueTranslators)
+                );
+        }
+
+        public static Configuration DefaultConfiguration = new Configuration(
+            new Configuration.OutputtingCfg(
+                indention: "    ",
+                enableDebugPrint: false,
+                print: Console.WriteLine),
+            new Configuration.AssertionCfg(
+                assert: null,
+                dateTimeSlack: TimeSpan.FromSeconds(3),
+                dateTimeFormat: "yyyy-MM-ddTHH:mm:ss"),
+            new Configuration.HarvestingCfg(fieldValueTranslators: new List<Func<object, object>>()
+            {
+                FieldValueTranslatorImplementations.IsHarvestable,
+                FieldValueTranslatorImplementations.SimplifyExceptions
+            }));
+    }
+
+    public static class FieldValueTranslatorImplementations
+    {
+        public static object SimplifyExceptions(object o)
+        {
+            if (o is Exception ex)
+                return new SimplifiedException(ex);
+            return o;
         }
 
         /// <summary>
-        /// expected, actual
+        /// Tell if the type makes any sense to dump
         /// </summary>
-        public static Action</*expected*/object, /*actual*/object> Assert { get; set; }
+        public static object IsHarvestable(object o)
+        {
+            var typename = o.GetType().ToString();
+            if (typename.StartsWith("System.Reflection", StringComparison.Ordinal)
+                || typename.StartsWith("System.Runtime", StringComparison.Ordinal)
+                || typename.StartsWith("System.SignatureStruct", StringComparison.Ordinal)
+                || typename.StartsWith("System.Func", StringComparison.Ordinal))
+                return null;
+            return o;
+        }
+    }
 
-        public static Action<string> Print { get; set; } = Console.WriteLine;
-        
-        public static string Indention = "    ";
-
-        public static bool EnableDebugPrint = false;
-
-        public static string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
-
-        public static TimeSpan DateTimeSlack = TimeSpan.FromSeconds(3);
+    public class SimplifiedException
+    {
+        public string Message { get; set; }
+        public IDictionary Data { get; set; }
+        public SimplifiedException(Exception e)
+        {
+            Message = e.Message;
+            Data = e.Data;
+        }
     }
 }
