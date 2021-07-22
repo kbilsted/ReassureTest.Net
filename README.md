@@ -1,22 +1,60 @@
-# ReassureTest
+﻿# ReassureTest
 *Making testing fun, fast and easy...*
 
-Why should you use ReassureTest?
+<br>
 
-  * **Simpler to read tests:** We've removed the noise that makes test feel like code, rather than feel like a specification
-  * **Simpler to write:** Let the framework do most of the typing for you , write and maintain asserts for object graphs
-  * **Simpler to maintain:** ReasureTest automatically detect when your types change (e.g. new fields) and generates new asserts for you
+<table>
+    <tr>
+        <td align="center" valign="center">
+            <img src="docs/2849813_multimedia_eyeglasses_glasses_spectacles_icon.svg" width="80">
+            <br><b>Intention revealing tests</b>
+            <br><i>Fuzzy matching rules combined with a simple assert language makes your tests smaller and concise.</i></td>
+        <td align="center" valign="center">
+            <img src="docs/pen.svg" width="80">
+            <br><b>Faster to write</b>
+            <br><i>Asserts are expressed with much less typing, and you can have ReassureTest do most of the typing for you!</i></td>
+    </tr>
+    <tr>
+        <td align="center" valign="center">
+            <img src="docs/pulse.svg" width="80"> 
+            <br><b>Simpler to maintain</b>
+            <br><i>ReasureTest automatically detects changes in your code base (e.g. new fields) and generates new asserts for you.</i></td>
+        <td align="center" valign="center">
+            <img src="docs/2849830_multimedia_options_setting_settings_gear_icon.svg" width="80"> 
+            <br><b>Highly configurable</b>
+            <br><i>We provide enough flexibility to cater for your needs to make complex types simple to represent and assert.</i></td>
+    </tr>
+    <tr>
+        <td align="center" valign="center">
+            <img src="docs/16071409381537184100-128.png" width="80">
+            <br><b>Asserts as specifications</b>
+            <br><i>Assert are easier to share, discuss and edit with non-technical people, and enable testers to write the expected values themselves.</i></td>
+        <td align="center" valign="center">
+            <img src="docs/10863499491535956127-128.png" width="80"> 
+            <br><b>Free & Open source</b>
+            <br><i>Respects your freedom to run it, to study and change it, and to redistribute copies with or without changes.</i></td>
+    </tr>
+</table>
 
-We achieve these goals by using a novel new way of specifying asserts. Expected values are expressed using a domain specific language. And upon a mismatch, ReassureTest prints the actual values **effectively doing 99% of the typing work for you and making it a breeze to learn.** 
+<br>
 
-The simple language makes it possible to share and discuss actual tests with human testers, and to some degree, enable testers to write the expected values themselves!
+We achieve these goals by using a novel new way of specifying asserts. Expected values are expressed using a domain specific language. And upon a mismatch, ReassureTest prints the actual values **effectively doing 99% of the assert-typing work for you, and making it a breeze to learn.** 
+
+
+Works with:
+
+* Nunit ✔️ 
+* Xunit ✔️
+* MS Test ✔️
+* ... any other testing framework ✔️
+
 
 
 <br/>
 
 # 1. An example workflow
 
-To assert some value, we've made it short and sweet using a new `Is` method. Let's put it to action for testing our new shopping basket implementation. 
+To write assert's, we've made it short and sweet with a `Is()` method. Let's put it to action for testing our new shopping basket implementation. 
 In this example we use `nunit` for setting up and executing tests but **ReassureTest works with any testing framework**.
 
 ```csharp
@@ -31,7 +69,7 @@ public void When_ordering_rubber_ducs_Then_get_a_discount()
 }
 ```
 
-Line 7 states the order is empty (`""`). Clearly this is incorrect! But worry not, we want the framework to do some heavy lifting for us. When running the test case, it fails with a message
+Line 7 states the order is empty (`order.Is(@"")`). Clearly this is incorrect! But worry not, we want the framework to do some heavy lifting for us. When running the test case, it fails with the message
 
 ```
 Expected: ""
@@ -57,7 +95,7 @@ Actual is:
   }
 ```
 
-We now copy-paste this into our test
+We can now copy-paste this into our test
 
 ```csharp
 [Test]
@@ -103,7 +141,7 @@ We make the following observations along the way
 
 ReasureTest focus primarily on integration tests 
 
-![Testing pyramid from ](docs/devopsgroup_testing_pyramids_ideal_001.svg?raw=true "Testing pyramid")
+<img src="docs/devopsgroup_testing_pyramids_ideal_001.svg" width="40%">
 
 A lot of litterature on why this may be beneficial to you can be found here
 
@@ -115,7 +153,7 @@ A lot of litterature on why this may be beneficial to you can be found here
 <br/>
 <br/>
 
-# 3. Makeing the assert robust with fuzzy matching 
+# 3. Making asserts robust with fuzzy matching 
 
   * We assert that the rubber duck's `SKU` is a non-null value using `*`.
   * We use `*` as a wild card in string matching
