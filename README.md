@@ -139,11 +139,11 @@ We make the following observations along the way
 
 # 2. Scope
 
-ReasureTest focus primarily on integration tests 
+ReasureTest's focus primarily on automated api tests, integration tests and component tests - as depicted in "the testing pyramid". You can use it for unit tests as well, when you want to combine expected values.
 
 <img src="docs/devopsgroup_testing_pyramids_ideal_001.svg" width="40%">
 
-A lot of litterature on why this may be beneficial to you can be found here
+A lot of litterature on why moving up the "test pyramid" may be beneficial to you can be found here:
 
 * "Why Most Unit Testing is Waste" by James O Coplien https://rbcs-us.com/documents/Why-Most-Unit-Testing-is-Waste.pdf 
 * "Unit Testing is Overrated" by Alexey Golub  https://tyrrrz.me/blog/unit-testing-is-overrated
