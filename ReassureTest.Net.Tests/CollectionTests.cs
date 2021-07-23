@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 
 namespace ReassureTest.Tests
@@ -15,8 +16,8 @@ namespace ReassureTest.Tests
         [Test]
         public void Simple_array_elements_are_printed_as_one_line()
         {
-            Assert.AreEqual("[ 2, 3, 4 ]", (new int[]{2,3,4}.Is("[2,3,4]")));
-            Assert.AreEqual("[ 2, 3, 4 ]", (new int[]{2,3,4}.Is(@"[ 2,   3,   
+            Assert.AreEqual("[ 2, 3, 4 ]", (new int[] { 2, 3, 4 }.Is("[2,3,4]")));
+            Assert.AreEqual("[ 2, 3, 4 ]", (new int[] { 2, 3, 4 }.Is(@"[ 2,   3,   
 4]")));
         }
 

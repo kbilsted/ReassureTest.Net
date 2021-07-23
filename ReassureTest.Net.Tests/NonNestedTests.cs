@@ -120,6 +120,7 @@ namespace ReassureTest.Tests
                 e.Is(@"{
                     Message = `Attempted to divide by zero.`
                     Data = [  ]
+                    Type = `System.DivideByZeroException`
                 } ");
             }
         }
