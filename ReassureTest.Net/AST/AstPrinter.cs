@@ -88,7 +88,7 @@ namespace ReassureTest.AST
             if (v.Value is string str)
                 sb.Add($"`{str}`");
             else if (v.Value is bool b)
-                sb.Add(b.ToString().ToLower(CultureInfo.InvariantCulture));
+                sb.Add(b ? "true" : "false");
             else if (v.Value is DateTime dateTime)
                 sb.Add(dateTime.ToString(configuration.Assertion.DateTimeFormat));
             else
