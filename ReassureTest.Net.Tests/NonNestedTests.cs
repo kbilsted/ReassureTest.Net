@@ -250,46 +250,7 @@ namespace ReassureTest.Tests
                 D = new DateTime(2021, 6, 27, 12, 13, 55),
             };
 
-        [Test]
-        public void Array()
-        {
-            new SimpleTypesArrays()
-            {
-                I = new[] { 42, 43 },
-                I2 = new[] { new[] { 1, 2, 3 }, new[] { 4, 5 } },
-                L = new[] { 42978239382333L },
-                B = new[] { true, false },
-                S = new[] { "hello world" },
-            }.Is(@"{
-    I = [ 42, 43 ]
-    I2 = [
-        [ 1, 2, 3 ],
-        [ 4, 5 ]
-    ]
-    L = [ 42978239382333 ]
-    B = [ True, False ]
-    S = [ `hello world` ]
-}");
-        }
-
-        [Test]
-        public void Array_when_expecting_values_and_is_null_Then_fail()
-        {
-            var ex = Assert.Throws<AssertException>(() => new SimpleTypesArrays().Is(@"{ I = [ 42, 43 ]}"));
-            Assert.AreEqual("Path: 'I'. Expected: not null\r\nBut was: null", ex.Message);
-        }
-
-        [Test]
-        public void Array_when_expecting_null_values_and_is_null_Then_succeed()
-        {
-            new SimpleTypesArrays().Is(@"{
-    I = null
-    I2 = null
-    L = null
-    B = null
-    S = null
-}");
-        }
+       
 
         [Test]
         public void Dictionary()
@@ -398,15 +359,6 @@ namespace ReassureTest.Tests
             public string S { get; set; }
             public string S2 { get; set; }
             public DateTime? D { get; set; }
-        }
-
-        class SimpleTypesArrays
-        {
-            public int[] I { get; set; }
-            public int[][] I2 { get; set; }
-            public long[] L { get; set; }
-            public bool[] B { get; set; }
-            public string[] S { get; set; }
         }
 
         class SimpleTypesDictionaries

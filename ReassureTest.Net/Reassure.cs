@@ -10,21 +10,22 @@ namespace ReassureTest
 {
     public static class Reassure
     {
-        public static void Is(this object actual, string expected) => Is(actual, expected, CreateConfiguration());
+        public static string Is(this object actual, string expected) => Is(actual, expected, CreateConfiguration());
 
-        public static void Is(this object actual, string expected, Configuration cfg)
+        public static string Is(this object actual, string expected, Configuration cfg)
         {
             IValue astActual = new ObjectVisitor(cfg).Visit(actual);
             IValue expectedAst = new DslParser(new DslTokenizer(cfg), cfg).Parse(expected);
 
+            string graph = new AstPrinter(cfg).PrintRoot(astActual);
+
             if (expectedAst == null)
             {
-                string graph = new AstPrinter(cfg).PrintRoot(astActual);
                 cfg.Outputting.Print($@"Actual is:
 {graph}");
 
                 cfg.Assertion.Assert(graph, expected);
-                return;
+                return graph;
             }
 
             try
@@ -34,11 +35,12 @@ namespace ReassureTest
             }
             catch (Exception)
             {
-                string graph = new AstPrinter(cfg).PrintRoot(astActual);
                 cfg.Outputting.Print($@"Actual is:
 {graph}");
                 throw;
             }
+
+            return graph;
         }
 
         public static Configuration CreateConfiguration()
@@ -52,7 +54,8 @@ namespace ReassureTest
                     DefaultConfiguration.Assertion.Assert,
                     DefaultConfiguration.Assertion.DateTimeSlack,
                     DefaultConfiguration.Assertion.DateTimeFormat),
-                new Configuration.HarvestingCfg(DefaultConfiguration.Harvesting.FieldValueTranslators)
+                new Configuration.HarvestingCfg(
+                    DefaultConfiguration.Harvesting.FieldValueTranslators)
                 );
         }
 

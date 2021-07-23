@@ -49,7 +49,13 @@ namespace ReassureTest.AST
         private void PrintArray(AstArray astArray, IndentingStringBuilder sb)
         {
             var count = astArray.Values.Count;
-            
+
+            if (count == 0)
+            {
+                sb.Add("[]");
+                return;
+            }
+
             bool printAsSingleline = astArray.ArrayKind == ValueKind.Simple;
             if (printAsSingleline)
             {
@@ -60,6 +66,7 @@ namespace ReassureTest.AST
                     sb.Add(i < count - 1 ? ", " : "");
                 }
                 sb.Add(" ]");
+                return;
             }
             else
             {
@@ -72,6 +79,7 @@ namespace ReassureTest.AST
                     sb.AddLine(i < count - 1 ? "," : "");
                 }
                 sb.Dedent().AddIndented("]");
+                return;
             }
         }
 
