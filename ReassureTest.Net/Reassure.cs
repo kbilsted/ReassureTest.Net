@@ -70,7 +70,7 @@ namespace ReassureTest
                 dateTimeFormat: "yyyy-MM-ddTHH:mm:ss"),
             new Configuration.HarvestingCfg(fieldValueTranslators: new List<Func<object, object>>()
             {
-                FieldValueTranslatorImplementations.IsHarvestable,
+                FieldValueTranslatorImplementations.IgnoreUnharvestableTypes,
                 FieldValueTranslatorImplementations.SimplifyExceptions
             }));
     }
@@ -87,7 +87,7 @@ namespace ReassureTest
         /// <summary>
         /// Tell if the type makes any sense to dump
         /// </summary>
-        public static object IsHarvestable(object o)
+        public static object IgnoreUnharvestableTypes(object o)
         {
             var typename = o.GetType().ToString();
             if (typename.StartsWith("System.Reflection", StringComparison.Ordinal)
