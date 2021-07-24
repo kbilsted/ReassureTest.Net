@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using ReassureTest.AST;
 using ReassureTest.AST.Expected;
 
@@ -86,11 +87,21 @@ namespace ReassureTest.DSL
             throw new Exception($"Unparseable '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: '{i}')\n{StringUtl.PreviewString(input, t.PosStart)}");
         }
 
+        private static Regex RollingGuidEx = new Regex("guid-(?<id>\\d+)", RegexOptions.Compiled);
+
         private IAssertEvaluator ParseSimple()
         {
             var token = EatValueOrString();
-            if(token is string str)
+
+            if (token is string str)
             {
+                var match = RollingGuidEx.Match(str);
+                if (match.Success)
+                {
+                    var id = int.Parse(match.Groups["id"].Value);
+                    return new AstSimpleMatcher(new AstSimpleValue(new AstRollingGuid(id)));
+                }
+
                 switch (str)
                 {
                     case "?":

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 namespace ReassureTest.AST
 {
@@ -91,6 +90,8 @@ namespace ReassureTest.AST
                 sb.Add(b ? "true" : "false");
             else if (v.Value is DateTime dateTime)
                 sb.Add(dateTime.ToString(configuration.Assertion.DateTimeFormat));
+            else if (v.Value is AstRollingGuid g)
+                sb.Add("guid-" + g.RollingValue);
             else
                 sb.Add(v.Value ?? "null");
         }

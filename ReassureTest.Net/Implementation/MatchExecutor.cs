@@ -28,6 +28,8 @@ namespace ReassureTest.Implementation
         {
             if (expected is AstDateTimeMatcher dateTime)
                 DateTimeMatch(dateTime, actual, path);
+            else if (expected is AstGuidMatcher guid)
+                GuidMatch(guid, actual, path);
             else if (expected is AstSimpleMatcher simple)
                 SimpleMatch(simple, actual, path);
             else if (expected is AstComplexMatcher complex)
@@ -119,7 +121,25 @@ namespace ReassureTest.Implementation
                     throw new AssertException($"Path: '{path}'. Expected {dateTimeMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
 
                 if ((expectedDate - actualDate).Duration() > dateTimeMatcher.AcceptedSlack)
-                    CallUnitTestingFramework(dateTimeMatcher.UnderlyingValue.Value, simpleActual.Value, path);
+                    CallUnitTestingFramework(expectedDate, actualDate, path);
+            }
+            else
+            {
+                throw new AssertException($"Wrong type. Expected simple value got {actual.GetType()}. Path: '{path}'");
+            }
+        }
+
+        private void GuidMatch(AstGuidMatcher guidMatcher, IValue actual, string path)
+        {
+            if (actual is AstSimpleValue simpleActual)
+            {
+                if (!(guidMatcher.UnderlyingValue.Value is AstRollingGuid expectedRg))
+                    throw new AssertException($"Path: '{path}'. Expected {guidMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
+
+                if (!(simpleActual.Value is AstRollingGuid actualRg))
+                    throw new AssertException($"Path: '{path}'. Expected {guidMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
+
+                CallUnitTestingFramework(expectedRg.ToString(), actualRg.ToString(), path);
             }
             else
             {

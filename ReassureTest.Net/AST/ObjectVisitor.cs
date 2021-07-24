@@ -8,23 +8,49 @@ namespace ReassureTest.AST
     {
         private readonly Configuration configuration;
         private readonly HashSet<object> seenBefore = new HashSet<object>();
+        private int rollingGuidCounter = 0;
+        private readonly Dictionary<Guid, int> rollingGuidValues = new Dictionary<Guid, int>();
 
-        static Dictionary</*typename*/string, Func<object, AstSimpleValue>> SimpleTypeHandling
-           = new Dictionary<string, Func<object, AstSimpleValue>>()
-           {
-                {typeof(int).ToString(), o => new AstSimpleValue(o)},
-                {typeof(bool).ToString(), o => new AstSimpleValue(o)},
-                {typeof(string).ToString(), o => new AstSimpleValue(o)},
-                {typeof(long).ToString(), o => new AstSimpleValue(o)},
-                {typeof(float).ToString(), o => new AstSimpleValue(o)},
-                {typeof(double).ToString(), o => new AstSimpleValue(o)},
-                {typeof(decimal).ToString(), o => new AstSimpleValue(o)},
-                {typeof(short).ToString(), o => new AstSimpleValue(o)},
-                {typeof(Guid).ToString(), o => new AstSimpleValue(o)},
-                {typeof(DateTime).ToString(), o => new AstSimpleValue(o)},
-                {typeof(TimeSpan).ToString(), o => new AstSimpleValue(o)},
-           };
+        bool SimpleTypeHandling(object o, out AstSimpleValue result)
+        {
+            if (o is int
+                || o is bool
+                || o is string
+                || o is long
+                || o is float
+                || o is double
+                || o is decimal
+                || o is short
+                || o is DateTime
+                || o is TimeSpan)
+            {
+                result = new AstSimpleValue(o);
+                return true;
+            }
 
+            if (o is Guid g)
+            {
+                switch (configuration.Assertion.GuidHandling)
+                {
+                    case Configuration.GuidHandling.Exact:
+                        result = new AstSimpleValue(o);
+                        return true;
+
+                    case Configuration.GuidHandling.Rolling:
+                        if (!rollingGuidValues.TryGetValue(g, out int count))
+                            rollingGuidValues.Add(g, count = rollingGuidCounter++);
+
+                        result = new AstSimpleValue(new AstRollingGuid(count));
+                        return true;
+
+                    default:
+                        throw new ArgumentOutOfRangeException(configuration.Assertion.GuidHandling.ToString());
+                }
+            }
+
+            result = null;
+            return false;
+        }
 
         public ObjectVisitor(Configuration configuration)
         {
@@ -33,31 +59,26 @@ namespace ReassureTest.AST
 
         public IValue Visit(object o)
         {
-            // map
+            // translate
             foreach (Func<object, object> translator in configuration.Harvesting.FieldValueTranslators)
             {
                 if (o == null)
-                    break;
+                    return AstSimpleValue.Null;
                 o = translator(o);
             }
-
 
             // null
             if (o == null)
                 return AstSimpleValue.Null;
 
-
             // simple
-            Func<object, AstSimpleValue> code;
-            if (SimpleTypeHandling.TryGetValue(o.GetType().ToString(), out code))
-                return code(o);
-
-
+            if (SimpleTypeHandling(o, out var result))
+                return result;
+            
             // re-discovered...
             if (seenBefore.Contains(o))
                 return AstSimpleValue.SeenBefore;
             seenBefore.Add(o);
-
 
             // array
             if (o is IEnumerable enumerable)

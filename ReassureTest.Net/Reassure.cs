@@ -53,7 +53,8 @@ namespace ReassureTest
                 new Configuration.AssertionCfg(
                     DefaultConfiguration.Assertion.Assert,
                     DefaultConfiguration.Assertion.DateTimeSlack,
-                    DefaultConfiguration.Assertion.DateTimeFormat),
+                    DefaultConfiguration.Assertion.DateTimeFormat,
+                    DefaultConfiguration.Assertion.GuidHandling),
                 new Configuration.HarvestingCfg(
                     DefaultConfiguration.Harvesting.FieldValueTranslators)
                 );
@@ -67,8 +68,10 @@ namespace ReassureTest
             new Configuration.AssertionCfg(
                 assert: null,
                 dateTimeSlack: TimeSpan.FromSeconds(3),
-                dateTimeFormat: "yyyy-MM-ddTHH:mm:ss"),
-            new Configuration.HarvestingCfg(fieldValueTranslators: new List<Func<object, object>>()
+                dateTimeFormat: "yyyy-MM-ddTHH:mm:ss",
+                guidHandling: Configuration.GuidHandling.Rolling),
+            new Configuration.HarvestingCfg(
+                fieldValueTranslators: new List<Func<object, object>>()
             {
                 FieldValueTranslatorImplementations.IgnoreUnharvestableTypes,
                 FieldValueTranslatorImplementations.SimplifyExceptions
@@ -84,9 +87,6 @@ namespace ReassureTest
             return o;
         }
 
-        /// <summary>
-        /// Tell if the type makes any sense to dump
-        /// </summary>
         public static object IgnoreUnharvestableTypes(object o)
         {
             var typename = o.GetType().ToString();

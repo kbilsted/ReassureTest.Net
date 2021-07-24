@@ -6,12 +6,10 @@ namespace ReassureTest.Tests
 {
     public class NonNestedTests
     {
+
         [Test]
         public void SimpleAsserts()
         {
-            Guid g = Guid.NewGuid();
-            g.Is(g.ToString());
-
             1.Is("1");
             2L.Is("2");
             2M.Is("2");
@@ -151,6 +149,29 @@ namespace ReassureTest.Tests
     Float = 44
     L = 42978239382333
     B = true
+    G = guid-0
+    S = `hello world`
+    S2 = `hello ""Quotes""`
+    D = 2021-06-27T12:13:55
+}", printed);
+        }
+
+        [Test]
+        public void NonNestedObject_printAst_with_exact_guid_values()
+        {
+            string printed = null;
+            var cfg = TestsSetup.ExactGuidValuesCfg;
+            cfg.Outputting.Print = s => printed = s;
+            cfg.Assertion.Assert = (a, b) => { };
+            NewSimpleTypes().Is("", cfg);
+            Assert.AreEqual(@"Actual is:
+{
+    I = 42
+    Dob = 43
+    Dec = 45.0
+    Float = 44
+    L = 42978239382333
+    B = true
     G = 123e4567-e89b-12d3-a456-426614174000
     S = `hello world`
     S2 = `hello ""Quotes""`
@@ -182,7 +203,7 @@ namespace ReassureTest.Tests
     Float = 0
     L = 0
     B = false
-    G = 00000000-0000-0000-0000-000000000000
+    G = guid-0
     S = null
     S2 = null
     D = 0001-01-01T00:00:00
@@ -216,7 +237,7 @@ namespace ReassureTest.Tests
     Float = 44
     L = 42978239382333
     B = True
-    G = 123e4567-e89b-12d3-a456-426614174000
+    G = guid-0
     S = `hello world`
     S2 = `hello ""Quotes""`
     D = 2021-06-27T12:13:55
@@ -251,7 +272,7 @@ namespace ReassureTest.Tests
                 D = new DateTime(2021, 6, 27, 12, 13, 55),
             };
 
-       
+
 
         [Test]
         public void Dictionary()

@@ -16,17 +16,24 @@ namespace ReassureTest
             Harvesting = harvesting;
         }
 
+        public enum GuidHandling
+        {
+            Exact, Rolling
+        }
+
         public class AssertionCfg
         {
             public Action</*expected*/object, /*actual*/object> Assert { get; set; }
             public TimeSpan DateTimeSlack { get; set; }
-            public string DateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
+            public string DateTimeFormat { get; set; }
+            public GuidHandling GuidHandling { get; set; }
 
-            public AssertionCfg(Action<object, object> assert, TimeSpan dateTimeSlack, string dateTimeFormat)
+            public AssertionCfg(Action<object, object> assert, TimeSpan dateTimeSlack, string dateTimeFormat, GuidHandling guidHandling)
             {
                 Assert = assert;
                 DateTimeSlack = dateTimeSlack;
                 DateTimeFormat = dateTimeFormat;
+                GuidHandling = guidHandling;
             }
         }
 
