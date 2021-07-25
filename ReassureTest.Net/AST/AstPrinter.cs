@@ -1,4 +1,5 @@
 ﻿using System;
+using ReassureTest.Implementation;
 
 namespace ReassureTest.AST
 {
@@ -89,7 +90,12 @@ namespace ReassureTest.AST
             else if (v.Value is bool b)
                 sb.Add(b ? "true" : "false");
             else if (v.Value is DateTime dateTime)
-                sb.Add(dateTime.ToString(configuration.Assertion.DateTimeFormat));
+            {
+                var date = MatchExecutor.IsAlmostNow(dateTime, configuration.Assertion.DateTimeSlack) 
+                    ? "now" 
+                    : dateTime.ToString(configuration.Assertion.DateTimeFormat);
+                sb.Add(date);
+            }
             else if (v.Value is AstRollingGuid g)
                 sb.Add("guid-" + g.RollingValue);
             else

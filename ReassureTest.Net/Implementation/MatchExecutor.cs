@@ -120,7 +120,7 @@ namespace ReassureTest.Implementation
                 if (!(simpleActual.Value is DateTime actualDate))
                     throw new AssertException($"Path: '{path}'. Expected {dateTimeMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
 
-                if ((expectedDate - actualDate).Duration() > dateTimeMatcher.AcceptedSlack)
+                if (!IsAlmostSame(expectedDate, actualDate, dateTimeMatcher.AcceptedSlack))
                     CallUnitTestingFramework(expectedDate, actualDate, path);
             }
             else
@@ -175,6 +175,13 @@ namespace ReassureTest.Implementation
             {
                 throw new AssertException($"Path: '{path}'. {e.Message.TrimStart()}");
             }
+        }
+
+        public static bool IsAlmostNow(DateTime d1, TimeSpan slack) => IsAlmostSame(d1, DateTime.Now, slack);
+
+        public static bool IsAlmostSame(DateTime d1, DateTime d2, TimeSpan slack)
+        {
+            return (d1 - d2).Duration() <= slack;
         }
     }
 }
