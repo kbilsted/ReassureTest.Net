@@ -50,23 +50,49 @@ namespace ReassureTest.Tests
         }
 
         [Test]
-        public void Nestedarray()
+        public void Nested_null_is_matched_with_nullmatch()
         {
-            var o = new NestedTopArray()
-            {
-                C = new[]
-                {
-                    new NestedChildC()
-                    {
-                        D = new NestedChildChildD() { G = 3 },
-                        S = "some string"
-                    },new NestedChildC()
-                    {
-                        D = new NestedChildChildD() { G = 4 },
-                        S = "hello world"
-                    }
-                }
-            };
+            var o = new NestedTop();
+            o.Is(@"{ 
+                A = ? 
+                B = ? 
+                C = ? 
+                S2 = ? }");
+        }
+
+        [Test]
+        public void Nestedarray_wildcard_match()
+        {
+            var o = CreateNestedTopArray();
+
+            o.Is(@"{ C = * }");
+        }
+
+        [Test]
+        public void Nestedarray_array_elems_wildcard_match()
+        {
+            var o = CreateNestedTopArray();
+
+            o.Is(@"{ C = [ *, * ] }");
+        }
+
+        [Test]
+        public void Nestedarray_partialwildcard_match()
+        {
+            var o = CreateNestedTopArray();
+
+            o.Is(@"{
+    C = [ *, {
+            S = `hello world`
+            D = { G = 4 }
+        } ] }");
+        }
+
+        [Test]
+        public void Nestedarray_full_match()
+        {
+            var o = CreateNestedTopArray();
+
             o.Is(@"{
     C = [
         {
@@ -83,6 +109,34 @@ namespace ReassureTest.Tests
         }
     ]
 }");
+        }
+
+        [Test]
+        public void Nestedarray_failed_match()
+        {
+            var o = CreateNestedTopArray();
+
+            var ex = Assert.Throws<AssertionException>(()=>o.Is(@"{ C = [ * ] }"));
+            Assert.AreEqual("Path: 'C[2]'.\r\nArray length mismatch. Expected array lengh: 1 but was: 2.", ex.Message);
+        }
+
+        private static NestedTopArray CreateNestedTopArray()
+        {
+            return new NestedTopArray()
+            {
+                C = new[]
+                {
+                    new NestedChildC()
+                    {
+                        D = new NestedChildChildD() { G = 3 },
+                        S = "some string"
+                    },new NestedChildC()
+                    {
+                        D = new NestedChildChildD() { G = 4 },
+                        S = "hello world"
+                    }
+                }
+            };
         }
 
 
