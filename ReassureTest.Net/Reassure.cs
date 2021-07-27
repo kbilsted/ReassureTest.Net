@@ -34,8 +34,10 @@ namespace ReassureTest
             catch (Exception e)
             {
                 e.Data.Add("Actual", graph);
-                cfg.Outputting.Print($@"Actual is:
+                cfg.TestFrameworkIntegration.Print($@"Actual is:
 {graph}");
+                if (e is AssertException ae)
+                    throw cfg.TestFrameworkIntegration.RemapException(ae);
                 throw;
             }
 
@@ -47,32 +49,43 @@ namespace ReassureTest
             return new Configuration(
                 new Configuration.OutputtingCfg(
                     DefaultConfiguration.Outputting.Indention,
-                    DefaultConfiguration.Outputting.EnableDebugPrint,
-                    DefaultConfiguration.Outputting.Print),
+                    DefaultConfiguration.Outputting.EnableDebugPrint
+                    ),
                 new Configuration.AssertionCfg(
                     DefaultConfiguration.Assertion.DateTimeSlack,
                     DefaultConfiguration.Assertion.DateTimeFormat,
-                    DefaultConfiguration.Assertion.GuidHandling),
+                    DefaultConfiguration.Assertion.GuidHandling
+                    ),
                 new Configuration.HarvestingCfg(
-                    DefaultConfiguration.Harvesting.FieldValueTranslators)
+                    DefaultConfiguration.Harvesting.FieldValueTranslators),
+                new TestFrameworkIntegratonCfg(
+                    DefaultConfiguration.TestFrameworkIntegration.RemapException,
+                    DefaultConfiguration.TestFrameworkIntegration.Print
+                    )
                 );
         }
 
         public static Configuration DefaultConfiguration = new Configuration(
             new Configuration.OutputtingCfg(
                 indention: "    ",
-                enableDebugPrint: false,
-                print: Console.WriteLine),
+                enableDebugPrint: false
+            ),
             new Configuration.AssertionCfg(
                 dateTimeSlack: TimeSpan.FromSeconds(3),
                 dateTimeFormat: "yyyy-MM-ddTHH:mm:ss",
-                guidHandling: Configuration.GuidHandling.Rolling),
+                guidHandling: Configuration.GuidHandling.Rolling
+            ),
             new Configuration.HarvestingCfg(
                 fieldValueTranslators: new List<Func<object, object>>()
-            {
-                FieldValueTranslatorImplementations.IgnoreUnharvestableTypes,
-                FieldValueTranslatorImplementations.SimplifyExceptions
-            }));
+                {
+                    FieldValueTranslatorImplementations.IgnoreUnharvestableTypes,
+                    FieldValueTranslatorImplementations.SimplifyExceptions
+                }),
+            new TestFrameworkIntegratonCfg(
+                remapException: ex => ex,
+                print: Console.WriteLine
+            )
+        );
     }
 
     public static class FieldValueTranslatorImplementations

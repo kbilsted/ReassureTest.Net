@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using NUnit.Framework;
 
 namespace ReassureTest.Tests
@@ -19,6 +20,7 @@ namespace ReassureTest.Tests
         public void Setup()
         {
             ReassureTest.Reassure.DefaultConfiguration.Outputting.EnableDebugPrint = true;
+            ReassureTest.Reassure.DefaultConfiguration.TestFrameworkIntegration.RemapException = ex => new AssertionException(ex.Message, ex);
         }
     }
 }

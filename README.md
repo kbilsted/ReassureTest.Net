@@ -93,6 +93,23 @@ We achieve these goals by using a novel new way of specifying asserts. Expected 
 3. Done
 
 
+## 1.1. Nunit
+
+For Nunit you can optionally setup a global setting using
+
+```csharp
+ [SetUpFixture]
+    public class TestsSetup
+    {
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            ReassureTest.Reassure.DefaultConfiguration.Outputting.EnableDebugPrint = false;
+            ReassureTest.Reassure.DefaultConfiguration.TestFrameworkIntegration.RemapException = ex => new AssertionException(ex.Message, ex);
+        }
+    }
+```
+
 
 
 

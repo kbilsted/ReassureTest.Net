@@ -24,7 +24,7 @@ namespace ReassureTest.Tests
             var val = NewSimpleTypes();
             val.I = 38938;
 
-            var ex = Assert.Throws<AssertException>(() => val.Is(NewSimpleTypesExpected));
+            var ex = Assert.Throws<AssertionException>(() => val.Is(NewSimpleTypesExpected));
             Assert.AreEqual("Path: 'I'.\r\nExpected: 42\r\nBut was:  38938", ex.Message);
         }
 
@@ -52,7 +52,7 @@ namespace ReassureTest.Tests
             var val = NewSimpleTypes();
             val.Dec = 38938.3M;
 
-            var ex = Assert.Throws<AssertException>(() => val.Is(NewSimpleTypesExpected));
+            var ex = Assert.Throws<AssertionException>(() => val.Is(NewSimpleTypesExpected));
             Assert.AreEqual("Path: 'Dec'.\r\nExpected: 45.0\r\nBut was:  38938.3", ex.Message);
         }
 
@@ -61,7 +61,7 @@ namespace ReassureTest.Tests
         {
             string printed = null;
             var cfg = Reassure.CreateConfiguration();
-            cfg.Outputting.Print = s => printed = s;
+            cfg.TestFrameworkIntegration.Print = s => printed = s;
 
             try
             {
@@ -88,7 +88,7 @@ namespace ReassureTest.Tests
         {
             string printed = null;
             var cfg = TestsSetup.ExactGuidValuesCfg;
-            cfg.Outputting.Print = s => printed = s;
+            cfg.TestFrameworkIntegration.Print = s => printed = s;
             try
             {
                 NewSimpleTypes().Is("", cfg);
@@ -248,7 +248,7 @@ namespace ReassureTest.Tests
         [Test]
         public void Dictionary_missing_second_value()
         {
-            var ex = Assert.Throws<AssertException>(() => new SimpleTypesDictionaries
+            var ex = Assert.Throws<AssertionException>(() => new SimpleTypesDictionaries
             {
                 I = new Dictionary<int, int>() { { 42, 43 } },
             }.Is(@"{    I = [
@@ -260,7 +260,7 @@ namespace ReassureTest.Tests
         [Test]
         public void Dictionary_missing_first_value()
         {
-            var ex = Assert.Throws<AssertException>(() => new SimpleTypesDictionaries
+            var ex = Assert.Throws<AssertionException>(() => new SimpleTypesDictionaries
             {
                 I = new Dictionary<int, int>() { { 111, 222 } },
             }.Is(@"{    I = [
@@ -277,7 +277,7 @@ namespace ReassureTest.Tests
                 L = new Dictionary<long, int>() { { 4, 222221 } },
             };
 
-            var ex = Assert.Throws<AssertException>(() =>
+            var ex = Assert.Throws<AssertionException>(() =>
             simple.Is(@"{
                        I = ?
                        L = [        {             Key = 4297842978             Value = 1        }    ]}"));

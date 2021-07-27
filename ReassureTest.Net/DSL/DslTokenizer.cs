@@ -6,18 +6,16 @@ namespace ReassureTest.DSL
     public class DslTokenizer
     {
         private readonly Configuration configuration;
-        private readonly Action<string> print;
 
         public DslTokenizer(Configuration configuration)
         {
             this.configuration = configuration;
-            this.print = configuration.Outputting.Print;
         }
 
         public void WriteLine(string s)
         {
-            if (configuration.Outputting.EnableDebugPrint && print != null)
-                print(s);
+            if (configuration.Outputting.EnableDebugPrint)
+                configuration.TestFrameworkIntegration.Print(s);
         }
 
         public enum TokenKind

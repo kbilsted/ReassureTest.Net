@@ -36,8 +36,8 @@ namespace ReassureTest.Implementation
                 ComplexMatch(complex, actual, path);
             else if (expected is AstArrayMatcher array)
                 ArrayMatch(array, actual, path);
-            else if (expected is AstAnyMatcher any)
-                AnyMatch(any, actual, path);
+            else if (expected is AstAnyMatcher)
+                AnyMatch();
             else if (expected is AstSomeMatcher)
                 SomeMatch(actual, path);
             else
@@ -50,7 +50,7 @@ namespace ReassureTest.Implementation
                 throw new AssertException($"Path: '{path}'.\r\nExpected: not null\r\nBut was: null");
         }
 
-        private void AnyMatch(AstAnyMatcher anyMatcher, IValue actual, string path)
+        private void AnyMatch()
         {
             // always true
         }

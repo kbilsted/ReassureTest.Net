@@ -93,7 +93,7 @@ namespace ReassureTest.AST
             var c = new AstComplexValue();
 
             if (configuration.Outputting.EnableDebugPrint)
-                configuration.Outputting.Print($"ObjectVisitor: Investigating '{o.GetType()}'");
+                configuration.TestFrameworkIntegration.Print($"ObjectVisitor: Investigating '{o.GetType()}'");
 
             foreach (var propertyInfo in o.GetType().GetProperties())
                 c.Values.Add(propertyInfo.Name, Visit(propertyInfo.GetValue(o)));

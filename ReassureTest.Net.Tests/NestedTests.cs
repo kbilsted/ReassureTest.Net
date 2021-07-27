@@ -45,7 +45,7 @@ namespace ReassureTest.Tests
         public void Nested_null()
         {
             var o = new NestedTop();
-            var ex = Assert.Throws<AssertException>(()=>o.Is(@"{ A = { I = 33 }}"));
+            var ex = Assert.Throws<AssertionException>(()=>o.Is(@"{ A = { I = 33 }}"));
             Assert.AreEqual("Path: 'A'.\r\nExpected: not null\r\nBut was: null", ex.Message);
         }
 
