@@ -47,7 +47,7 @@ namespace ReassureTest.Tests
         public void Array_when_expecting_values_and_is_null_Then_fail()
         {
             var ex = Assert.Throws<AssertException>(() => Reassure.Is(new SimpleTypesArrays(), @"{ I = [ 42, 43 ]}"));
-            Assert.AreEqual("Path: 'I'. Expected: not null\r\nBut was: null", ex.Message);
+            Assert.AreEqual("Path: 'I'.\r\nExpected: not null\r\nBut was: null", ex.Message);
         }
 
         [Test]

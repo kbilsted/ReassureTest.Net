@@ -32,7 +32,7 @@ namespace ReassureTest.Tests
         public void String_tests_unequal()
         {
             var ex = Assert.Throws<AssertException>(() => "other".Is("`asdf`"));
-            Assert.AreEqual("Path: ''. Expected string length 4 but was 5. Strings differ at index 0.\r\n  Expected: \"asdf\"\r\n  But was:  \"other\"\r\n  -----------^\r\n", ex.Message);
+            Assert.AreEqual("Path: ''.\r\nExpected: \"asdf\"\r\nBut was:  \"other\"", ex.Message);
         }
 
         [Test]
@@ -49,7 +49,17 @@ namespace ReassureTest.Tests
 
             var ex = Assert.Throws<AssertException>(() => s.Is("ddd"));
 
-            Assert.IsTrue(ex.Message.StartsWith("Path: ''. Expected: \"ddd\"\r\n  But was:  null"));
+            Assert.AreEqual("Path: ''.\r\nExpected: ddd\r\nBut was:  null", ex.Message);
+        }
+
+        [Test]
+        public void string_value_compared_to_null()
+        {
+            string s = "some string";
+
+            var ex = Assert.Throws<AssertException>(() => s.Is("null"));
+
+            Assert.AreEqual("Path: ''.\r\nExpected: null\r\nBut was:  not null", ex.Message);
         }
 
         [Test]
@@ -60,7 +70,7 @@ namespace ReassureTest.Tests
             DateTime.Now.AddSeconds(1.0).Is("now");
 
             var ex = Assert.Throws<AssertException>(() => DateTime.Now.AddSeconds(10.0).Is("now"));
-            Assert.IsTrue(ex.Message.StartsWith(@"Path: ''. Expected: 20"));
+            StringAssert.StartsWith("Path: ''.\r\nExpected: ", ex.Message);
         }
 
         [Test]
@@ -72,18 +82,29 @@ namespace ReassureTest.Tests
             time.Is("1999-09-19T12:54:03");
 
             var ex = Assert.Throws<AssertException>(() => time.AddSeconds(10.0).Is("1999-09-19T12:54:02"));
-            Assert.AreEqual("Path: ''. Expected: 1999-09-19 12:54:02\r\n  But was:  1999-09-19 12:54:12\r\n", ex.Message);
+            Assert.AreEqual("Path: ''.\r\nExpected: 1999-09-19T12:54:02\r\nBut was:  1999-09-19T12:54:12", ex.Message);
         }
 
         [Test]
-        public void DateTimeTests_null()
+        public void DateTimeTests_null_vs_value()
         {
             DateTime? t = null;
 
             var ex = Assert.Throws<AssertException>(() => t.Is("1999-09-19T12:54:02"));
 
-            Assert.AreEqual("Path: ''. Expected: not null\r\nBut was: null", ex.Message);
+            Assert.AreEqual("Path: ''.\r\nExpected: not null\r\nBut was: null", ex.Message);
         }
+
+        [Test]
+        public void DateTimeTests_value_vs_null()
+        {
+            DateTime t = new DateTime(2020,3,4);
+
+            var ex = Assert.Throws<AssertException>(() => t.Is("null"));
+
+            Assert.AreEqual("Path: ''.\r\nExpected: null\r\nBut was:  not null", ex.Message);
+        }
+
 
         [Test]
         public void DateTimeTests_unequal()
@@ -92,7 +113,7 @@ namespace ReassureTest.Tests
 
             var ex = Assert.Throws<AssertException>(() => t.Is("1999-09-19T12:54:02"));
 
-            Assert.AreEqual("Path: ''. Expected: 1999-09-19 12:54:02\r\n  But was:  2020-02-02 02:02:02\r\n", ex.Message);
+            Assert.AreEqual("Path: ''.\r\nExpected: 1999-09-19T12:54:02\r\nBut was:  2020-02-02T02:02:02", ex.Message);
         }
 
         [Test]
@@ -102,7 +123,7 @@ namespace ReassureTest.Tests
             val.I = 38938;
 
             var ex = Assert.Throws<AssertException>(() => val.Is(NewSimpleTypesExpected));
-            Assert.AreEqual("Path: 'I'. Expected: 42\r\n  But was:  38938\r\n", ex.Message);
+            Assert.AreEqual("Path: 'I'.\r\nExpected: 42\r\nBut was:  38938", ex.Message);
         }
 
         [Test]
@@ -130,7 +151,7 @@ namespace ReassureTest.Tests
             val.Dec = 38938.3M;
 
             var ex = Assert.Throws<AssertException>(() => val.Is(NewSimpleTypesExpected));
-            Assert.AreEqual("Path: 'Dec'. Expected: 45m\r\n  But was:  38938.3m\r\n", ex.Message);
+            Assert.AreEqual("Path: 'Dec'.\r\nExpected: 45.0\r\nBut was:  38938.3", ex.Message);
         }
 
         [Test]
@@ -139,8 +160,12 @@ namespace ReassureTest.Tests
             string printed = null;
             var cfg = Reassure.CreateConfiguration();
             cfg.Outputting.Print = s => printed = s;
-            cfg.Assertion.Assert = (a, b) => { };
-            NewSimpleTypes().Is("", cfg);
+
+            try
+            {
+                NewSimpleTypes().Is("", cfg);
+            }
+            catch (Exception) { }
             Assert.AreEqual(@"Actual is:
 {
     I = 42
@@ -162,8 +187,11 @@ namespace ReassureTest.Tests
             string printed = null;
             var cfg = TestsSetup.ExactGuidValuesCfg;
             cfg.Outputting.Print = s => printed = s;
-            cfg.Assertion.Assert = (a, b) => { };
-            NewSimpleTypes().Is("", cfg);
+            try
+            {
+                NewSimpleTypes().Is("", cfg);
+            }
+            catch (Exception) { }
             Assert.AreEqual(@"Actual is:
 {
     I = 42
@@ -324,7 +352,7 @@ namespace ReassureTest.Tests
             }.Is(@"{    I = [
                     {            Key = 42            Value = 43        },
                     {            Key = 111           Value = 222        }]}"));
-            Assert.AreEqual("Path: 'I[1]'. Array length mismatch. Expected array lengh: 2 but was: 1.", ex.Message);
+            Assert.AreEqual("Path: 'I[1]'.\r\nArray length mismatch. Expected array lengh: 2 but was: 1.", ex.Message);
         }
 
         [Test]
@@ -336,7 +364,7 @@ namespace ReassureTest.Tests
             }.Is(@"{    I = [
                     {            Key = 42            Value = 43        },
                     {            Key = 111           Value = 222        }    ]}"));
-            Assert.AreEqual("Path: 'I[0].Key'. Expected: 42\r\n  But was:  111\r\n", ex.Message);
+            Assert.AreEqual("Path: 'I[0].Key'.\r\nExpected: 42\r\nBut was:  111", ex.Message);
         }
 
         [Test]
@@ -352,7 +380,7 @@ namespace ReassureTest.Tests
                        I = ?
                        L = [        {             Key = 4297842978             Value = 1        }    ]}"));
 
-            Assert.AreEqual("Path: 'L[0].Key'. Expected: 4297842978\r\n  But was:  4\r\n", ex.Message);
+            Assert.AreEqual("Path: 'L[0].Key'.\r\nExpected: 4297842978\r\nBut was:  4", ex.Message);
         }
 
         class SimpleTypes

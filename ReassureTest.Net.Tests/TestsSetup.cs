@@ -18,7 +18,6 @@ namespace ReassureTest.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            ReassureTest.Reassure.DefaultConfiguration.Assertion.Assert = Assert.AreEqual;
             ReassureTest.Reassure.DefaultConfiguration.Outputting.EnableDebugPrint = true;
         }
     }

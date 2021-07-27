@@ -43,9 +43,8 @@ namespace ReassureTest.Tests
             }
 
             var ex = Assert.Throws<AssertException>(act);
-            StringAssert.StartsWith("Path: 'Item1'. Expected: <guid-1>\r\n  But was:  <guid-0>", ex.Message);
+            StringAssert.StartsWith("Path: 'Item1'.\r\nExpected: guid-1\r\nBut was:  guid-0", ex.Message);
         }
-
 
         [Test]
         public void Guid_with_exactvalues_doesnt_match_rolling_guid()
@@ -53,7 +52,7 @@ namespace ReassureTest.Tests
             void Act() => Guid.NewGuid().Is("guid-0", TestsSetup.ExactGuidValuesCfg);
             var ex = Assert.Throws<AssertException>(Act);
 
-            StringAssert.StartsWith("Path: ''. Expected: <guid-0>\r\n  But was:  ", ex.Message);
+            StringAssert.StartsWith("Path: ''.\r\nExpected: guid-0\r\nBut was:  ", ex.Message);
         }
 
         [Test]
@@ -62,6 +61,5 @@ namespace ReassureTest.Tests
             var g = Guid.Parse("99998888-e89b-12d3-a456-426614174000");
             g.Is("99998888-e89b-12d3-a456-426614174000", TestsSetup.ExactGuidValuesCfg);
         }
-
     }
 }

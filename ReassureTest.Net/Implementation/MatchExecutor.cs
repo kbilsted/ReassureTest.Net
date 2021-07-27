@@ -6,11 +6,11 @@ namespace ReassureTest.Implementation
 {
     public class MatchExecutor
     {
-        private readonly Action<object, object> assert;
+        private readonly Configuration configuration;
 
-        public MatchExecutor(Action<object, object> assert)
+        public MatchExecutor(Configuration configuration)
         {
-            this.assert = assert;
+            this.configuration = configuration;
         }
 
         public void MatchGraph(IAssertEvaluator expected, IValue actual) => Match(expected, actual, "");
@@ -47,7 +47,7 @@ namespace ReassureTest.Implementation
         private void SomeMatch(IValue actual, string path)
         {
             if (actual == AstSimpleValue.Null)
-                throw new AssertException($"Path: '{path}'. Expected: not null\r\nBut was: null");
+                throw new AssertException($"Path: '{path}'.\r\nExpected: not null\r\nBut was: null");
         }
 
         private void AnyMatch(AstAnyMatcher anyMatcher, IValue actual, string path)
@@ -67,7 +67,7 @@ namespace ReassureTest.Implementation
                 {
                     newPath = AddPath(path, $"[{i}]");
                     if (arrayActual.Values.Count - 1 < i)
-                        throw new AssertException($"Path: '{newPath}'. Array length mismatch. Expected array lengh: {array.Value.Values.Count} but was: {arrayActual.Values.Count}.");
+                        throw new AssertException($"Path: '{newPath}'.\r\nArray length mismatch. Expected array lengh: {array.Value.Values.Count} but was: {arrayActual.Values.Count}.");
                     var theActual = arrayActual.Values[i];
 
                     var theExpected = (IAssertEvaluator)array.Value.Values[i];
@@ -76,7 +76,7 @@ namespace ReassureTest.Implementation
 
                 newPath = AddPath(path, $"[{array.Value.Values.Count + 1}]");
                 if (arrayActual.Values.Count > array.Value.Values.Count)
-                    throw new AssertException($"Path: '{newPath}'. Array length mismatch. Expected array lengh: {array.Value.Values.Count} but was: {arrayActual.Values.Count}.");
+                    throw new AssertException($"Path: '{newPath}'.\r\nArray length mismatch. Expected array lengh: {array.Value.Values.Count} but was: {arrayActual.Values.Count}.");
             }
             else
             {
@@ -98,7 +98,7 @@ namespace ReassureTest.Implementation
                     }
                     else
                     {
-                        throw new AssertException($"Path: '{path}'. Cannot find field '{kv.Key}' in expected values.");
+                        throw new AssertException($"Path: '{path}'.\r\nCannot find field '{kv.Key}' in expected values.");
                     }
                 }
             }
@@ -115,13 +115,13 @@ namespace ReassureTest.Implementation
             if (actual is AstSimpleValue simpleActual)
             {
                 if (!(dateTimeMatcher.UnderlyingValue.Value is DateTime expectedDate))
-                    throw new AssertException($"Path: '{path}'. Expected {dateTimeMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
+                    throw new AssertException($"Path: '{path}'.\r\nExpected {dateTimeMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
 
                 if (!(simpleActual.Value is DateTime actualDate))
-                    throw new AssertException($"Path: '{path}'. Expected {dateTimeMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
+                    throw new AssertException($"Path: '{path}'.\r\nExpected {dateTimeMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
 
                 if (!IsAlmostSame(expectedDate, actualDate, dateTimeMatcher.AcceptedSlack))
-                    CallUnitTestingFramework(expectedDate, actualDate, path);
+                    Compare(expectedDate, actualDate, path, configuration);
             }
             else
             {
@@ -134,12 +134,12 @@ namespace ReassureTest.Implementation
             if (actual is AstSimpleValue simpleActual)
             {
                 if (!(guidMatcher.UnderlyingValue.Value is AstRollingGuid expectedRg))
-                    throw new AssertException($"Path: '{path}'. Expected {guidMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
+                    throw new AssertException($"Path: '{path}'.\r\nExpected {guidMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
 
                 if (!(simpleActual.Value is AstRollingGuid actualRg))
-                    throw new AssertException($"Path: '{path}'. Expected {guidMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
+                    throw new AssertException($"Path: '{path}'.\r\nExpected {guidMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
 
-                CallUnitTestingFramework(expectedRg.ToString(), actualRg.ToString(), path);
+                Compare(expectedRg.ToString(), actualRg.ToString(), path, configuration);
             }
             else
             {
@@ -151,7 +151,7 @@ namespace ReassureTest.Implementation
         {
             if (actual is AstSimpleValue simpleActual)
             {
-                CallUnitTestingFramework(simple.UnderlyingValue.Value, simpleActual.Value, path);
+                Compare(simple.UnderlyingValue.Value, simpleActual.Value, path, configuration);
             }
             else
             {
@@ -159,21 +159,37 @@ namespace ReassureTest.Implementation
             }
         }
 
-        /// <summary>
-        /// calling the underlying assert has advantages
-        /// * errors looks like the rest of the test output / is familiar
-        /// * errors respect locale, e.g. formatting dates printed when mis-matching
-        /// * when errors, frameworks tend to print a nice arrow pointing to the difference
-        /// </summary>
-        void CallUnitTestingFramework(object expected, object actual, string path)
+        public static void Compare(object expected, object actual, string path, Configuration cfg)
         {
-            try
+            if (expected == null)
+                if (actual == null)
+                    return;
+                else
+                    throw new AssertException($@"Path: '{path}'.
+Expected: null
+But was:  not null");
+
+            if(actual == null)
+                throw new AssertException($@"Path: '{path}'.
+Expected: {expected}
+But was:  null");
+
+            if (expected is string se && actual is string sa)
             {
-                assert(expected, actual);
+                if (!se.Equals(sa))
+                    throw new AssertException($@"Path: '{path}'.
+Expected: ""{se}""
+But was:  ""{sa}""");
             }
-            catch (Exception e)
+            else
             {
-                throw new AssertException($"Path: '{path}'. {e.Message.TrimStart()}");
+                string theExpedted = expected is DateTime de? de.ToString(cfg.Assertion.DateTimeFormat) :  expected.ToString();
+                string theActual = actual is DateTime da ? da.ToString(cfg.Assertion.DateTimeFormat) : actual.ToString();
+                if (!theExpedted.Equals(theActual))
+                    throw new AssertException($@"Path: '{path}'.
+Expected: {theExpedted}
+But was:  {theActual}");
+
             }
         }
 

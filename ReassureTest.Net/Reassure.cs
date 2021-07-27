@@ -19,22 +19,21 @@ namespace ReassureTest
 
             string graph = new AstPrinter(cfg).PrintRoot(astActual);
 
-            if (expectedAst == null)
-            {
-                cfg.Outputting.Print($@"Actual is:
-{graph}");
-
-                cfg.Assertion.Assert(graph, expected);
-                return graph;
-            }
-
             try
             {
-                var executor = new MatchExecutor(cfg.Assertion.Assert);
-                executor.MatchGraph(expectedAst as IAssertEvaluator, astActual);
+                if (expectedAst == null)
+                {
+                    MatchExecutor.Compare(graph, expected, "", cfg);
+                }
+                else
+                {
+                    var executor = new MatchExecutor(cfg);
+                    executor.MatchGraph(expectedAst as IAssertEvaluator, astActual);
+                }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                e.Data.Add("Actual", graph);
                 cfg.Outputting.Print($@"Actual is:
 {graph}");
                 throw;
@@ -51,7 +50,6 @@ namespace ReassureTest
                     DefaultConfiguration.Outputting.EnableDebugPrint,
                     DefaultConfiguration.Outputting.Print),
                 new Configuration.AssertionCfg(
-                    DefaultConfiguration.Assertion.Assert,
                     DefaultConfiguration.Assertion.DateTimeSlack,
                     DefaultConfiguration.Assertion.DateTimeFormat,
                     DefaultConfiguration.Assertion.GuidHandling),
@@ -66,7 +64,6 @@ namespace ReassureTest
                 enableDebugPrint: false,
                 print: Console.WriteLine),
             new Configuration.AssertionCfg(
-                assert: null,
                 dateTimeSlack: TimeSpan.FromSeconds(3),
                 dateTimeFormat: "yyyy-MM-ddTHH:mm:ss",
                 guidHandling: Configuration.GuidHandling.Rolling),
