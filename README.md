@@ -55,19 +55,9 @@ These points are further elaborated at https://github.com/kbilsted/StatePrinter/
 We achieve these goals by using a novel new way of specifying asserts. Expected values are expressed using a domain specific language. And upon a mismatch, ReassureTest prints the actual values **effectively doing 99% of the assert-typing work for you, and making it a breeze to learn.** 
 
 
-
-<br/>
-<br/>
-
-# 1. Getting started 
-
-1. Install the nuget package `ReassureTest` from nuget.org
-2. Use the `Is()` method in your tests
-3. Done
-
-
-
 <br>
+
+**Compatibility**
 
 <table>
     <tr>
@@ -92,6 +82,18 @@ We achieve these goals by using a novel new way of specifying asserts. Expected 
         </td>
     </tr>
 </table>
+
+<br/>
+<br/>
+
+# 1. Getting started 
+
+1. Install the nuget package `ReassureTest` from nuget.org
+2. Use the `Is()` method in your tests
+3. Done
+
+
+
 
 
 <br/>
