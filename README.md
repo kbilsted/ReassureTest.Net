@@ -88,7 +88,7 @@ We achieve these goals by using a novel new way of specifying asserts. Expected 
 
 # 1. Getting started 
 
-1. Install the nuget package `ReassureTest` from nuget.org
+1. Install the nuget package `ReassureTest` from nuget.org (`dotnet add package ReassureTest`)
 2. Use the `Is()` method in your tests
 3. Done
 

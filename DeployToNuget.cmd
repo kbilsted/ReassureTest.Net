@@ -1,0 +1,1 @@
+dotnet nuget push ReassureTest*.nupkg --api-key asdasdasdasdasdasdasdasdasdasd --source https://api.nuget.org/v3/index.json

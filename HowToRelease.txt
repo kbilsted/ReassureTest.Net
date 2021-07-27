@@ -1,0 +1,7 @@
+Steps for creating a new release
+--------------------------------
+
+* Edit version number in .csproj 
+* Update CHANGELOG.md
+* Run DeployToNuget.cmd
+* Add release on github.com
