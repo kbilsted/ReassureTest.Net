@@ -28,7 +28,7 @@ namespace ReassureTest.Tests
         }
 
         [Test]
-        public void string_null_compared_to_value()
+        public void String_null_vs_value()
         {
             string s = null;
 
@@ -38,7 +38,7 @@ namespace ReassureTest.Tests
         }
 
         [Test]
-        public void string_value_compared_to_null()
+        public void String_value_vs_null()
         {
             string s = "some string";
 
@@ -46,6 +46,5 @@ namespace ReassureTest.Tests
 
             Assert.AreEqual("Path: ''.\r\nExpected: null\r\nBut was:  not null", ex.Message);
         }
-
     }
 }

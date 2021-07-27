@@ -29,8 +29,7 @@ namespace ReassureTest.Tests
         [Test]
         public void Guid_with_rollingvalues_doesnt_match_wrong_rolling_value()
         {
-
-            void act()
+            static void act()
             {
                 var g1 = Guid.NewGuid();
                 var g2 = Guid.NewGuid();
@@ -49,7 +48,7 @@ namespace ReassureTest.Tests
         [Test]
         public void Guid_with_exactvalues_doesnt_match_rolling_guid()
         {
-            void Act() => Guid.NewGuid().Is("guid-0", TestsSetup.ExactGuidValuesCfg);
+            static void Act() => Guid.NewGuid().Is("guid-0", TestsSetup.ExactGuidValuesCfg);
             var ex = Assert.Throws<AssertException>(Act);
 
             StringAssert.StartsWith("Path: ''.\r\nExpected: guid-0\r\nBut was:  ", ex.Message);

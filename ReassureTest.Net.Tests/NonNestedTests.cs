@@ -19,7 +19,7 @@ namespace ReassureTest.Tests
         }
 
         [Test]
-        public void int_unequal()
+        public void Int_unequal()
         {
             var val = NewSimpleTypes();
             val.I = 38938;
@@ -47,7 +47,7 @@ namespace ReassureTest.Tests
         }
 
         [Test]
-        public void decimal_unequal()
+        public void Decimal_unequal()
         {
             var val = NewSimpleTypes();
             val.Dec = 38938.3M;

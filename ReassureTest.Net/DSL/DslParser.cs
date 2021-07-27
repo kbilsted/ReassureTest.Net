@@ -87,7 +87,7 @@ namespace ReassureTest.DSL
             throw new Exception($"Unparseable '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: '{i}')\n{StringUtl.PreviewString(input, t.PosStart)}");
         }
 
-        private static Regex RollingGuidEx = new Regex("guid-(?<id>\\d+)", RegexOptions.Compiled);
+        private static readonly Regex RollingGuidEx = new Regex("guid-(?<id>\\d+)", RegexOptions.Compiled);
 
         private IAssertEvaluator ParseSimple()
         {
