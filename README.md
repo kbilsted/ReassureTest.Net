@@ -100,8 +100,9 @@ We achieve these goals by using a novel new way of specifying asserts. Expected 
 
 # 2. An example workflow
 
-To write assert's, we've made it short and sweet with a `Is()` method. Let's put it to action for testing our new shopping basket implementation. 
-In this example we use `nunit` for setting up and executing tests but **ReassureTest works with any testing framework**.
+Asserts are expressed using an `Is()` method. Let's put it to action for testing a shopping basket implementation. 
+
+In this example we use Nunit for setting up and executing tests but **ReassureTest works with any testing framework**.
 
 ```csharp
 [Test]
@@ -339,11 +340,28 @@ e.g.  `OrderLines = [ *, * ]` means that there are two order lines objects, both
 * `guid-x` represents a unique guid value, without specifying the exact value. This is used for ensuring two or more guids are the same or different.
 
 
+### Exceptions
+* Exceptions are transformed into a simple form, a class containing `Message`, `Data` and `Type`.
+
+```csharp
+var ex = new Exception("message") { Data = {{"a", "b"}} };
+
+ex.Is(@"{
+    Message = `message`
+    Data = [
+        {
+            Key = `a`
+            Value = `b`
+        }
+    ]
+    Type = `System.Exception`
+}");
+```
 
 <br/>
 <br/>
 
-# 6. Configuraition
+# 6. Configuration
 There are two ways you can configure ReassureTest
 
 1. Use the global settings part of the api.
@@ -356,7 +374,7 @@ The default configuration can be changed by `Reassure.DefaultConfiguration`.
 If you need a new copy of the default configuration you can use `var newCfg = Configuration.New()`.
 
 
-## 6.1. Nunit
+## 6.1. Nunit example setup
 
 For Nunit you can optionally setup a global setting using
 
