@@ -351,6 +351,11 @@ There are two ways you can configure ReassureTest
 
 The first you use to change the overall characteristics of your usage, while the second is often to fit specific corner cases.
 
+The default configuration can be changed by `Reassure.DefaultConfiguration`.
+
+If you need a new copy of the default configuration you can use `var newCfg = Configuration.New()`.
+
+
 ## 6.1. Nunit
 
 For Nunit you can optionally setup a global setting using
@@ -362,8 +367,8 @@ public class TestsSetup
     [OneTimeSetUp]
     public void Setup()
     {
-        ReassureTest.Reassure.DefaultConfiguration.Outputting.EnableDebugPrint = false;
-        ReassureTest.Reassure.DefaultConfiguration.TestFrameworkIntegration.RemapException = ex => new AssertionException(ex.Message, ex);
+        Reassure.DefaultConfiguration.Outputting.EnableDebugPrint = false;
+        Reassure.DefaultConfiguration.TestFrameworkIntegration.RemapException = ex => new AssertionException(ex.Message, ex);
     }
 }
 ```

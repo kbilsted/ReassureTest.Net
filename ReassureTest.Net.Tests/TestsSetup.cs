@@ -10,7 +10,7 @@ namespace ReassureTest.Tests
         {
             get
             {
-                var c = Reassure.CreateConfiguration();
+                var c = Configuration.New();
                 c.Assertion.GuidHandling = Configuration.GuidHandling.Exact;
                 return c;
             }
@@ -19,8 +19,8 @@ namespace ReassureTest.Tests
         [OneTimeSetUp]
         public void Setup()
         {
-            ReassureTest.Reassure.DefaultConfiguration.Outputting.EnableDebugPrint = true;
-            ReassureTest.Reassure.DefaultConfiguration.TestFrameworkIntegration.RemapException = ex => new AssertionException(ex.Message, ex);
+            Reassure.DefaultConfiguration.Outputting.EnableDebugPrint = true;
+            Reassure.DefaultConfiguration.TestFrameworkIntegration.RemapException = ex => new AssertionException(ex.Message, ex);
         }
     }
 }

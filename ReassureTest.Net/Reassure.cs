@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using ReassureTest.AST;
 using ReassureTest.AST.Expected;
@@ -10,7 +9,7 @@ namespace ReassureTest
 {
     public static class Reassure
     {
-        public static string Is(this object actual, string expected) => Is(actual, expected, CreateConfiguration());
+        public static string Is(this object actual, string expected) => Is(actual, expected, Configuration.New());
 
         public static string Is(this object actual, string expected, Configuration cfg)
         {
@@ -44,27 +43,6 @@ namespace ReassureTest
             return graph;
         }
 
-        public static Configuration CreateConfiguration()
-        {
-            return new Configuration(
-                new Configuration.OutputtingCfg(
-                    DefaultConfiguration.Outputting.Indention,
-                    DefaultConfiguration.Outputting.EnableDebugPrint
-                    ),
-                new Configuration.AssertionCfg(
-                    DefaultConfiguration.Assertion.DateTimeSlack,
-                    DefaultConfiguration.Assertion.DateTimeFormat,
-                    DefaultConfiguration.Assertion.GuidHandling
-                    ),
-                new Configuration.HarvestingCfg(
-                    DefaultConfiguration.Harvesting.FieldValueTranslators),
-                new TestFrameworkIntegratonCfg(
-                    DefaultConfiguration.TestFrameworkIntegration.RemapException,
-                    DefaultConfiguration.TestFrameworkIntegration.Print
-                    )
-                );
-        }
-
         public static Configuration DefaultConfiguration = new Configuration(
             new Configuration.OutputtingCfg(
                 indention: "    ",
@@ -81,45 +59,10 @@ namespace ReassureTest
                     FieldValueTranslatorImplementations.IgnoreUnharvestableTypes,
                     FieldValueTranslatorImplementations.SimplifyExceptions
                 }),
-            new TestFrameworkIntegratonCfg(
+            new Configuration.TestFrameworkIntegratonCfg(
                 remapException: ex => ex,
                 print: Console.WriteLine
             )
         );
-    }
-
-    public static class FieldValueTranslatorImplementations
-    {
-        public static object SimplifyExceptions(object o)
-        {
-            if (o is Exception ex)
-                return new SimplifiedException(ex);
-            return o;
-        }
-
-        public static object IgnoreUnharvestableTypes(object o)
-        {
-            var typename = o.GetType().ToString();
-            if (typename.StartsWith("System.Reflection", StringComparison.Ordinal)
-                || typename.StartsWith("System.Runtime", StringComparison.Ordinal)
-                || typename.StartsWith("System.SignatureStruct", StringComparison.Ordinal)
-                || typename.StartsWith("System.Func", StringComparison.Ordinal))
-                return null;
-            return o;
-        }
-    }
-
-    public class SimplifiedException
-    {
-        public string Message { get; set; }
-        public IDictionary Data { get; set; }
-        public string Type { get; set; }
-
-        public SimplifiedException(Exception e)
-        {
-            Message = e.Message;
-            Data = e.Data;
-            Type = e.GetType().ToString();
-        }
     }
 }
