@@ -99,7 +99,7 @@ namespace ReassureTest.DSL
                 if (match.Success)
                 {
                     var id = int.Parse(match.Groups["id"].Value);
-                    return new AstSimpleMatcher(new AstSimpleValue(new AstRollingGuid(id)));
+                    return new AstGuidMatcher(new AstRollingGuid(id));
                 }
 
                 switch (str)

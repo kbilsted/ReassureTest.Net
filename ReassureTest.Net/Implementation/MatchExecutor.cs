@@ -133,13 +133,10 @@ namespace ReassureTest.Implementation
         {
             if (actual is AstSimpleValue simpleActual)
             {
-                if (!(guidMatcher.UnderlyingValue.Value is AstRollingGuid expectedRg))
-                    throw new AssertException($"Path: '{path}'.\r\nExpected {guidMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
-
                 if (!(simpleActual.Value is AstRollingGuid actualRg))
-                    throw new AssertException($"Path: '{path}'.\r\nExpected {guidMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
+                    throw new AssertException($"Path: '{path}'.\r\nExpected: {guidMatcher.UnderlyingValue}\r\nBut was:  {simpleActual.Value}");
 
-                Compare(expectedRg.ToString(), actualRg.ToString(), path, configuration);
+                Compare(guidMatcher.UnderlyingValue, actualRg, path, configuration);
             }
             else
             {

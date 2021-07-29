@@ -2,11 +2,11 @@
 {
     class AstGuidMatcher : IAssertEvaluator
     {
-        public AstSimpleValue UnderlyingValue { get; set; }
+        public AstRollingGuid UnderlyingValue { get; set; }
 
-        public AstGuidMatcher(AstSimpleValue value)
+        public AstGuidMatcher(AstRollingGuid guid)
         {
-            UnderlyingValue = value;
+            UnderlyingValue = guid;
         }
     }
 }
