@@ -51,7 +51,7 @@ namespace ReassureTest.Tests
             static void Act() => Guid.NewGuid().Is("guid-0", TestsSetup.ExactGuidValuesCfg);
             var ex = Assert.Throws<AssertionException>(Act);
 
-            StringAssert.StartsWith("Path: ''.\r\nExpected: guid-0\r\nBut was:  ", ex.Message);
+            StringAssert.StartsWith("Expected: guid-0\r\nBut was:  ", ex.Message);
         }
 
         [Test]

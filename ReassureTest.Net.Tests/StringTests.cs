@@ -17,7 +17,7 @@ namespace ReassureTest.Tests
         public void String_tests_unequal()
         {
             var ex = Assert.Throws<AssertionException>(() => "other".Is("`asdf`"));
-            Assert.AreEqual("Path: ''.\r\nExpected: \"asdf\"\r\nBut was:  \"other\"", ex.Message);
+            Assert.AreEqual("Expected: \"asdf\"\r\nBut was:  \"other\"", ex.Message);
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace ReassureTest.Tests
 
             var ex = Assert.Throws<AssertionException>(() => s.Is("ddd"));
 
-            Assert.AreEqual("Path: ''.\r\nExpected: ddd\r\nBut was:  null", ex.Message);
+            Assert.AreEqual("Expected: \"ddd\"\r\nBut was:  null", ex.Message);
         }
 
         [Test]
@@ -44,7 +44,7 @@ namespace ReassureTest.Tests
 
             var ex = Assert.Throws<AssertionException>(() => s.Is("null"));
 
-            Assert.AreEqual("Path: ''.\r\nExpected: null\r\nBut was:  not null", ex.Message);
+            Assert.AreEqual("Expected: null\r\nBut was:  \"some string\"", ex.Message);
         }
     }
 }

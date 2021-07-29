@@ -13,7 +13,7 @@ namespace ReassureTest.Tests
             DateTime.Now.AddSeconds(1.0).Is("now");
 
             var ex = Assert.Throws<AssertionException>(() => DateTime.Now.AddSeconds(10.0).Is("now"));
-            StringAssert.StartsWith("Path: ''.\r\nExpected: ", ex.Message);
+            StringAssert.StartsWith("Expected: ", ex.Message);
         }
 
         [Test]
@@ -25,7 +25,7 @@ namespace ReassureTest.Tests
             time.Is("1999-09-19T12:54:03");
 
             var ex = Assert.Throws<AssertionException>(() => time.AddSeconds(10.0).Is("1999-09-19T12:54:02"));
-            Assert.AreEqual("Path: ''.\r\nExpected: 1999-09-19T12:54:02\r\nBut was:  1999-09-19T12:54:12", ex.Message);
+            Assert.AreEqual("Expected: 1999-09-19T12:54:02\r\nBut was:  1999-09-19T12:54:12", ex.Message);
         }
 
         [Test]
@@ -35,7 +35,7 @@ namespace ReassureTest.Tests
 
             var ex = Assert.Throws<AssertionException>(() => t.Is("1999-09-19T12:54:02"));
 
-            Assert.AreEqual("Path: ''.\r\nExpected: not null\r\nBut was: null", ex.Message);
+            Assert.AreEqual("Expected: not null\r\nBut was: null", ex.Message);
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace ReassureTest.Tests
 
             var ex = Assert.Throws<AssertionException>(() => t.Is("null"));
 
-            Assert.AreEqual("Path: ''.\r\nExpected: null\r\nBut was:  not null", ex.Message);
+            Assert.AreEqual("Expected: null\r\nBut was:  04/03/2020 00:00:00", ex.Message);
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace ReassureTest.Tests
 
             var ex = Assert.Throws<AssertionException>(() => t.Is("1999-09-19T12:54:02"));
 
-            Assert.AreEqual("Path: ''.\r\nExpected: 1999-09-19T12:54:02\r\nBut was:  2020-02-02T02:02:02", ex.Message);
+            Assert.AreEqual("Expected: 1999-09-19T12:54:02\r\nBut was:  2020-02-02T02:02:02", ex.Message);
         }
     }
 }
