@@ -4,10 +4,11 @@ namespace ReassureTest.DSL
 {
     class StringUtl
     {
+        private const int NumberOfCharacterContextOnDslParseError = 33;
         public static string PreviewString(string s, int start)
         {
-            var prefix = Math.Max(0, start - 33);
-            var postfix = Math.Min(start + 33, s.Length);
+            var prefix = Math.Max(0, start - NumberOfCharacterContextOnDslParseError);
+            var postfix = Math.Min(start + NumberOfCharacterContextOnDslParseError, s.Length);
 
             return
                 ((prefix > 0 ? "..." : "")
