@@ -3,6 +3,7 @@ using NUnit.Framework;
 
 namespace ReassureTest.Tests
 {
+    [SetCulture("da-DK")]
     public class DateTimeTests
     {
         [Test]
@@ -45,7 +46,7 @@ namespace ReassureTest.Tests
 
             var ex = Assert.Throws<AssertionException>(() => t.Is("null"));
 
-            Assert.AreEqual("Expected: null\r\nBut was:  04/03/2020 00:00:00", ex.Message);
+            Assert.AreEqual("Expected: null\r\nBut was:  04-03-2020 00:00:00", ex.Message);
         }
 
         [Test]
