@@ -1,7 +1,12 @@
 # Version history
 
-## v0.01
+## v0.0.2
+* Changed the layout of the Configuration.
+* Improved error messages
+
+## v0.0.1
 initial test release
+
 
 Have fun!
 

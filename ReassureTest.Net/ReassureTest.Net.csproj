@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;netstandard2.0;net45</TargetFrameworks>
@@ -11,7 +11,8 @@
     <Authors>Kasper B. Graversen</Authors>
     <Product>ReassureTest.Net</Product>
     <Description>Simplify unit testing</Description>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
+    <AssemblyVersion>0.0.2.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
