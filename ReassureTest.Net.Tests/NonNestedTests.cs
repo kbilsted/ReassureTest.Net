@@ -7,6 +7,13 @@ namespace ReassureTest.Tests
     public class NonNestedTests
     {
         [Test]
+        public void Assert_empty_class()
+        {
+            var actual = new EmptyClass().Is("{ }");
+            Assert.AreEqual("{ }", actual);
+        }
+
+        [Test]
         public void SimpleAsserts()
         {
             1.Is("1");
@@ -319,6 +326,10 @@ namespace ReassureTest.Tests
             public Dictionary<long, int> L { get; set; }
             public Dictionary<bool, int> B { get; set; }
             public Dictionary<string, int> S { get; set; }
+        }
+
+        class EmptyClass
+        {
         }
     }
 }

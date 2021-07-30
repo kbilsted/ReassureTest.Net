@@ -1,5 +1,8 @@
 # Version history
 
+## v0.0.x
+* One line printing of empty classes
+
 ## v0.0.2
 * Changed the layout of the Configuration.
 * Improved error messages

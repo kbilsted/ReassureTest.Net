@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using ReassureTest.Implementation;
 
 namespace ReassureTest.AST
@@ -36,6 +37,13 @@ namespace ReassureTest.AST
 
         void PrintComplex(AstComplexValue value, IndentingStringBuilder sb)
         {
+            bool printAsSingleline = !value.Values.Any();
+            if (printAsSingleline)
+            {
+                sb.Add("{ }");
+                return;
+            }
+
             sb.AddLine("{").Indent();
             foreach (var c in value.Values)
             {
