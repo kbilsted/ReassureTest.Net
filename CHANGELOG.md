@@ -1,14 +1,15 @@
 # Version history
 
 ## v0.0.x
-* One line printing of empty classes
+* One line printing of empty classes.
+* Change how configuration is passed.
 
 ## v0.0.2
 * Changed the layout of the Configuration.
-* Improved error messages
+* Improved error messages.
 
 ## v0.0.1
-initial test release
+initial test release.
 
 
 Have fun!

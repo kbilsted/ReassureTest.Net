@@ -72,7 +72,7 @@ namespace ReassureTest.Tests
 
             try
             {
-                NewSimpleTypes().Is("", cfg);
+                NewSimpleTypes().With(cfg).Is("");
             }
             catch (Exception) { }
             Assert.AreEqual(@"Actual is:
@@ -98,7 +98,7 @@ namespace ReassureTest.Tests
             cfg.TestFrameworkIntegration.Print = s => printed = s;
             try
             {
-                NewSimpleTypes().Is("", cfg);
+                NewSimpleTypes().With(cfg).Is("");
             }
             catch (Exception) { }
             Assert.AreEqual(@"Actual is:

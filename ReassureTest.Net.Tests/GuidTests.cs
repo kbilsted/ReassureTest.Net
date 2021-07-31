@@ -48,7 +48,7 @@ namespace ReassureTest.Tests
         [Test]
         public void Guid_with_exactvalues_doesnt_match_rolling_guid()
         {
-            static void Act() => Guid.NewGuid().Is("guid-0", TestsSetup.ExactGuidValuesCfg);
+            static void Act() => Guid.NewGuid().With(TestsSetup.ExactGuidValuesCfg).Is("guid-0");
             var ex = Assert.Throws<AssertionException>(Act);
 
             StringAssert.StartsWith("Expected: guid-0\r\nBut was:  ", ex.Message);
@@ -58,7 +58,7 @@ namespace ReassureTest.Tests
         public void Guid_with_exact_value_matches_that_value()
         {
             var g = Guid.Parse("99998888-e89b-12d3-a456-426614174000");
-            g.Is("99998888-e89b-12d3-a456-426614174000", TestsSetup.ExactGuidValuesCfg);
+            g.With(TestsSetup.ExactGuidValuesCfg).Is("99998888-e89b-12d3-a456-426614174000");
         }
     }
 }

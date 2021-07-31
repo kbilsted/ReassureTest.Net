@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using NUnit.Framework;
 
 namespace ReassureTest.Tests
@@ -45,7 +46,7 @@ namespace ReassureTest.Tests
         public void Nested_null()
         {
             var o = new NestedTop();
-            var ex = Assert.Throws<AssertionException>(()=>o.Is(@"{ A = { I = 33 }}"));
+            var ex = Assert.Throws<AssertionException>(() => o.Is(@"{ A = { I = 33 }}"));
             Assert.AreEqual("Path: 'A'.\r\nExpected: not null\r\nBut was: null", ex.Message);
         }
 
@@ -116,7 +117,7 @@ namespace ReassureTest.Tests
         {
             var o = CreateNestedTopArray();
 
-            var ex = Assert.Throws<AssertionException>(()=>o.Is(@"{ C = [ * ] }"));
+            var ex = Assert.Throws<AssertionException>(() => o.Is(@"{ C = [ * ] }"));
             Assert.AreEqual("Path: 'C[2]'.\r\nArray length mismatch. Expected array lengh: 1 but was: 2.", ex.Message);
         }
 
@@ -138,7 +139,6 @@ namespace ReassureTest.Tests
                 }
             };
         }
-
 
         class NestedTop
         {

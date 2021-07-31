@@ -11,7 +11,7 @@ namespace ReassureTest
     {
         public static string Is(this object actual, string expected) => Is(actual, expected, DefaultConfiguration.DeepClone());
 
-        public static string Is(this object actual, string expected, Configuration cfg)
+        internal static string Is(this object actual, string expected, Configuration cfg)
         {
             IValue astActual = new ObjectVisitor(cfg).Visit(actual);
             IValue expectedAst = new DslParser(new DslTokenizer(cfg), cfg).Parse(expected);
@@ -42,6 +42,8 @@ namespace ReassureTest
 
             return graph;
         }
+
+        public static ReassureRunContext With(this object actual, Configuration configuration) => new ReassureRunContext(actual, configuration);
 
         public static Configuration DefaultConfiguration = new Configuration(
             new Configuration.OutputtingCfg(
