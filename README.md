@@ -1,5 +1,8 @@
 ﻿# ReassureTest
-*Making testing fun, fast and easy...*
+![Lines of code](https://img.shields.io/tokei/lines/github/kbilsted/ReassureTest.Net?style=plastic)
+![GitHub file size in bytes](https://img.shields.io/github/size/github/kbilsted/ReassureTest.Net?style=plastic)
+
+*Making tests and testing fun, fast and easy...*
 
 <br>
 
@@ -393,11 +396,87 @@ public class TestsSetup
 
 
 
+
 <br/>
 <br/>
 
 
-# 7. Scope
+# 7. Simplify rich domain models
+
+Using rich domain models is a common implementation strategy that improves readability and maintainability. Simple types are replaced with classes. This yields both a closer relationship between model and implementation, and the domain types establishes a conceptual foundation making it easier to extend and adapt the application for future changes. It is a very interesting effect when the process of transitioning to a rich domain model feeds new "emergent behaviour". You can read more about it at http://firstclassthoughts.co.uk/Articles/Design/DomainTypeAndEmergentBehaviour.html The opposite of using a rich domain model is sometimes refered to as "primitive obsession", and is explained from that angle e.g. in https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession/ and https://medium.com/the-sixt-india-blog/primitive-obsession-code-smell-that-hurt-people-the-most-5cbdd70496e9
+
+Assume we want to ensure we do not intermix the order date and the max. delivery date, we can do this on the type level using
+
+```csharp
+class OrderDate {
+    public DateTime Value { get; set; }
+}
+
+class LatestDeliveryDate {
+    public DateTime Value { get; set; }
+}
+
+class Order {
+    public OrderDate OrderDate { get; set; }
+    public LatestDeliveryDate LatestDeliveryDate { get; set; }
+    public string Note { get; set; }
+}
+```
+
+This produces the following assert
+
+```csharp
+var order = new Order() 
+{ 
+    OrderDate = new OrderDate() { Value = DateTime.Now } 
+    ...
+
+order.Is(@"{
+    OrderDate = {
+        Value = now
+    }
+    LatestDeliveryDate = {
+        Value = 2021-03-04T00:00:00
+    }
+    Note = `Leave at front door`
+}");"
+```
+
+Unfortunately, this is too verbose for my liking - it unnecesarrily hurt readability. We remedy this by using **FieldValueTranslators**, that is functions that map representation. Let's configure two such that when traversing the `order` object, we use their internal date representation.
+
+
+```csharp
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting.FieldValueTranslators.Add(o => o is OrderDate d ? d.Value : o);
+cfg.Harvesting.FieldValueTranslators.Add(o => o is LatestDeliveryDate d ? d.Value : o);
+
+order.With(cfg).Is(@"{
+    OrderDate = now
+    LatestDeliveryDate = 2021-03-04T00:00:00
+    Note = `Leave at front door`
+}");"
+```
+
+Note: You can do any kind of transformationm but be careful with not overcomplicating stuff. For example this configuration does the same as above but looks much more complex
+
+```csharp
+// too complex
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting.FieldValueTranslators.Add(o =>
+    o switch
+    {
+        OrderDate od => od.Value,
+        LatestDeliveryDate ldd => ldd?.Value,
+        _ => o
+    });
+```
+
+
+<br/>
+<br/>
+
+
+# 8. Scope
 
 ReasureTest's focus primarily on automated api tests, integration tests and component tests - as depicted in "the testing pyramid". You can use it for unit tests as well, when you want to combine expected values.
 
