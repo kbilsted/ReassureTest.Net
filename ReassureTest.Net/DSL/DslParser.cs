@@ -21,6 +21,8 @@ namespace ReassureTest.DSL
 
         public IValue Parse(string s)
         {
+            if (s == null)
+                return null;
             input = s;
             tokens = tokenizer.Tokenize(s).ToArray();
             if (tokens.Length == 0)

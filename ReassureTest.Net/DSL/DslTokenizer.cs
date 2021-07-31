@@ -53,9 +53,6 @@ namespace ReassureTest.DSL
 
             var tokens = new List<DslToken>();
 
-            if (string.IsNullOrWhiteSpace(s))
-                return tokens;
-
             int pos = 0;
             while (pos < s.Length)
             {
