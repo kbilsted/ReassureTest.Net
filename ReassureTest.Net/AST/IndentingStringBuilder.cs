@@ -23,7 +23,7 @@ namespace ReassureTest.AST
         public IndentingStringBuilder Dedent()
         {
             if (indentCount == 0)
-                throw new Exception("Indention level can not go below 0");
+                throw new InvalidOperationException("Indention level can not go below 0");
             indentCount--;
             return this;
         }

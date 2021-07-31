@@ -32,7 +32,7 @@ namespace ReassureTest.AST
             else if (value is AstComplexValue complex)
                 PrintComplex(complex, sb);
             else
-                throw new Exception($"this can never happen, please report as a bug\nv: {value} is of type: {value.GetType()}");
+                throw new InvalidOperationException($"This can never happen, please report as a bug\nv: {value} is of type: {value.GetType()}");
         }
 
         void PrintComplex(AstComplexValue value, IndentingStringBuilder sb)
