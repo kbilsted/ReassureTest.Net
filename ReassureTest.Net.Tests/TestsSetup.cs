@@ -10,7 +10,7 @@ namespace ReassureTest.Tests
         {
             get
             {
-                var c = Configuration.New();
+                var c = Reassure.DefaultConfiguration.DeepClone();
                 c.Assertion.GuidHandling = Configuration.GuidHandling.Exact;
                 return c;
             }

@@ -9,7 +9,7 @@ namespace ReassureTest
 {
     public static class Reassure
     {
-        public static string Is(this object actual, string expected) => Is(actual, expected, Configuration.New());
+        public static string Is(this object actual, string expected) => Is(actual, expected, DefaultConfiguration.DeepClone());
 
         public static string Is(this object actual, string expected, Configuration cfg)
         {

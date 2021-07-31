@@ -67,7 +67,7 @@ namespace ReassureTest.Tests
         public void NonNestedObject_printAst()
         {
             string printed = null;
-            var cfg = Configuration.New();
+            var cfg = Reassure.DefaultConfiguration.DeepClone();
             cfg.TestFrameworkIntegration.Print = s => printed = s;
 
             try

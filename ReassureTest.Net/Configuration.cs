@@ -18,23 +18,23 @@ namespace ReassureTest
             TestFrameworkIntegration = testFrameworkIntegration;
         }
 
-        public static Configuration New()
+        public Configuration DeepClone()
         {
             return new Configuration(
                 new OutputtingCfg(
-                    Reassure.DefaultConfiguration.Outputting.Indention,
-                    Reassure.DefaultConfiguration.Outputting.EnableDebugPrint
+                    Outputting.Indention,
+                    Outputting.EnableDebugPrint
                 ),
                 new AssertionCfg(
-                    Reassure.DefaultConfiguration.Assertion.DateTimeSlack,
-                    Reassure.DefaultConfiguration.Assertion.DateTimeFormat,
-                    Reassure.DefaultConfiguration.Assertion.GuidHandling
+                    Assertion.DateTimeSlack,
+                    Assertion.DateTimeFormat,
+                    Assertion.GuidHandling
                 ),
                 new HarvestingCfg(
-                    Reassure.DefaultConfiguration.Harvesting.FieldValueTranslators),
+                    Harvesting.FieldValueTranslators),
                 new TestFrameworkIntegratonCfg(
-                    Reassure.DefaultConfiguration.TestFrameworkIntegration.RemapException,
-                    Reassure.DefaultConfiguration.TestFrameworkIntegration.Print
+                    TestFrameworkIntegration.RemapException,
+                    TestFrameworkIntegration.Print
                 )
             );
         }
@@ -64,7 +64,7 @@ namespace ReassureTest
          
             public HarvestingCfg(List<Func<object, object>> fieldValueTranslators)
             {
-                FieldValueTranslators = fieldValueTranslators;
+                FieldValueTranslators = new List<Func<object,object>>(fieldValueTranslators);
             }
         }
 
