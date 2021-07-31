@@ -5,10 +5,10 @@ namespace ReassureTest
 {
     public class Configuration
     {
-        public OutputtingCfg Outputting;
-        public AssertionCfg Assertion;
-        public HarvestingCfg Harvesting;
-        public TestFrameworkIntegratonCfg TestFrameworkIntegration;
+        public OutputtingCfg Outputting {get; set; }
+        public AssertionCfg Assertion {get; set; }
+        public HarvestingCfg Harvesting {get; set; }
+        public TestFrameworkIntegratonCfg TestFrameworkIntegration {get; set; }
 
         public Configuration(OutputtingCfg outputting, AssertionCfg assertion, HarvestingCfg harvesting, TestFrameworkIntegratonCfg testFrameworkIntegration)
         {
@@ -46,9 +46,9 @@ namespace ReassureTest
 
         public class AssertionCfg
         {
-            public TimeSpan DateTimeSlack;
-            public string DateTimeFormat;
-            public GuidHandling GuidHandling;
+            public TimeSpan DateTimeSlack {get; set; }
+            public string DateTimeFormat {get; set; }
+            public GuidHandling GuidHandling {get; set; }
 
             public AssertionCfg(TimeSpan dateTimeSlack, string dateTimeFormat, GuidHandling guidHandling)
             {
@@ -60,7 +60,7 @@ namespace ReassureTest
 
         public class HarvestingCfg
         {
-            public List<Func<object, object>> FieldValueTranslators;
+            public List<Func<object, object>> FieldValueTranslators {get; set; }
          
             public HarvestingCfg(List<Func<object, object>> fieldValueTranslators)
             {
@@ -70,8 +70,8 @@ namespace ReassureTest
 
         public class OutputtingCfg
         {
-            public string Indention;
-            public bool EnableDebugPrint;
+            public string Indention {get; set; }
+            public bool EnableDebugPrint {get; set; }
 
             public OutputtingCfg(string indention, bool enableDebugPrint)
             {
@@ -82,8 +82,8 @@ namespace ReassureTest
 
         public class TestFrameworkIntegratonCfg
         {
-            public Func<AssertException, Exception> RemapException;
-            public Action<string> Print;
+            public Func<AssertException, Exception> RemapException {get; set; }
+            public Action<string> Print {get; set; }
 
             public TestFrameworkIntegratonCfg(Func<AssertException, Exception> remapException, Action<string> print)
             {

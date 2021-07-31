@@ -38,7 +38,10 @@ namespace ReassureTest.AST
 
                     case Configuration.GuidHandling.Rolling:
                         if (!rollingGuidValues.TryGetValue(g, out int count))
-                            rollingGuidValues.Add(g, count = rollingGuidCounter++);
+                        {
+                            count = rollingGuidCounter++;
+                            rollingGuidValues.Add(g, count);
+                        }
 
                         result = new AstSimpleValue(new AstRollingGuid(count));
                         return true;

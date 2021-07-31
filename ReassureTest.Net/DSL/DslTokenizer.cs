@@ -82,7 +82,7 @@ namespace ReassureTest.DSL
                         if (pos >= s.Length)
                         {
                             var preview = StringUtl.PreviewString(s, start);
-                            throw new Exception($"Unmatched quote starting at pos: {start}\n{preview}\n");
+                            throw new InvalidOperationException($"Parse error. Unmatched quote starting at pos: {start}\n{preview}\n");
                         }
                     } while (!IsQuote(s, pos));
 

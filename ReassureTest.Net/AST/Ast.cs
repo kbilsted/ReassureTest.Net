@@ -29,13 +29,13 @@ namespace ReassureTest.AST
 
     public class AstComplexValue : IValue
     {
-        public Dictionary</*fieldname*/string, IValue> Values = new Dictionary<string, IValue>();
+        public Dictionary</*fieldname*/string, IValue> Values { get; set; } = new Dictionary<string, IValue>();
     }
 
     class AstArray : IValue
     {
-        public ValueKind ArrayKind = ValueKind.Simple;
-        public List<IValue> Values = new List<IValue>();
+        public ValueKind ArrayKind { get; set; } = ValueKind.Simple;
+        public List<IValue> Values { get; set; } = new List<IValue>();
 
         public void Add(IValue v)
         {
