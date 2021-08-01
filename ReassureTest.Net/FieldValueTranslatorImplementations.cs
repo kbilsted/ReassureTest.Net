@@ -25,6 +25,24 @@ namespace ReassureTest
                 return null;
             return o;
         }
+
+        public static object FixDefaultImmutableArrayCanNotBeTraversed(object o)
+        {
+            var type = o.GetType().ToString();
+            if (!type.StartsWith("System.Collections.Immutable.ImmutableArray", StringComparison.Ordinal))
+                return o;
+
+            try
+            {
+                ((IEnumerable)o).GetEnumerator();
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
+
+            return o;
+        }
     }
 
     public class SimplifiedException

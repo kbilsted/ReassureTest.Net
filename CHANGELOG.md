@@ -1,5 +1,9 @@
 # Version history
 
+
+## v0.0.x
+* Handling empty `ImmutableArray<>`
+
 ## v0.0.3
 * One line printing of empty classes.
 * Change how configuration is passed onto `Is()`

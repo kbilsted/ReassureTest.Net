@@ -59,7 +59,8 @@ namespace ReassureTest
                 fieldValueTranslators: new List<Func<object, object>>()
                 {
                     FieldValueTranslatorImplementations.IgnoreUnharvestableTypes,
-                    FieldValueTranslatorImplementations.SimplifyExceptions
+                    FieldValueTranslatorImplementations.SimplifyExceptions,
+                    FieldValueTranslatorImplementations.FixDefaultImmutableArrayCanNotBeTraversed,
                 }),
             new Configuration.TestFrameworkIntegratonCfg(
                 remapException: ex => ex,

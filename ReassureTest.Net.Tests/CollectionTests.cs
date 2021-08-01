@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using NUnit.Framework;
 
 namespace ReassureTest.Tests
@@ -19,6 +20,13 @@ namespace ReassureTest.Tests
             Assert.AreEqual("[ 2, 3, 4 ]", (new int[] { 2, 3, 4 }.Is("[2,3,4]")));
             Assert.AreEqual("[ 2, 3, 4 ]", (new int[] { 2, 3, 4 }.Is(@"[ 2,   3,   
 4]")));
+        }
+
+        [Test]
+        public void Default_ImmutableArray_should_not_throw_exception_when_traversed()
+        {
+            ImmutableArray<int> arr = default;
+            arr.Is("null");
         }
 
         [Test]
