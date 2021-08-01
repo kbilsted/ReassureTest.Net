@@ -1,6 +1,6 @@
 ﻿# ReassureTest
 ![Lines of code](https://img.shields.io/tokei/lines/github/kbilsted/ReassureTest.Net?style=plastic)
-![GitHub file size in bytes](https://img.shields.io/github/size/github/kbilsted/ReassureTest.Net?style=plastic)
+
 
 *Making tests and testing fun, fast and easy...*
 
@@ -92,7 +92,7 @@ We achieve these goals by using a novel new way of specifying asserts. Expected 
 # 1. Getting started 
 
 1. Install the nuget package `ReassureTest` from nuget.org (`dotnet add package ReassureTest`)
-2. Use the `Is()` method in your tests
+2. Use the `Is()` method in your tests (`Calculator.Add(2,3).Is("5")`)
 3. Done
 
 
@@ -196,11 +196,11 @@ Done! We typed only the test-setup (the short part of a test). The lenghty part 
 <br/>
 <br/>
 
-# 3. A closer look at the assert
+### 2.1. A closer look at the assert
 
 Let's take a closer look at what exactly has been generated.
 
-We see a *specification* has been generated, focusing on fields and their values. The language has been designed to be free of noise that inevitably follow with writing asserts as code or when using JSON for specifications. The language draws inspiration from JSON so it should look familiar to most technical people. 
+We see a *specification* has been generated, focusing on fields and their values. The language has been designed to be free of noise that inevitably follow with writing asserts as code or when using JSON as specifications. 
 
 The specification is essentially a bunch of asserts, e.g. we check the `TotalPrice` is correct, that a discount order row has been added etc.
 
@@ -215,7 +215,7 @@ ReassureTest uses configurable *fuzzy matching* to make asserts easier to read, 
 <br/>
 <br/>
 
-# 4. Comparison with traditional asserts
+# 3. Comparison with traditional asserts
 
 To put things into perspective, here is a side-by-side comparison with a traditional Nunit test using `Assert.AreEqual()`.
 
@@ -297,10 +297,57 @@ order.Is(@" {
     </tr>
 </table>
 
+
+
 <br/>
 <br/>
 
+# 4. The specification language
 
+We use a *Specification Language* for expressing asserts. The language focuses on fields and their values. It has been designed to be free of the noise that inevitably follow with writing asserts as code. There is no requirement on using new lines or `;` to separate asserts. Field names are not enclosed in `""`. Everything is as smooth as possible.
+
+Hence these two specifications are identical:
+
+```csharp
+
+sut.Is("{ a = 1 b = false }");"
+
+// is simiar to
+
+sut.Is(@"
+    {
+        b = false
+        a = 1
+    }");
+```
+
+Essentially, the language has the notion of two types of values, *simple values* and *complex values*. 
+  * Simple values are numbers, bools, strings etc. 
+  * Complex values can either be arrays or objects, both of which holds simple or complex values. 
+
+A more precise (and readable) way to explain the language is by use of the extended Backus–Naur form. If you are not familiar with EBNF, then it's definitely a rabbit-hole worth digging into. For example starting with https://tomassetti.me/ebnf/':
+
+```ebnf
+Value    = Simple | Complex
+Simple   = number | bool | guid | string | date | wildcard 
+Complex  = Array | Object
+Array    = "[" Value* "]"
+Object   = "{" (name "=" Value)* "}"
+                
+number   = ["+"|"-"] Digit* "." Digit*
+bool     = true | false
+guid     = char{8} "-" char{4} "-" char{4} "-" char{4} "-" char{8}
+string   = "`" char* "`"
+date     = digit{4} "-" digit{2} - digit{2} "T" digit{2} ":" digit{2} ":" digit{2}
+wildcard = "*" | "?" | "now"
+```
+
+What is not evident from neither the explanation nor the grammer, is the slack that is used when comparing the actual and expected values. The slack values are configured through the `Configuration` class. See `Reassure.DefaultConfiguration`.
+
+The specification language 
+
+<br/>
+<br/>
 
 # 5. Fuzzy matching rules
 
@@ -374,7 +421,7 @@ The first you use to change the overall characteristics of your usage, while the
 
 The default configuration can be changed by `Reassure.DefaultConfiguration`.
 
-If you need a new copy of the default configuration you can use `var newCfg = Configuration.New()`.
+If you need a new copy of the default configuration you can use `var newCfg = Reassure.DefaultConfiguration.DeepClone()`.
 
 
 ## 6.1. Nunit example setup

@@ -26,6 +26,23 @@ namespace ReassureTest.Tests
         }
 
         [Test]
+        public void Nested_object_ordering_of_fields_is_unimportant()
+        {
+            NewSimpleTypes().Is(@"{
+                S2 = `hello ""Quotes""`
+                Dob = 43
+                I = 42
+                Float = 44
+                L = 42978239382333
+                B = true
+                D = 2021-06-27T12:13:55
+                G = guid-0
+                Dec = 45.0
+                S = `hello world`
+            }");
+        }
+
+        [Test]
         public void Int_unequal()
         {
             var val = NewSimpleTypes();
@@ -134,51 +151,50 @@ namespace ReassureTest.Tests
         public void NonNestedObject_with_null_fields()
         {
             new SimpleTypes().Is(@"{
-    I = 0
-    Dob = 0
-    Dec = 0
-    Float = 0
-    L = 0
-    B = false
-    G = guid-0
-    S = null
-    S2 = null
-    D = 0001-01-01T00:00:00
-}");
+                I = 0
+                Dob = 0
+                Dec = 0
+                Float = 0
+                L = 0
+                B = false
+                G = guid-0
+                S = null
+                S2 = null
+                D = 0001-01-01T00:00:00
+            }");
         }
-
 
         [Test]
         public void NonNestedObject_nullable_with_null_fields()
         {
             new SimpleTypesNullable().Is(@"{
-    I = null
-    Dob = null
-    Dec = null
-    Float = null
-    L = null
-    B = null
-    G = null
-    S = null
-    S2 = null
-    D = null
-}");
+                I = null
+                Dob = null
+                Dec = null
+                Float = null
+                L = null
+                B = null
+                G = null
+                S = null
+                S2 = null
+                D = null
+            }");
         }
 
 
         private const string NewSimpleTypesExpected = @"
-{
-    I = 42
-    Dob = 43
-    Dec = 45.0
-    Float = 44
-    L = 42978239382333
-    B = True
-    G = guid-0
-    S = `hello world`
-    S2 = `hello ""Quotes""`
-    D = 2021-06-27T12:13:55
-}";
+            {
+                I = 42
+                Dob = 43
+                Dec = 45.0
+                Float = 44
+                L = 42978239382333
+                B = True
+                G = guid-0
+                S = `hello world`
+                S2 = `hello ""Quotes""`
+                D = 2021-06-27T12:13:55
+            }";
 
         private static SimpleTypes NewSimpleTypes() =>
             new SimpleTypes()
@@ -194,6 +210,7 @@ namespace ReassureTest.Tests
                 S2 = "hello \"Quotes\"",
                 D = new DateTime(2021, 6, 27, 12, 13, 55),
             };
+
         private static SimpleTypesNullable NewSimpleTypesNullable() =>
             new SimpleTypesNullable()
             {
@@ -208,7 +225,6 @@ namespace ReassureTest.Tests
                 S2 = "hello \"Quotes\"",
                 D = new DateTime(2021, 6, 27, 12, 13, 55),
             };
-
 
 
         [Test]
