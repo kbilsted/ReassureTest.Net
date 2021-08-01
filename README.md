@@ -407,7 +407,7 @@ The default configuration can be changed by `Reassure.DefaultConfiguration`.
 If you need a new copy of the default configuration you can use `var newCfg = Reassure.DefaultConfiguration.DeepClone()`.
 
 
-## 6.1. Nunit example setup
+## 6.1. Nunit example changing the default configuration 
 
 For Nunit you can optionally setup a global setting using
 
@@ -424,7 +424,20 @@ public class TestsSetup
 }
 ```
 
+## 6.2 Nunit example, changing the configuration for a test
 
+Either setup a configuration object with `DeepClone()` or re-use an existing configuration variable. Then call `.With(cfg).Is()` to use the configuration settings.
+
+```csharp
+[Test]
+public void Example()
+{
+    var cfg = Reassure.DefaultConfiguration.DeepClone();
+    cfg.Harvesting.FieldValueTranslators.Add( ... );
+
+    CreateOrder().With(cfg).Is( ...);
+}
+```
 
 
 <br/>

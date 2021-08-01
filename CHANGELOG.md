@@ -1,8 +1,9 @@
 # Version history
 
-## v0.0.x
+## v0.0.3
 * One line printing of empty classes.
-* Change how configuration is passed.
+* Change how configuration is passed onto `Is()`
+* Improved error messages.
 
 ## v0.0.2
 * Changed the layout of the Configuration.
