@@ -11,8 +11,8 @@
     <Authors>Kasper B. Graversen</Authors>
     <Product>ReassureTest.Net</Product>
     <Description>Simplify unit testing</Description>
-    <Version>0.0.2</Version>
-    <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <Version>0.0.3</Version>
+    <AssemblyVersion>0.0.3.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
