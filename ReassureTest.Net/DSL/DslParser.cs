@@ -53,7 +53,7 @@ namespace ReassureTest.DSL
             if (!PeekMeta(s))
             {
                 DslToken t = tokens[i];
-                throw new InvalidOperationException($"Parse error. Expected '{s}' got '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: {i})\r\n{StringUtl.PreviewString(input, t.PosStart)}");
+                throw new InvalidOperationException($"Parse error. Expected '{s}', but got '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: {i})\r\n{StringUtl.PreviewString(input, t.PosStart)}");
             }
             i++;
         }
@@ -62,7 +62,7 @@ namespace ReassureTest.DSL
         {
             DslToken t = tokens[i];
             if (t.Kind != DslTokenizer.TokenKind.Value)
-                throw new InvalidOperationException($"Parse error. Expected a word got '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: {i})\r\n{StringUtl.PreviewString(input, t.PosStart)}");
+                throw new InvalidOperationException($"Parse error. Expected a fieldname, but got '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: {i})\r\n{StringUtl.PreviewString(input, t.PosStart)}");
             i++;
             return t.Value;
         }
@@ -71,7 +71,7 @@ namespace ReassureTest.DSL
         {
             DslToken t = tokens[i];
             if (t.Kind != DslTokenizer.TokenKind.Value && t.Kind != DslTokenizer.TokenKind.String)
-                throw new InvalidOperationException($"Parse error. Expected a word or string got '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: {i})\r\n{StringUtl.PreviewString(input, t.PosStart)}");
+                throw new InvalidOperationException($"Parse error. Expected a fieldname or a string, but got '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: {i})\r\n{StringUtl.PreviewString(input, t.PosStart)}");
             i++;
             return t.Value;
         }
