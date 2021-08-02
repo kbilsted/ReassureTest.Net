@@ -7,10 +7,16 @@ namespace ReassureTest.Tests
     public class NonNestedTests
     {
         [Test]
-        public void Assert_empty_class()
+        public void Assert_empty_class_Then_is_empty()
         {
-            var actual = new EmptyClass().Is("{ }");
-            Assert.AreEqual("{ }", actual);
+            new EmptyClass().Is("");
+        }
+
+        [Test]
+        public void Assert_value_on_an_empty_class()
+        {
+            var ex = Assert.Throws<AssertionException>(() => new EmptyClass().Is("{ }"));
+            Assert.AreEqual("Expected: { }\r\nBut was:  <empty>    (all fields have been filtered away)", ex.Message);
         }
 
         [Test]

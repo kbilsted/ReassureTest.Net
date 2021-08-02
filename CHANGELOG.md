@@ -3,6 +3,8 @@
 
 ## v0.0.x
 * Handling empty `ImmutableArray<>`
+* Empty classes now returns empty result
+* Support for field-filtering (draft)
 
 ## v0.0.3
 * One line printing of empty classes.

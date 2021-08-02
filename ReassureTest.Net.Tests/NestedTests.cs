@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System;
 using NUnit.Framework;
 
 namespace ReassureTest.Tests
@@ -8,7 +9,89 @@ namespace ReassureTest.Tests
         [Test]
         public void Nested()
         {
-            var o = new NestedTop()
+            var o = CreateNestedTop();
+            o.Is(@"{
+                A = {
+                    I = 33
+                }
+                B = {
+                    B = true
+                }
+                C = {
+                    S = `some string`
+                    D = {
+                        G = *
+                    }
+                }
+                S2 = `s2s2s2`
+            }");
+        }
+
+        [Test]
+        public void When_filtering_only_on_string_fields_Then_only_get_s2()
+        {
+            var cfg = Reassure.DefaultConfiguration.DeepClone();
+            cfg.Harvesting.FieldValueSelectors.Add((o, pi) => pi.PropertyType == typeof(string));
+
+            CreateNestedTop().With(cfg).Is("{ S2 = `s2s2s2` }");
+        }
+
+        [Test]
+        public void When_filtering_only_fields_starting_with_s_Then_only_get_s2()
+        {
+            var cfg = Reassure.DefaultConfiguration.DeepClone();
+            cfg.Harvesting.FieldValueSelectors.Add((o, pi) => pi.Name.StartsWith("S"));
+
+            CreateNestedTop().With(cfg).Is("{ S2 = `s2s2s2` }");
+        }
+
+        [Test]
+        public void When_filtering_on_values_of_string_fields_Then_only_get_s2()
+        {
+            var cfg = Reassure.DefaultConfiguration.DeepClone();
+            cfg.Harvesting.FieldValueSelectors.Add((o, pi) => pi.PropertyType == typeof(string) && (string) pi.GetValue(o) == "hello");
+
+            new ThreeStrings(){S1 = "world", S2 = "hello", S3 = "foobar"}.With(cfg).Is("{ S2 = `hello` }");
+        }
+
+        [Test]
+        public void When_filtering_only_complex_types_Then_only_get_s2()
+        {
+            var cfg = Reassure.DefaultConfiguration.DeepClone();
+            cfg.Harvesting.FieldValueSelectors.Add((o, pi) => !pi.PropertyType.IsPrimitive);
+
+            CreateNestedTop().With(cfg).Is(@"{
+                C = {
+                    S = `some string`
+                }
+                S2 = `s2s2s2`
+            }");
+        }
+
+        [Test]
+        public void When_filtering_all_types_Then_get_empty()
+        {
+            var cfg = Reassure.DefaultConfiguration.DeepClone();
+            cfg.Harvesting.FieldValueSelectors.Add((o, pi) => false);
+
+            CreateNestedTop().With(cfg).Is(@"");
+        }
+
+        [Test]
+        public void When_filtering_all_types_and_asserting_nonempty_Then_get_error()
+        {
+            var cfg = Reassure.DefaultConfiguration.DeepClone();
+            cfg.Harvesting.FieldValueSelectors.Add((o, pi) => false);
+
+            var ex = Assert.Throws<AssertionException>(() => CreateNestedTop().With(cfg).Is(@"{}"));
+
+            Assert.AreEqual("Expected: {}\r\nBut was:  <empty>    (all fields have been filtered away)", ex.Message);
+        }
+
+
+        private static NestedTop CreateNestedTop()
+        {
+            return new NestedTop()
             {
                 A = new NestedChildA()
                 {
@@ -25,21 +108,6 @@ namespace ReassureTest.Tests
                 },
                 S2 = "s2s2s2"
             };
-            o.Is(@"{
-    A = {
-        I = 33
-    }
-    B = {
-        B = true
-    }
-    C = {
-        S = `some string`
-        D = {
-            G = *
-        }
-    }
-    S2 = `s2s2s2`
-}");
         }
 
         [Test]
@@ -138,6 +206,13 @@ namespace ReassureTest.Tests
                     }
                 }
             };
+        }
+
+        class ThreeStrings
+        {
+            public string S1 { get; set; }
+            public string S2 { get; set; }
+            public string S3 { get; set; }
         }
 
         class NestedTop
