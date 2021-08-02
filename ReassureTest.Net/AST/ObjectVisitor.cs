@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ReassureTest.AST
 {
@@ -77,7 +78,7 @@ namespace ReassureTest.AST
             // simple
             if (SimpleTypeHandling(o, out var result))
                 return result;
-            
+
             // re-discovered...
             if (seenBefore.Contains(o))
                 return AstSimpleValue.SeenBefore;
@@ -93,14 +94,24 @@ namespace ReassureTest.AST
             }
 
             // complex
-            var c = new AstComplexValue();
+            var cResult = new AstComplexValue();
 
             if (configuration.Outputting.EnableDebugPrint)
                 configuration.TestFrameworkIntegration.Print($"ObjectVisitor: Investigating '{o.GetType()}'");
 
             foreach (var propertyInfo in o.GetType().GetProperties())
-                c.Values.Add(propertyInfo.Name, Visit(propertyInfo.GetValue(o)));
-            return c;
+            {
+                if (!configuration.Harvesting.FieldValueSelectors.All(x => x(o, propertyInfo)))
+                    continue;
+
+                var nested = Visit(propertyInfo.GetValue(o));
+                if (nested != null)
+                    cResult.Values.Add(propertyInfo.Name, nested);
+            }
+
+            return cResult.Values.Any() 
+                ? cResult
+                : null;
         }
     }
 }

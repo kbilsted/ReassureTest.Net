@@ -535,8 +535,45 @@ cfg.Harvesting.FieldValueTranslators.Add(o =>
 <br/>
 <br/>
 
+# 8. Field filtering
 
-# 8. Scope
+We support filtering of fields. There are a number of ways you can filter away field. For example, based on the name of the field, the type of the field - or even its value!
+
+To do this you simply add instances of `Func<object, PropertyInfo, bool>`, that is a function taking a value, information about the field (the `PropertyInfo`) and returns true if the field is to be included. Otherwise it is filtered away.
+
+
+**Filtering so only string fields are left**
+
+```csharp
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting.FieldValueSelectors.Add((o, pi) => pi.PropertyType == typeof(string));
+
+someObject.With(cfg).Is("{ ... only string fields... }");
+```
+
+**Filtering only fields starting with "s"**
+
+```csharp
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting.FieldValueSelectors.Add((o, pi) => pi.Name.StartsWith("S"));
+
+someObject.With(cfg).Is("{ StartTime = ... StopTime = ... }");
+```
+
+**Filtering only on specific values**
+
+```csharp
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting.FieldValueSelectors.Add((o, pi) => pi.PropertyType == typeof(string) && (string) pi.GetValue(o) == "hello");
+
+new ThreeStrings() { S1 = "world", S2 = "hello", S3 = "foobar" }.With(cfg).Is("{ S2 = `hello` }");
+```
+
+
+<br/>
+<br/>
+
+# 9. Scope
 
 ReasureTest's focus primarily on automated api tests, integration tests and component tests - as depicted in "the testing pyramid". You can use it for unit tests as well, when you want to combine expected values.
 

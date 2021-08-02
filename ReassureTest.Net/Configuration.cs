@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace ReassureTest
 {
@@ -31,7 +32,9 @@ namespace ReassureTest
                     Assertion.GuidHandling
                 ),
                 new HarvestingCfg(
-                    Harvesting.FieldValueTranslators),
+                    Harvesting.FieldValueTranslators,
+                    Harvesting.FieldValueSelectors
+                ),
                 new TestFrameworkIntegratonCfg(
                     TestFrameworkIntegration.RemapException,
                     TestFrameworkIntegration.Print
@@ -61,10 +64,14 @@ namespace ReassureTest
         public class HarvestingCfg
         {
             public List<Func<object, object>> FieldValueTranslators {get; set; }
-         
-            public HarvestingCfg(List<Func<object, object>> fieldValueTranslators)
+            public List<Func<object, PropertyInfo, bool>> FieldValueSelectors;
+
+            public HarvestingCfg(
+                List<Func<object, object>> fieldValueTranslators,
+                List<Func<object, PropertyInfo, bool>> fieldValueSelectors)
             {
                 FieldValueTranslators = new List<Func<object,object>>(fieldValueTranslators);
+                FieldValueSelectors = new List<Func<object, PropertyInfo, bool>>(fieldValueSelectors);
             }
         }
 
