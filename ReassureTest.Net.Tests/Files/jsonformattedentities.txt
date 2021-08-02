@@ -1,0 +1,12 @@
+﻿[
+    {
+        Field1 = `field1_1`
+        Field2 = 45
+        Field3 = [ `field3_1`, `field3_2` ]
+    },
+    {
+        Field1 = `field1_2`
+        Field2 = 20
+        Field3 = [ `field3_3`, `field3_4` ]
+    }
+]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using ReassureTest.AST;
 using ReassureTest.AST.Expected;
@@ -10,6 +11,27 @@ namespace ReassureTest
 {
     public static class Reassure
     {
+        private static string GetFileContent(FileInfo fileInfo)
+        {
+            if (!fileInfo.Exists)
+                return string.Empty;
+
+            string fileContent = string.Empty;
+            using (FileStream fileStream = fileInfo.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (StreamReader streamReader = new StreamReader(fileStream))
+                {
+                    fileContent = streamReader.ReadToEnd();
+                }
+
+            }
+            return fileContent;
+        }
+
+        public static string Is(this object actual, FileInfo expectedContentFileInfo) => Is(actual, GetFileContent(expectedContentFileInfo), DefaultConfiguration.DeepClone());
+
+        public static string Is(this object actual, FileInfo expectedContentFileInfo, Configuration cfg) => Is(actual, GetFileContent(expectedContentFileInfo), cfg);
+
         public static string Is(this object actual, string expected) => Is(actual, expected, DefaultConfiguration.DeepClone());
 
         internal static string Is(this object actual, string expected, Configuration cfg)
@@ -21,12 +43,12 @@ namespace ReassureTest
 
             if (astActual == null && expectedAst == null)
                 return graph;
-            
+
             try
             {
                 if (astActual == null && expectedAst != null)
                     throw new AssertException($"Expected: {expected}\r\nBut was:  <empty>    (all fields have been filtered away)");
-                
+
                 if (expectedAst == null)
                 {
                     MatchExecutor.Compare(expected, actual, "", cfg);
@@ -67,7 +89,7 @@ namespace ReassureTest
                     FieldValueTranslatorImplementations.IgnoreUnharvestableTypes,
                     FieldValueTranslatorImplementations.SimplifyExceptions,
                     FieldValueTranslatorImplementations.FixDefaultImmutableArrayCanNotBeTraversed,
-                    }, 
+                    },
                 fieldValueSelectors: new List<Func<object, PropertyInfo, bool>>() { (o, pi) => true }
             ),
             new Configuration.TestFrameworkIntegratonCfg(

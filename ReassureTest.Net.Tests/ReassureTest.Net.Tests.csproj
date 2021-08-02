@@ -20,4 +20,9 @@
     <ProjectReference Include="..\ReassureTest.Net\ReassureTest.Net.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Files\jsonformattedentities.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
