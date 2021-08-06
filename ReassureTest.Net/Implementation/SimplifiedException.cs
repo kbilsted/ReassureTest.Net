@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace ReassureTest
+namespace ReassureTest.Implementation
 {
     public class SimplifiedException
     {
