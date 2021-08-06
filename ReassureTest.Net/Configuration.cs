@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace ReassureTest
 {
@@ -31,7 +33,8 @@ namespace ReassureTest
                     Assertion.GuidHandling
                 ),
                 new HarvestingCfg(
-                    Harvesting.FieldValueTranslators),
+                    Harvesting.Projectors
+                ),
                 new TestFrameworkIntegratonCfg(
                     TestFrameworkIntegration.RemapException,
                     TestFrameworkIntegration.Print
@@ -60,11 +63,23 @@ namespace ReassureTest
 
         public class HarvestingCfg
         {
-            public List<Func<object, object>> FieldValueTranslators {get; set; }
-         
-            public HarvestingCfg(List<Func<object, object>> fieldValueTranslators)
+            public List<Projector> Projectors { get; set; }
+
+            /// <summary>Filter away fields or project their data to different values</summary>
+            /// <param name="parent">the object holding the field</param>
+            /// <param name="field">the value of the field</param>
+            /// <param name="pi">Meta data on the field</param>
+            public delegate Flow Projector(object parent, object field, PropertyInfo pi);
+
+            public HarvestingCfg(List<Projector> projectors)
             {
-                FieldValueTranslators = new List<Func<object,object>>(fieldValueTranslators);
+                Projectors = new List<Projector>(projectors);
+            }
+
+            public HarvestingCfg Add(Projector p)
+            {
+                Projectors.Insert(0, p);
+                return this;
             }
         }
 

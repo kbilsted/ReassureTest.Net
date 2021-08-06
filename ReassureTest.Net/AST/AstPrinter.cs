@@ -16,7 +16,7 @@ namespace ReassureTest.AST
         public string PrintRoot(IValue value)
         {
             if (value == null)
-                throw new ArgumentNullException(nameof(value));
+                return "";
 
             var sb = new IndentingStringBuilder(configuration.Outputting.Indention);
             PrintIValue(value, sb);
@@ -37,12 +37,8 @@ namespace ReassureTest.AST
 
         void PrintComplex(AstComplexValue value, IndentingStringBuilder sb)
         {
-            bool printAsSingleline = !value.Values.Any();
-            if (printAsSingleline)
-            {
-                sb.Add("{ }");
+            if (!value.Values.Any())
                 return;
-            }
 
             sb.AddLine("{").Indent();
             foreach (var c in value.Values)

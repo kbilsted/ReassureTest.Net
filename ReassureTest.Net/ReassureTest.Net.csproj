@@ -5,14 +5,14 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/kbilsted/ReassureTest.Net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/kbilsted/ReassureTest.Net</RepositoryUrl>
-    <PackageTags>test unittest DSL</PackageTags>
+    <PackageTags>test unittest DSL automated_test</PackageTags>
     <RootNamespace>ReassureTest</RootNamespace>
     <AssemblyName>ReassureTest</AssemblyName>
     <Authors>Kasper B. Graversen</Authors>
     <Product>ReassureTest.Net</Product>
-    <Description>Simplify unit testing</Description>
-    <Version>0.0.3</Version>
-    <AssemblyVersion>0.0.3.0</AssemblyVersion>
+    <Description>Simplify unit test using fuzzy matching and DSL</Description>
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

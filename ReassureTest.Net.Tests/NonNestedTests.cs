@@ -7,10 +7,22 @@ namespace ReassureTest.Tests
     public class NonNestedTests
     {
         [Test]
-        public void Assert_empty_class()
+        public void Assert_empty_class_Then_is_empty()
         {
-            var actual = new EmptyClass().Is("{ }");
-            Assert.AreEqual("{ }", actual);
+            new EmptyClass().Is("");
+        }
+
+        public void Assert_null_Then_is_empty()
+        {
+            SimpleTypes st = null;
+            st.Is("null");
+        }
+
+        [Test]
+        public void Assert_value_on_an_empty_class()
+        {
+            var ex = Assert.Throws<AssertionException>(() => new EmptyClass().Is("{ }"));
+            Assert.AreEqual("Expected: { }\r\nBut was:  <empty>    (all fields have been filtered away)", ex.Message);
         }
 
         [Test]
@@ -21,8 +33,6 @@ namespace ReassureTest.Tests
             2M.Is("2");
             true.Is("true");
             false.Is("false");
-            SimpleTypes st = null;
-            st.Is("null");
         }
 
         [Test]
@@ -50,24 +60,6 @@ namespace ReassureTest.Tests
 
             var ex = Assert.Throws<AssertionException>(() => val.Is(NewSimpleTypesExpected));
             Assert.AreEqual("Path: 'I'.\r\nExpected: 42\r\nBut was:  38938", ex.Message);
-        }
-
-        [Test]
-        public void Exceptions_are_mapped_to_simpler_type()
-        {
-            try
-            {
-                int i = 0;
-                Console.WriteLine(2 / i);
-            }
-            catch (Exception e)
-            {
-                e.Is(@"{
-                    Message = `Attempted to divide by zero.`
-                    Data = [  ]
-                    Type = `System.DivideByZeroException`
-                } ");
-            }
         }
 
         [Test]

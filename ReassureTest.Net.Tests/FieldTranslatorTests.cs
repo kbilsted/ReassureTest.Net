@@ -3,8 +3,19 @@ using NUnit.Framework;
 
 namespace ReassureTest.Tests
 {
-    public class FieldTranslatorTests
+    public class DataProjectionTests
     {
+        [Test]
+        public void When_comparing_agains_untraversable_types_Then_just_ignore_thos_types()
+        {
+            new Unharvesable() { F = () => "xxx" }.Is("");
+        }
+
+        class Unharvesable
+        {
+            public Func<string> F { get; set; }
+        }
+
         [Test]
         public void Domain_types_can_be_simplified_unmodified()
         {
@@ -23,12 +34,12 @@ namespace ReassureTest.Tests
         public void Domain_types_can_be_simplified_config()
         {
             var cfg = Reassure.DefaultConfiguration.DeepClone();
-            cfg.Harvesting.FieldValueTranslators.Add(o =>
-                o switch
+            cfg.Harvesting.Add((parent, field, pi) =>
+                field switch
                 {
-                    OrderDate od => od.Value,
-                    LatestDeliveryDate ldd => ldd?.Value,
-                    _ => o
+                    OrderDate od => Flow.Use(od.Value),
+                    LatestDeliveryDate ldd => Flow.Use(ldd?.Value),
+                    _ => Flow.Use(field)
                 });
 
             CreateOrder().With(cfg).Is(@"{
@@ -42,12 +53,30 @@ namespace ReassureTest.Tests
         public void Domain_types_can_be_simplified_config_2()
         {
             var cfg = Reassure.DefaultConfiguration.DeepClone();
-            cfg.Harvesting.FieldValueTranslators.Add(o => o is OrderDate d ? d.Value : o);
-            cfg.Harvesting.FieldValueTranslators.Add(o => o is LatestDeliveryDate d ? d.Value : o);
+
+            cfg.Harvesting
+                .Add((parent, value, info) => Flow.Use(value is OrderDate d ? d?.Value : value))
+                .Add((parent, value, info) => Flow.Use(value is LatestDeliveryDate d ? d?.Value : value));
 
             CreateOrder().With(cfg).Is(@"{
                 OrderDate = now
                 LatestDeliveryDate = 2021-03-04T00:00:00
+                Note = `Leave at front door`
+            }");
+        }
+
+        [Test]
+        public void Domain_types_can_be_set_to_null()
+        {
+            var cfg = Reassure.DefaultConfiguration.DeepClone();
+
+            cfg.Harvesting
+                .Add((parent, value, info) => Flow.Use(value is OrderDate d ? null : value))
+                .Add((parent, value, info) => Flow.Use(value is LatestDeliveryDate d ? null : value));
+
+            CreateOrder().With(cfg).Is(@"{
+                OrderDate = null
+                LatestDeliveryDate = null
                 Note = `Leave at front door`
             }");
         }

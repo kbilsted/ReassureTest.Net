@@ -304,18 +304,14 @@ order.Is(@" {
 
 # 4. The specification language
 
-We use a *Specification Language* for expressing asserts. The language focuses on fields and their values. It has been designed to be free of the noise that inevitably follow with writing asserts as code. There is no requirement on using new lines or `;` to separate asserts. Field names are not enclosed in `""`. Everything is as smooth as possible.
+We use a *Specification Language* for expressing asserts. It is a domain specific language targeted test scenarios. It understands fields and their values. It has been designed to be free of the noise that inevitably follow with writing asserts as code. There is no requirement on using new lines or `;` to separate asserts. Field names are not enclosed in `""`. Everything is as smooth as possible.
 
 Hence these two specifications are identical:
 
 ```csharp
-
-sut.Is("{ a = 1 b = false }");"
-
+sut.Is("{ a = 1 b = false }");
 // is simiar to
-
-sut.Is(@"
-    {
+sut.Is(@" {
         b = false
         a = 1
     }");
@@ -344,7 +340,6 @@ wildcard = "*" | "?" | "now"
 
 What is not evident from neither the explanation nor the grammer, is the slack that is used when comparing the actual and expected values. The slack values are configured through the `Configuration` class. See `Reassure.DefaultConfiguration`.
 
-The specification language 
 
 <br/>
 <br/>
@@ -408,60 +403,14 @@ ex.Is(@"{
 }");
 ```
 
-<br/>
-<br/>
-
-# 6. Configuration
-There are two ways you can configure ReassureTest
-
-1. Use the global settings part of the api.
-2. Use a configuration as a second parameter to `Is()`.
-
-The first you use to change the overall characteristics of your usage, while the second is often to fit specific corner cases.
-
-The default configuration can be changed by `Reassure.DefaultConfiguration`.
-
-If you need a new copy of the default configuration you can use `var newCfg = Reassure.DefaultConfiguration.DeepClone()`.
-
-
-## 6.1. Nunit example changing the default configuration 
-
-For Nunit you can optionally setup a global setting using
-
-```csharp
-[SetUpFixture]
-public class TestsSetup
-{
-    [OneTimeSetUp]
-    public void Setup()
-    {
-        Reassure.DefaultConfiguration.Outputting.EnableDebugPrint = false;
-        Reassure.DefaultConfiguration.TestFrameworkIntegration.RemapException = ex => new AssertionException(ex.Message, ex);
-    }
-}
-```
-
-## 6.2 Nunit example, changing the configuration for a test
-
-Either setup a configuration object with `DeepClone()` or re-use an existing configuration variable. Then call `.With(cfg).Is()` to use the configuration settings.
-
-```csharp
-[Test]
-public void Example()
-{
-    var cfg = Reassure.DefaultConfiguration.DeepClone();
-    cfg.Harvesting.FieldValueTranslators.Add( ... );
-
-    CreateOrder().With(cfg).Is( ...);
-}
-```
-
 
 <br/>
 <br/>
+# 7. Data projection
 
+To simplify the output of an object graph, it is possible to change the value or fields - or even filtering them away. For example, for most tests, reassuring *auditing* fields may be more in the way than providing value.
 
-# 7. Simplify rich domain models
+## 7.1 Simplify rich domain models
 
 Using rich domain models is a common implementation strategy that improves readability and maintainability. Simple types are replaced with classes. This yields both a closer relationship between model and implementation, and the domain types establishes a conceptual foundation making it easier to extend and adapt the application for future changes. It is a very interesting effect when the process of transitioning to a rich domain model feeds new "emergent behaviour". You can read more about it at http://firstclassthoughts.co.uk/Articles/Design/DomainTypeAndEmergentBehaviour.html The opposite of using a rich domain model is sometimes refered to as "primitive obsession", and is explained from that angle e.g. in https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession/ and https://medium.com/the-sixt-india-blog/primitive-obsession-code-smell-that-hurt-people-the-most-5cbdd70496e9
 
@@ -533,10 +482,96 @@ cfg.Harvesting.FieldValueTranslators.Add(o =>
 
 
 <br/>
+
+## 7.2. Field filtering
+
+We support filtering of fields. There are a number of ways you can filter away field. For example, based on the name of the field, the type of the field - or even its value!
+
+To do this you simply add instances of `Func<object, PropertyInfo, bool>`, that is a function taking a value, information about the field (the `PropertyInfo`) and returns true if the field is to be included. Otherwise it is filtered away.
+
+
+**Filtering so only string fields are left**
+
+```csharp
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting.FieldValueSelectors.Add((o, pi) => pi.PropertyType == typeof(string));
+
+someObject.With(cfg).Is("{ ... only string fields... }");
+```
+
+**Filtering only fields starting with "s"**
+
+```csharp
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting.FieldValueSelectors.Add((o, pi) => pi.Name.StartsWith("S"));
+
+someObject.With(cfg).Is("{ StartTime = ... StopTime = ... }");
+```
+
+**Filtering only on specific values**
+
+```csharp
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting.FieldValueSelectors.Add((o, pi) => pi.PropertyType == typeof(string) && (string) pi.GetValue(o) == "hello");
+
+new ThreeStrings() { S1 = "world", S2 = "hello", S3 = "foobar" }.With(cfg).Is("{ S2 = `hello` }");
+```
+
+
+
+<br/>
 <br/>
 
+# 8. Configuration
+There are two ways you can configure ReassureTest
 
-# 8. Scope
+1. Use the global settings part of the api.
+2. Use a configuration as a second parameter to `Is()`.
+
+The first you use to change the overall characteristics of your usage, while the second is often to fit specific corner cases.
+
+The default configuration can be changed by `Reassure.DefaultConfiguration`.
+
+If you need a new copy of the default configuration you can use `var newCfg = Reassure.DefaultConfiguration.DeepClone()`.
+
+
+## 6.1. Nunit example changing the default configuration 
+
+For Nunit you can optionally setup a global setting using
+
+```csharp
+[SetUpFixture]
+public class TestsSetup
+{
+    [OneTimeSetUp]
+    public void Setup()
+    {
+        Reassure.DefaultConfiguration.Outputting.EnableDebugPrint = false;
+        Reassure.DefaultConfiguration.TestFrameworkIntegration.RemapException = ex => new AssertionException(ex.Message, ex);
+    }
+}
+```
+
+## 6.2 Nunit example, changing the configuration for a test
+
+Either setup a configuration object with `DeepClone()` or re-use an existing configuration variable. Then call `.With(cfg).Is()` to use the configuration settings.
+
+```csharp
+[Test]
+public void Example()
+{
+    var cfg = Reassure.DefaultConfiguration.DeepClone();
+    cfg.Harvesting.FieldValueTranslators.Add( ... );
+
+    CreateOrder().With(cfg).Is( ...);
+}
+```
+
+
+<br/>
+<br/>
+
+# 9. Scope
 
 ReasureTest's focus primarily on automated api tests, integration tests and component tests - as depicted in "the testing pyramid". You can use it for unit tests as well, when you want to combine expected values.
 
