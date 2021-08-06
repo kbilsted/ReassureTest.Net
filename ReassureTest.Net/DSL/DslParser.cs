@@ -19,7 +19,7 @@ namespace ReassureTest.DSL
             this.configuration = configuration;
         }
 
-        public IValue Parse(string s)
+        public IAstNode Parse(string s)
         {
             if (s == null)
                 return null;
@@ -27,7 +27,7 @@ namespace ReassureTest.DSL
             tokens = tokenizer.Tokenize(s).ToArray();
             if (tokens.Length == 0)
                 return null;
-            return ParseIValue();
+            return ParseAstNode();
         }
 
         bool PeekValueOrString()
@@ -76,7 +76,7 @@ namespace ReassureTest.DSL
             return t.Value;
         }
 
-        public IAssertEvaluator ParseIValue()
+        public IAssertEvaluator ParseAstNode()
         {
             if (PeekMeta("{"))
                 return ParseComplex();
@@ -126,7 +126,7 @@ namespace ReassureTest.DSL
             var array = new AstArray();
             while (!PeekMeta("]"))
             {
-                var value = ParseIValue();
+                var value = ParseAstNode();
                 array.Add(value);
                 PeekEatMeta(",");
             }
@@ -142,7 +142,7 @@ namespace ReassureTest.DSL
             {
                 var name = (string)EatValue();
                 EatMeta("=");
-                var value = ParseIValue();
+                var value = ParseAstNode();
                 c.Values.Add(name, value);
             }
             EatMeta("}");

@@ -1,6 +1,6 @@
 ﻿namespace ReassureTest.AST.Expected
 {
-    public interface IAssertEvaluator : IValue
+    public interface IAssertEvaluator : IAstNode
     {
     }
 }

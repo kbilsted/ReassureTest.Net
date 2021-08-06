@@ -62,7 +62,7 @@ namespace ReassureTest.AST
             this.configuration = configuration;
         }
 
-        public IValue VisitRoot(object o)
+        public IAstNode VisitRoot(object o)
         {
             if (o is Exception e)
                 o = new SimplifiedException(e);
@@ -70,7 +70,7 @@ namespace ReassureTest.AST
             return Visit(o);
         }
 
-        IValue Visit(object o)
+        IAstNode Visit(object o)
         {
             // null
             if (o == null)

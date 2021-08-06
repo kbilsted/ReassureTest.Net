@@ -13,17 +13,17 @@ namespace ReassureTest.AST
             this.configuration = configuration;
         }
 
-        public string PrintRoot(IValue value)
+        public string PrintRoot(IAstNode value)
         {
             if (value == null)
                 return "";
 
             var sb = new IndentingStringBuilder(configuration.Outputting.Indention);
-            PrintIValue(value, sb);
+            PrintAstNode(value, sb);
             return sb.ToString();
         }
 
-        void PrintIValue(IValue value, IndentingStringBuilder sb)
+        void PrintAstNode(IAstNode value, IndentingStringBuilder sb)
         {
             if (value is AstSimpleValue simpleValue)
                 PrintSimple(simpleValue, sb);
@@ -44,7 +44,7 @@ namespace ReassureTest.AST
             foreach (var c in value.Values)
             {
                 sb.AddIndented($"{c.Key} = ");
-                PrintIValue(c.Value, sb);
+                PrintAstNode(c.Value, sb);
                 sb.AddLine();
             }
             sb.Dedent().AddIndented("}");
@@ -66,7 +66,7 @@ namespace ReassureTest.AST
                 sb.Add("[ ");
                 for (int i = 0; i < count; i++)
                 {
-                    PrintIValue(astArray.Values[i], sb);
+                    PrintAstNode(astArray.Values[i], sb);
                     sb.Add(i < count - 1 ? ", " : "");
                 }
                 sb.Add(" ]");
@@ -79,7 +79,7 @@ namespace ReassureTest.AST
                 for (int i = 0; i < count; i++)
                 {
                     sb.AddIndented("");
-                    PrintIValue(astArray.Values[i], sb);
+                    PrintAstNode(astArray.Values[i], sb);
                     sb.AddLine(i < count - 1 ? "," : "");
                 }
                 sb.Dedent().AddIndented("]");

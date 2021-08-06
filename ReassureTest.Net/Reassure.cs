@@ -14,8 +14,8 @@ namespace ReassureTest
 
         internal static string Is(this object actual, string expected, Configuration cfg)
         {
-            IValue astActual = new ObjectVisitor(cfg).VisitRoot(actual);
-            IValue expectedAst = new DslParser(new DslTokenizer(cfg), cfg).Parse(expected);
+            IAstNode astActual = new ObjectVisitor(cfg).VisitRoot(actual);
+            IAstNode expectedAst = new DslParser(new DslTokenizer(cfg), cfg).Parse(expected);
 
             string graph = new AstPrinter(cfg).PrintRoot(astActual);
 

@@ -4,14 +4,14 @@ using ReassureTest.DSL;
 
 namespace ReassureTest.AST
 {
-    public interface IValue { }
+    public interface IAstNode { }
     
     enum ValueKind
     {
         Simple, Complex
     }
 
-    public class AstSimpleValue : IValue
+    public class AstSimpleValue : IAstNode
     {
         public static readonly AstSimpleValue Null = new AstSimpleValue(null);
         public static readonly AstSimpleValue SeenBefore = new AstSimpleValue("[[SEEN BEFORE]]");
@@ -27,17 +27,17 @@ namespace ReassureTest.AST
         }
     }
 
-    public class AstComplexValue : IValue
+    public class AstComplexValue : IAstNode
     {
-        public Dictionary</*fieldname*/string, IValue> Values { get; set; } = new Dictionary<string, IValue>();
+        public Dictionary</*fieldname*/string, IAstNode> Values { get; set; } = new Dictionary<string, IAstNode>();
     }
 
-    class AstArray : IValue
+    class AstArray : IAstNode
     {
         public ValueKind ArrayKind { get; set; } = ValueKind.Simple;
-        public List<IValue> Values { get; set; } = new List<IValue>();
+        public List<IAstNode> Values { get; set; } = new List<IAstNode>();
 
-        public void Add(IValue v)
+        public void Add(IAstNode v)
         {
             if (v is AstComplexValue || v is AstArray)
                 ArrayKind = ValueKind.Complex;
@@ -45,5 +45,4 @@ namespace ReassureTest.AST
             Values.Add(v);
         }
     }
-
 }

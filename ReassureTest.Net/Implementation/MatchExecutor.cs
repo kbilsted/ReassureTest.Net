@@ -13,7 +13,7 @@ namespace ReassureTest.Implementation
             this.configuration = configuration;
         }
 
-        public void MatchGraph(IAssertEvaluator expected, IValue actual) => Match(expected, actual, "");
+        public void MatchGraph(IAssertEvaluator expected, IAstNode actual) => Match(expected, actual, "");
 
         string AddPath(string path, string newLevel)
         {
@@ -24,7 +24,7 @@ namespace ReassureTest.Implementation
             return $"{path}.{newLevel}";
         }
 
-        void Match(IAssertEvaluator expected, IValue actual, string path)
+        void Match(IAssertEvaluator expected, IAstNode actual, string path)
         {
             if (expected is AstDateTimeMatcher dateTime)
                 DateTimeMatch(dateTime, actual, path);
@@ -44,7 +44,7 @@ namespace ReassureTest.Implementation
                 throw new AssertException($"Internal error. Do not understand '{expected.GetType()}' to be compared with '{actual}'. {PrintablePath(path)}");
         }
 
-        private void SomeMatch(IValue actual, string path)
+        private void SomeMatch(IAstNode actual, string path)
         {
             if (actual == AstSimpleValue.Null)
                 throw new AssertException($"{PrintablePath(path)}Expected: not null\r\nBut was: null");
@@ -55,7 +55,7 @@ namespace ReassureTest.Implementation
             // always true
         }
 
-        void ArrayMatch(AstArrayMatcher array, IValue actual, string path)
+        void ArrayMatch(AstArrayMatcher array, IAstNode actual, string path)
         {
             SomeMatch(actual, path);
 
@@ -84,7 +84,7 @@ namespace ReassureTest.Implementation
             }
         }
 
-        void ComplexMatch(AstComplexMatcher complex, IValue actual, string path)
+        void ComplexMatch(AstComplexMatcher complex, IAstNode actual, string path)
         {
             SomeMatch(actual, path);
 
@@ -108,7 +108,7 @@ namespace ReassureTest.Implementation
             }
         }
 
-        private void DateTimeMatch(AstDateTimeMatcher dateTimeMatcher, IValue actual, string path)
+        private void DateTimeMatch(AstDateTimeMatcher dateTimeMatcher, IAstNode actual, string path)
         {
             SomeMatch(actual, path);
 
@@ -129,7 +129,7 @@ namespace ReassureTest.Implementation
             }
         }
 
-        private void GuidMatch(AstGuidMatcher guidMatcher, IValue actual, string path)
+        private void GuidMatch(AstGuidMatcher guidMatcher, IAstNode actual, string path)
         {
             if (actual is AstSimpleValue simpleActual)
             {
@@ -144,7 +144,7 @@ namespace ReassureTest.Implementation
             }
         }
 
-        void SimpleMatch(AstSimpleMatcher simple, IValue actual, string path)
+        void SimpleMatch(AstSimpleMatcher simple, IAstNode actual, string path)
         {
             if (actual is AstSimpleValue simpleActual)
             {
