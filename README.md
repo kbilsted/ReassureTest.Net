@@ -304,18 +304,14 @@ order.Is(@" {
 
 # 4. The specification language
 
-We use a *Specification Language* for expressing asserts. The language focuses on fields and their values. It has been designed to be free of the noise that inevitably follow with writing asserts as code. There is no requirement on using new lines or `;` to separate asserts. Field names are not enclosed in `""`. Everything is as smooth as possible.
+We use a *Specification Language* for expressing asserts. It is a domain specific language targeted test scenarios. It understands fields and their values. It has been designed to be free of the noise that inevitably follow with writing asserts as code. There is no requirement on using new lines or `;` to separate asserts. Field names are not enclosed in `""`. Everything is as smooth as possible.
 
 Hence these two specifications are identical:
 
 ```csharp
-
-sut.Is("{ a = 1 b = false }");"
-
+sut.Is("{ a = 1 b = false }");
 // is simiar to
-
-sut.Is(@"
-    {
+sut.Is(@" {
         b = false
         a = 1
     }");
@@ -344,7 +340,6 @@ wildcard = "*" | "?" | "now"
 
 What is not evident from neither the explanation nor the grammer, is the slack that is used when comparing the actual and expected values. The slack values are configured through the `Configuration` class. See `Reassure.DefaultConfiguration`.
 
-The specification language 
 
 <br/>
 <br/>
@@ -408,10 +403,131 @@ ex.Is(@"{
 }");
 ```
 
+
+<br/>
+<br/>
+# 7. Data projection
+
+To simplify the output of an object graph, it is possible to change the value or fields - or even filtering them away. For example, for most tests, reassuring *auditing* fields may be more in the way than providing value.
+
+## 7.1 Simplify rich domain models
+
+Using rich domain models is a common implementation strategy that improves readability and maintainability. Simple types are replaced with classes. This yields both a closer relationship between model and implementation, and the domain types establishes a conceptual foundation making it easier to extend and adapt the application for future changes. It is a very interesting effect when the process of transitioning to a rich domain model feeds new "emergent behaviour". You can read more about it at http://firstclassthoughts.co.uk/Articles/Design/DomainTypeAndEmergentBehaviour.html The opposite of using a rich domain model is sometimes refered to as "primitive obsession", and is explained from that angle e.g. in https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession/ and https://medium.com/the-sixt-india-blog/primitive-obsession-code-smell-that-hurt-people-the-most-5cbdd70496e9
+
+Assume we want to ensure we do not intermix the order date and the max. delivery date, we can do this on the type level using
+
+```csharp
+class OrderDate {
+    public DateTime Value { get; set; }
+}
+
+class LatestDeliveryDate {
+    public DateTime Value { get; set; }
+}
+
+class Order {
+    public OrderDate OrderDate { get; set; }
+    public LatestDeliveryDate LatestDeliveryDate { get; set; }
+    public string Note { get; set; }
+}
+```
+
+This produces the following assert
+
+```csharp
+var order = new Order() 
+{ 
+    OrderDate = new OrderDate() { Value = DateTime.Now } 
+    ...
+
+order.Is(@"{
+    OrderDate = {
+        Value = now
+    }
+    LatestDeliveryDate = {
+        Value = 2021-03-04T00:00:00
+    }
+    Note = `Leave at front door`
+}");"
+```
+
+Unfortunately, this is too verbose for my liking - it unnecesarrily hurt readability. We remedy this by using **FieldValueTranslators**, that is functions that map representation. Let's configure two such that when traversing the `order` object, we use their internal date representation.
+
+
+```csharp
+ var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting
+    .Add((parent, value, pi) => Flow.Use(value is OrderDate d ? d?.Value : value))
+    .Add((parent, value, pi) => Flow.Use(value is LatestDeliveryDate d ? d?.Value : value));
+
+order.With(cfg).Is(@"{
+    OrderDate = now
+    LatestDeliveryDate = 2021-03-04T00:00:00
+    Note = `Leave at front door`
+}");"
+```
+
+Note: You can do any kind of transformationm but be careful with not overcomplicating stuff. For example this configuration does the same as above but looks much more complex
+
+```csharp
+// too complex
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting.Add((parent, field, pi) =>
+    field switch
+    {
+        OrderDate od => Flow.Use(od.Value),
+        LatestDeliveryDate ldd => Flow.Use(ldd?.Value),
+        _ => Flow.Use(field)
+    });
+```
+
+
+<br/>
+
+## 7.2. Field filtering
+
+We support filtering of fields. There are a number of ways you can filter away field. For example, based on the name of the field, the type of the field - or even its value!
+
+To do this you simply add instances of `Func<object, PropertyInfo, bool>`, that is a function taking a value, information about the field (the `PropertyInfo`) and returns true if the field is to be included. Otherwise it is filtered away.
+
+
+**Filtering so only string fields are left**
+
+```csharp
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+
+cfg.Harvesting
+    .Add((parent, value, pi) => pi.PropertyType == typeof(string) ? Flow.Use(value) : Flow.Skip);
+
+someObject.With(cfg).Is("{ ... only string fields... }");
+```
+
+**Filtering only fields starting with "s"**
+
+```csharp
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting
+    .Add((parent, value, pi) => pi.Name.StartsWith("S") ? Flow.Use(value) : Flow.Skip);
+
+someObject.With(cfg).Is("{ StartTime = ... StopTime = ... }");
+```
+
+**Filtering only string fields holding value `hello`**
+
+```csharp
+var cfg = Reassure.DefaultConfiguration.DeepClone();
+cfg.Harvesting
+    .Add((parent, value, pi) => pi.PropertyType == typeof(string) && value.Equals("hello") ? Flow.Use(value) : Flow.Skip);
+
+new ThreeStrings() { S1 = "world", S2 = "hello", S3 = "foobar" }.With(cfg).Is("{ S2 = `hello` }");
+```
+
+
+
 <br/>
 <br/>
 
-# 6. Configuration
+# 8. Configuration
 There are two ways you can configure ReassureTest
 
 1. Use the global settings part of the api.
@@ -460,83 +576,7 @@ public void Example()
 <br/>
 <br/>
 
-
-# 7. Simplify rich domain models
-
-Using rich domain models is a common implementation strategy that improves readability and maintainability. Simple types are replaced with classes. This yields both a closer relationship between model and implementation, and the domain types establishes a conceptual foundation making it easier to extend and adapt the application for future changes. It is a very interesting effect when the process of transitioning to a rich domain model feeds new "emergent behaviour". You can read more about it at http://firstclassthoughts.co.uk/Articles/Design/DomainTypeAndEmergentBehaviour.html The opposite of using a rich domain model is sometimes refered to as "primitive obsession", and is explained from that angle e.g. in https://lostechies.com/jimmybogard/2007/12/03/dealing-with-primitive-obsession/ and https://medium.com/the-sixt-india-blog/primitive-obsession-code-smell-that-hurt-people-the-most-5cbdd70496e9
-
-Assume we want to ensure we do not intermix the order date and the max. delivery date, we can do this on the type level using
-
-```csharp
-class OrderDate {
-    public DateTime Value { get; set; }
-}
-
-class LatestDeliveryDate {
-    public DateTime Value { get; set; }
-}
-
-class Order {
-    public OrderDate OrderDate { get; set; }
-    public LatestDeliveryDate LatestDeliveryDate { get; set; }
-    public string Note { get; set; }
-}
-```
-
-This produces the following assert
-
-```csharp
-var order = new Order() 
-{ 
-    OrderDate = new OrderDate() { Value = DateTime.Now } 
-    ...
-
-order.Is(@"{
-    OrderDate = {
-        Value = now
-    }
-    LatestDeliveryDate = {
-        Value = 2021-03-04T00:00:00
-    }
-    Note = `Leave at front door`
-}");"
-```
-
-Unfortunately, this is too verbose for my liking - it unnecesarrily hurt readability. We remedy this by using **FieldValueTranslators**, that is functions that map representation. Let's configure two such that when traversing the `order` object, we use their internal date representation.
-
-
-```csharp
-var cfg = Reassure.DefaultConfiguration.DeepClone();
-cfg.Harvesting.FieldValueTranslators.Add(o => o is OrderDate d ? d.Value : o);
-cfg.Harvesting.FieldValueTranslators.Add(o => o is LatestDeliveryDate d ? d.Value : o);
-
-order.With(cfg).Is(@"{
-    OrderDate = now
-    LatestDeliveryDate = 2021-03-04T00:00:00
-    Note = `Leave at front door`
-}");"
-```
-
-Note: You can do any kind of transformationm but be careful with not overcomplicating stuff. For example this configuration does the same as above but looks much more complex
-
-```csharp
-// too complex
-var cfg = Reassure.DefaultConfiguration.DeepClone();
-cfg.Harvesting.FieldValueTranslators.Add(o =>
-    o switch
-    {
-        OrderDate od => od.Value,
-        LatestDeliveryDate ldd => ldd?.Value,
-        _ => o
-    });
-```
-
-
-<br/>
-<br/>
-
-
-# 8. Scope
+# 9. Scope
 
 ReasureTest's focus primarily on automated api tests, integration tests and component tests - as depicted in "the testing pyramid". You can use it for unit tests as well, when you want to combine expected values.
 

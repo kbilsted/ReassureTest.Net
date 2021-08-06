@@ -1,8 +1,10 @@
 # Version history
 
 
-## v0.0.x
-* Handling empty `ImmutableArray<>`
+## v0.1.0
+* Handling uninitialized `ImmutableArray<>`
+* Empty objects returns empty results
+* Support data projection - fields can change value or be filtered away
 
 ## v0.0.3
 * One line printing of empty classes.

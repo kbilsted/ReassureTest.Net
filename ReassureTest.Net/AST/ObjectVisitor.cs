@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace ReassureTest.AST
 {
@@ -8,7 +10,7 @@ namespace ReassureTest.AST
     {
         private readonly Configuration configuration;
         private readonly HashSet<object> seenBefore = new HashSet<object>();
-        private int rollingGuidCounter = 0;
+        private int rollingGuidCounter;
         private readonly Dictionary<Guid, int> rollingGuidValues = new Dictionary<Guid, int>();
 
         bool SimpleTypeHandling(object o, out AstSimpleValue result)
@@ -60,16 +62,16 @@ namespace ReassureTest.AST
             this.configuration = configuration;
         }
 
-        public IValue Visit(object o)
+        public IValue VisitRoot(object o)
         {
-            // translate
-            foreach (Func<object, object> translator in configuration.Harvesting.FieldValueTranslators)
-            {
-                if (o == null)
-                    return AstSimpleValue.Null;
-                o = translator(o);
-            }
+            if (o is Exception e)
+                o = new SimplifiedException(e);
+                
+            return Visit(o);
+        }
 
+        IValue Visit(object o)
+        {
             // null
             if (o == null)
                 return AstSimpleValue.Null;
@@ -99,8 +101,38 @@ namespace ReassureTest.AST
                 configuration.TestFrameworkIntegration.Print($"ObjectVisitor: Investigating '{o.GetType()}'");
 
             foreach (var propertyInfo in o.GetType().GetProperties())
-                c.Values.Add(propertyInfo.Name, Visit(propertyInfo.GetValue(o)));
-            return c;
+            {
+                Flow flow = Project(o, propertyInfo.GetValue(o), propertyInfo);
+
+                if (flow == Flow.Skip)
+                    continue;
+
+                var nested = Visit(flow.Value);
+                if (nested != null)
+                    c.Values.Add(propertyInfo.Name, nested);
+            }
+
+            return c.Values.Any()
+                ? c
+                : null;
+        }
+
+        Flow Project(object parent, object fieldValue, PropertyInfo propertyInfo)
+        {
+            Flow flow = Flow.Use(fieldValue);
+
+            foreach (var projector in configuration.Harvesting.Projectors)
+            {
+                if (flow.Value== null)
+                    break;
+
+                flow = projector(parent, flow.Value, propertyInfo);
+
+                if (flow == Flow.Skip)
+                    return Flow.Skip;
+            }
+
+            return flow;
         }
     }
 }

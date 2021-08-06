@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using ReassureTest.AST;
 using ReassureTest.AST.Expected;
 using ReassureTest.DSL;
@@ -13,16 +14,22 @@ namespace ReassureTest
 
         internal static string Is(this object actual, string expected, Configuration cfg)
         {
-            IValue astActual = new ObjectVisitor(cfg).Visit(actual);
+            IValue astActual = new ObjectVisitor(cfg).VisitRoot(actual);
             IValue expectedAst = new DslParser(new DslTokenizer(cfg), cfg).Parse(expected);
 
             string graph = new AstPrinter(cfg).PrintRoot(astActual);
 
+            if (astActual == null && expectedAst == null)
+                return graph;
+            
             try
             {
+                if (astActual == null && expectedAst != null)
+                    throw new AssertException($"Expected: {expected}\r\nBut was:  <empty>    (all fields have been filtered away)");
+                
                 if (expectedAst == null)
                 {
-                    MatchExecutor.Compare(graph, expected, "", cfg);
+                    MatchExecutor.Compare(expected, actual, "", cfg);
                 }
                 else
                 {
@@ -33,8 +40,7 @@ namespace ReassureTest
             catch (Exception e)
             {
                 e.Data.Add("Actual", graph);
-                cfg.TestFrameworkIntegration.Print($@"Actual is:
-{graph}");
+                cfg.TestFrameworkIntegration.Print($"Actual is:\r\n{graph}");
                 if (e is AssertException ae)
                     throw cfg.TestFrameworkIntegration.RemapException(ae);
                 throw;
@@ -56,12 +62,13 @@ namespace ReassureTest
                 guidHandling: Configuration.GuidHandling.Rolling
             ),
             new Configuration.HarvestingCfg(
-                fieldValueTranslators: new List<Func<object, object>>()
+                projectors: new List<Configuration.HarvestingCfg.Projector>()
                 {
-                    FieldValueTranslatorImplementations.IgnoreUnharvestableTypes,
-                    FieldValueTranslatorImplementations.SimplifyExceptions,
-                    FieldValueTranslatorImplementations.FixDefaultImmutableArrayCanNotBeTraversed,
-                }),
+                    ReusableProjections.FixDefaultImmutableArrayCanNotBeTraversed,
+                    ReusableProjections.SimplifyExceptions,
+                    ReusableProjections.SkipUnharvestableTypes,
+                }
+            ),
             new Configuration.TestFrameworkIntegratonCfg(
                 remapException: ex => ex,
                 print: Console.WriteLine

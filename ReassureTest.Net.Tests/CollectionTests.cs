@@ -25,8 +25,12 @@ namespace ReassureTest.Tests
         [Test]
         public void Default_ImmutableArray_should_not_throw_exception_when_traversed()
         {
-            ImmutableArray<int> arr = default;
-            arr.Is("null");
+            new ImmitableArrayHolder().Is("");
+        }
+
+        class ImmitableArrayHolder
+        {
+            public ImmutableArray<int> arr = default;
         }
 
         [Test]
