@@ -13,14 +13,4 @@ namespace ReassureTest.AST.Expected
             AcceptedSlack = acceptedSlack;
         }
     }
-
-    class AstStringMatcher : IAssertEvaluator
-    {
-        public AstSimpleValue UnderlyingValue { get; set; }
-        
-        public AstStringMatcher(AstSimpleValue value)
-        {
-            UnderlyingValue = value;
-        }
-    }
 }
