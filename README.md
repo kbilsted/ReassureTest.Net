@@ -331,7 +331,7 @@ Array    = "[" Value* "]"
 Object   = "{" (name "=" Value)* "}"
                 
 number   = ["+"|"-"] Digit* "." Digit*
-bool     = true | false
+bool     = "true" | "false"
 guid     = char{8} "-" char{4} "-" char{4} "-" char{4} "-" char{8}
 string   = "`" char* "`"
 date     = digit{4} "-" digit{2} - digit{2} "T" digit{2} ":" digit{2} ":" digit{2}
@@ -378,7 +378,8 @@ e.g.  `OrderLines = [ *, * ]` means that there are two order lines objects, both
 
 
 ### Strings
-* `*`: zero or more characters (not implemented)
+* `*`: zero or more characters
+e.g. the string `"some text"` is matched by all of the following: `*`, `some *`, `* text`, `*me te*`.
 
 
 ### Guids

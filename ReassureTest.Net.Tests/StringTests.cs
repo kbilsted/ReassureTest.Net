@@ -5,12 +5,22 @@ namespace ReassureTest.Tests
     public class StringTests
     {
         [Test]
-        public void String_tests()
+        public void String_match()
         {
             "null".Is("`null`");
 
             // for the moment we support simple strings - but this is really never a case in real-life
             "ss".Is("ss");
+        }
+
+        [Test]
+        [TestCase("`*`", Reason = "all")]
+        [TestCase("`* text`", Reason = "start")]
+        [TestCase("`some *`", Reason = "end")]
+        [TestCase("`*me te*`", Reason = "middle")]
+        public void String_wildcard_match(string expected)
+        {
+            "some text".Is(expected);
         }
 
         [Test]
@@ -32,7 +42,7 @@ namespace ReassureTest.Tests
         {
             string s = null;
 
-            var ex = Assert.Throws<AssertionException>(() => s.Is("ddd"));
+            var ex = Assert.Throws<AssertionException>(() => s.Is("`ddd`"));
 
             Assert.AreEqual("Expected: \"ddd\"\r\nBut was:  null", ex.Message);
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using ReassureTest.AST;
 using ReassureTest.AST.Expected;
 
@@ -28,6 +29,8 @@ namespace ReassureTest.Implementation
         {
             if (expected is AstDateTimeMatcher dateTime)
                 DateTimeMatch(dateTime, actual, path);
+            else if (expected is AstStringMatcher str)
+                StringMatch(str, actual, path);
             else if (expected is AstGuidMatcher guid)
                 GuidMatch(guid, actual, path);
             else if (expected is AstSimpleMatcher simple)
@@ -43,6 +46,8 @@ namespace ReassureTest.Implementation
             else
                 throw new AssertException($"Internal error. Do not understand '{expected.GetType()}' to be compared with '{actual}'. {PrintablePath(path)}");
         }
+
+
 
         private void SomeMatch(IAstNode actual, string path)
         {
@@ -115,10 +120,10 @@ namespace ReassureTest.Implementation
             if (actual is AstSimpleValue simpleActual)
             {
                 if (!(dateTimeMatcher.UnderlyingValue.Value is DateTime expectedDate))
-                    throw new AssertException($"{PrintablePath(path)}Expected {dateTimeMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
+                    throw new AssertException($"{PrintablePath(path)}Expected: {dateTimeMatcher.UnderlyingValue.Value}\r\nBut was:  {simpleActual.Value}");
 
                 if (!(simpleActual.Value is DateTime actualDate))
-                    throw new AssertException($"{PrintablePath(path)}Expected {dateTimeMatcher.UnderlyingValue.Value}, but was {simpleActual.Value}");
+                    throw new AssertException($"{PrintablePath(path)}Expected: {dateTimeMatcher.UnderlyingValue.Value}\r\nBut was:  {simpleActual.Value}");
 
                 if (!IsAlmostSame(expectedDate, actualDate, dateTimeMatcher.AcceptedSlack))
                     Compare(expectedDate, actualDate, path, configuration);
@@ -126,6 +131,29 @@ namespace ReassureTest.Implementation
             else
             {
                 throw new AssertException($"Wrong type. Expected simple value got {actual.GetType()}. {PrintablePath(path)}");
+            }
+        }
+
+        private void StringMatch(AstStringMatcher str, IAstNode actual, string path)
+        {
+            if (actual is AstSimpleValue simpleActual)
+            {
+                if (simpleActual.Value == null)
+                    throw new AssertException($"{PrintablePath(path)}Expected: \"{str.UnderlyingValue.Value}\"\r\nBut was:  null");
+
+                if (!(simpleActual.Value is string actualString))
+                    throw new AssertException($"{PrintablePath(path)}Expected: \"{str.UnderlyingValue.Value}\"\r\nBut was:  \"{simpleActual.Value}\"");
+
+                if (!(str.UnderlyingValue.Value is string expectedString))
+                    throw new AssertException($"{PrintablePath(path)}Expected: \"{str.UnderlyingValue.Value}\"\r\nBut was:  \"{simpleActual.Value}\"");
+
+                if (!Regex.IsMatch(actualString, expectedString.Replace("*", ".*"), RegexOptions.Singleline))
+                    throw new AssertException($@"{PrintablePath(path)}Expected: ""{expectedString}""
+But was:  ""{actualString}""");
+            }
+            else
+            {
+                throw new AssertException($"Wrong type. Expected simple value got {actual.GetType()}. Path: '{path}'");
             }
         }
 
@@ -164,7 +192,7 @@ namespace ReassureTest.Implementation
             {
                 if (actual == null)
                     return;
-                
+
                 string actualValue = actual is string ss ? $"\"{ss}\"" : actual.ToString();
                 throw new AssertException($@"{PrintablePath(path)}Expected: null
 But was:  {actualValue}");
@@ -178,20 +206,14 @@ But was:  null");
 
             }
 
-            if (expected is string se && actual is string sa)
-            {
-                if (!se.Equals(sa))
-                    throw new AssertException($@"{PrintablePath(path)}Expected: ""{se}""
-But was:  ""{sa}""");
-            }
-            else
-            {
-                string theExpedted = expected is DateTime de? de.ToString(cfg.Assertion.DateTimeFormat) :  expected.ToString();
-                string theActual = actual is DateTime da ? da.ToString(cfg.Assertion.DateTimeFormat) : actual.ToString();
-                if (!theExpedted.Equals(theActual))
-                    throw new AssertException($@"{PrintablePath(path)}Expected: {theExpedted}
+
+            string theExpedted = expected is DateTime de
+                ? de.ToString(cfg.Assertion.DateTimeFormat)
+                : expected.ToString();
+            string theActual = actual is DateTime da ? da.ToString(cfg.Assertion.DateTimeFormat) : actual.ToString();
+            if (!theExpedted.Equals(theActual))
+                throw new AssertException($@"{PrintablePath(path)}Expected: {theExpedted}
 But was:  {theActual}");
-            }
         }
 
         public static bool IsAlmostNow(DateTime d1, TimeSpan slack) => IsAlmostSame(d1, DateTime.Now, slack);

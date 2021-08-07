@@ -93,7 +93,11 @@ namespace ReassureTest.DSL
 
         private IAssertEvaluator ParseSimple()
         {
+            var t = tokens[i];
             var token = EatValueOrString();
+
+            if (t.Kind == DslTokenizer.TokenKind.String)
+                return new AstStringMatcher(new AstSimpleValue(token));
 
             if (token is string str)
             {
