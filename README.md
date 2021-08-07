@@ -92,8 +92,10 @@ We achieve these goals by using a novel new way of specifying asserts. Expected 
 # 1. Getting started 
 
 1. Install the nuget package `ReassureTest` from nuget.org (`dotnet add package ReassureTest`)
-2. Use the `Is()` method in your tests (`Calculator.Add(2,3).Is("5")`)
-3. Done
+2. Write your asserts using ReassureTest
+  * e.g. `calculator.Add(2, 3).Is("5");` 
+  * or `Reassure.Catch(() => illegalOrder.Handle()).Is(@"{ Message=&#96;Illegal number of widgets!&#96;}");`
+3. Done...
 
 
 
@@ -387,7 +389,7 @@ e.g. the string `"some text"` is matched by all of the following: `*`, `some *`,
 
 
 ### Exceptions
-* Exceptions are transformed into a simple form, a class containing `Message`, `Data` and `Type`.
+* Exceptions are transformed into a simple form, a class containing `Message` and `Type`. A `Data` field is added only when it contains elements.
 
 ```csharp
 var ex = new Exception("message") { Data = {{"a", "b"}} };

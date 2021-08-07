@@ -10,6 +10,43 @@ namespace ReassureTest
 {
     public static class Reassure
     {
+        /// <summary>
+        /// Run code and catch the exception
+        /// </summary>
+        public static Exception Catch(Action actual)
+        {
+            try
+            {
+                actual();
+            }
+            catch (Exception e)
+            {
+                return e;
+            }
+            
+            throw new AssertException($"Expected: an exception to be thrown\r\nBut no exception was throws");
+        }
+
+        /// <summary>
+        /// Run code and catch the exception
+        /// </summary>
+        public static Exception Catch<T>(Func<T> actual)
+        {
+            try
+            {
+                actual();
+            }
+            catch (Exception e)
+            {
+                return e;
+            }
+
+            throw new AssertException($"Expected: an exception to be thrown\r\nBut no exception was throws");
+        }
+
+        /// <summary>
+        /// Assert 'actual' obeys the specification using the default configuration
+        /// </summary>
         public static string Is(this object actual, string expected) => Is(actual, expected, DefaultConfiguration.DeepClone());
 
         internal static string Is(this object actual, string expected, Configuration cfg)
@@ -49,8 +86,19 @@ namespace ReassureTest
             return graph;
         }
 
+        /// <summary>
+        /// inject a configuration into a throws
+        /// </summary>
+        public static ReassureRunContext With(Configuration configuration) => new ReassureRunContext(configuration);
+
+        /// <summary>
+        /// inject a configuration 
+        /// </summary>
         public static ReassureRunContext With(this object actual, Configuration configuration) => new ReassureRunContext(actual, configuration);
 
+        /// <summary>
+        /// Alter this to change the general behaviour of ReassureTest
+        /// </summary>
         public static Configuration DefaultConfiguration = new Configuration(
             new Configuration.OutputtingCfg(
                 indention: "    ",

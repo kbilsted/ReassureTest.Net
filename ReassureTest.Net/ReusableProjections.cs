@@ -9,11 +9,16 @@ namespace ReassureTest
     {
         public static Flow SimplifyExceptions(object parent, object field, PropertyInfo pi)
         {
-            if (field is Exception ex)
-                return Flow.Use(new SimplifiedException(ex));
+            if (parent is SimplifiedException 
+                && pi.Name == "Data" 
+                && field is IDictionary d 
+                && d.Keys.Count == 0)
+            {
+                  return Flow.Skip;
+            }
             return Flow.Use(field);
         }
-        
+
         public static Flow FixDefaultImmutableArrayCanNotBeTraversed(object parent, object field, PropertyInfo pi)
         {
             var type = field.GetType().ToString();
