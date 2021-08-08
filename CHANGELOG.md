@@ -1,5 +1,7 @@
 # Version history
 
+## v0.x.0
+* Improve error messages for invalid specifications.
 
 ## v0.5.0
 * Bugfix some datetime compare output.

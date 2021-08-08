@@ -9,7 +9,7 @@ namespace ReassureTest.DSL
     {
         private readonly DslTokenizer tokenizer;
         private readonly Configuration configuration;
-        private int i = 0;
+        private int i;
         DslToken[] tokens;
         private string input;
 
@@ -44,6 +44,9 @@ namespace ReassureTest.DSL
 
         bool PeekMeta(string s)
         {
+            if (i >= tokens.Length)
+                throw new InvalidOperationException($"Parse error. Expected '{s}', but input ended before it was found.");
+
             DslToken t = tokens[i];
             return t.Kind == DslTokenizer.TokenKind.Meta && t.Value.ToString() == s;
         }
@@ -60,6 +63,9 @@ namespace ReassureTest.DSL
 
         object EatValue()
         {
+            if (i >= tokens.Length)
+                throw new InvalidOperationException($"Parse error. Expected a fieldname, but input ended before it was found.");
+
             DslToken t = tokens[i];
             if (t.Kind != DslTokenizer.TokenKind.Value)
                 throw new InvalidOperationException($"Parse error. Expected a fieldname, but got '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: {i})\r\n{StringUtl.PreviewString(input, t.PosStart)}");
@@ -69,6 +75,9 @@ namespace ReassureTest.DSL
 
         object EatValueOrString()
         {
+            if (i >= tokens.Length)
+                throw new InvalidOperationException($"Parse error. Expected fieldname or a string, but input ended before it was found.");
+
             DslToken t = tokens[i];
             if (t.Kind != DslTokenizer.TokenKind.Value && t.Kind != DslTokenizer.TokenKind.String)
                 throw new InvalidOperationException($"Parse error. Expected a fieldname or a string, but got '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: {i})\r\n{StringUtl.PreviewString(input, t.PosStart)}");

@@ -47,6 +47,19 @@ namespace ReassureTest.Tests
                 GetThrows(() => "".Is("{ = 2 }")));
         }
 
+        [Test]
+        public void Missing_scope_close()
+        {
+            Reassure.Catch(() => "".Is("{I = 34 ")).Message.Is("`Parse error. Expected '}', but input ended before it was found.`");
+        }
+
+        [Test]
+        public void Missing_string_close()
+        {
+            Reassure.Catch(() => "".Is("{I = `34  ")).Message.Is("`Parse error. Unmatched quote starting at pos: 5*`");
+            Reassure.Catch(() => "".Is("{I = `34 }")).Message.Is("`Parse error. Unmatched quote starting at pos: 5*`");
+        }
+
         public static string GetThrows(Action a)
         {
             var ex = Assert.Throws<InvalidOperationException>(() => a());
