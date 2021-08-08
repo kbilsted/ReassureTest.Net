@@ -12,7 +12,9 @@ namespace ReassureTest.Tests
             new EmptyClass().Is("");
         }
 
-        public void Assert_null_Then_is_empty()
+
+        [Test]
+        public void Assert_null_is_null()
         {
             SimpleTypes st = null;
             st.Is("null");
@@ -335,9 +337,14 @@ namespace ReassureTest.Tests
             public Dictionary<bool, int> B { get; set; }
             public Dictionary<string, int> S { get; set; }
         }
+    }
 
-        class EmptyClass
-        {
-        }
+    class EmptyClass
+    {
+    }
+
+    class OneField
+    {
+        public int I { get; set; }
     }
 }

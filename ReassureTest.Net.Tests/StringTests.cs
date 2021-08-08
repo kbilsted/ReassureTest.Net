@@ -9,6 +9,8 @@ namespace ReassureTest.Tests
         {
             "null".Is("`null`");
 
+            "special !?<>().{}$^ characters".Is("`special !?<>().{}$^ characters`");
+
             // for the moment we support simple strings - but this is really never a case in real-life
             "ss".Is("ss");
         }
@@ -22,6 +24,29 @@ namespace ReassureTest.Tests
         {
             "some text".Is(expected);
         }
+
+        [Test]
+        [TestCase("`*`", Reason = "all")]
+        [TestCase("`* characters`", Reason = "start")]
+        [TestCase("`special *`", Reason = "end")]
+        [TestCase("`*<>*`", Reason = "middle")]
+        public void String_wildcard_special_chars_match(string expected)
+        {
+            "special !?<>(). characters".Is(expected);
+        }
+
+        [Test]
+        [TestCase("`*`", Reason = "all")]
+        [TestCase("`*text`", Reason = "start")]
+        [TestCase("`some *`", Reason = "end")]
+        [TestCase("`*me*te*`", Reason = "middle")]
+        public void String_wildcard_multiline_match(string expected)
+        {
+            @"some 
+long 
+text".Is(expected);
+        }
+
 
         [Test]
         public void String_tests_unequal()

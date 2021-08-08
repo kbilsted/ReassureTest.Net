@@ -1,6 +1,7 @@
 # Version history
 
 ## v0.x.0
+* Bugfix string match with regex characters
 * Improve error messages for invalid specifications.
 
 ## v0.5.0

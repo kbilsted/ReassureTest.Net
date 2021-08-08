@@ -147,9 +147,14 @@ namespace ReassureTest.Implementation
                 if (!(str.UnderlyingValue.Value is string expectedString))
                     throw new AssertException($"{PrintablePath(path)}Expected: \"{str.UnderlyingValue.Value}\"\r\nBut was:  \"{simpleActual.Value}\"");
 
-                if (!Regex.IsMatch(actualString, expectedString.Replace("*", ".*"), RegexOptions.Singleline))
-                    throw new AssertException($@"{PrintablePath(path)}Expected: ""{expectedString}""
-But was:  ""{actualString}""");
+                string regexified = $"^{Regex.Escape(expectedString).Replace("\\*", ".*")}$";
+
+                if (!Regex.IsMatch(actualString, regexified, RegexOptions.Singleline))
+                {
+                    var msg = $@"{PrintablePath(path)}Expected: ""{expectedString.Replace("\r", "\\r").Replace("\n", "\\n")}""
+But was:  ""{actualString.Replace("\r", "\\r").Replace("\n", "\\n")}""";
+                    throw new AssertException(msg);
+                }
             }
             else
             {
