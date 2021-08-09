@@ -24,7 +24,7 @@ namespace ReassureTest
                 return e;
             }
             
-            throw new AssertException($"Expected: an exception to be thrown\r\nBut no exception was throws");
+            throw new AssertException($"Expected: an exception to be thrown\r\nBut no exception was thrown");
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace ReassureTest
                 return e;
             }
 
-            throw new AssertException($"Expected: an exception to be thrown\r\nBut no exception was throws");
+            throw new AssertException($"Expected: an exception to be thrown\r\nBut no exception was thrown");
         }
 
         /// <summary>
