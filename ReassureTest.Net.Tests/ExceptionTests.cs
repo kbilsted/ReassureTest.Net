@@ -6,7 +6,7 @@ namespace ReassureTest.Tests
     public class ExceptionTests
     {
         [Test]
-        public void Exceptions_are_mapped_to_simpler_type()
+        public void Exceptions_are_mapped_to_simpler_type_without_data()
         {
             try
             {
@@ -17,14 +17,13 @@ namespace ReassureTest.Tests
             {
                 e.Is(@"{
                     Message = `Attempted to divide by zero.`
-                    Data = [  ]
                     Type = `System.DivideByZeroException`
                 } ");
             }
         }
 
         [Test]
-        public void Exceptions_are_transformed_to_simple_form()
+        public void Exceptions_are_transformed_to_simpler_type_with_data()
         {
             var ex = new Exception("message") {Data = {{"a", "b"}, {"1", "2"}}};
             ex.Is(@"{

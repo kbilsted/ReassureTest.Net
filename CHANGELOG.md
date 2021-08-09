@@ -1,8 +1,9 @@
 # Version history
 
-## v0.x.0
+## v0.6.0
 * Bugfix string match with regex characters
 * Improve error messages for invalid specifications.
+* Add detection of fields in the specification not present in 'actual'.
 
 ## v0.5.0
 * Bugfix some datetime compare output.

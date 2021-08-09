@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using ReassureTest.AST;
 using ReassureTest.AST.Expected;
@@ -106,6 +107,11 @@ namespace ReassureTest.Implementation
                         throw new AssertException($"{PrintablePath(path)}Cannot find field '{kv.Key}' in expected values.");
                     }
                 }
+
+                var inSpecNotInActual = string.Join("', '", 
+                    complex.Value.Values.Keys.Where(x => !complexActual.Values.ContainsKey(x)));
+                if (inSpecNotInActual.Any())
+                    throw new AssertException($"{PrintablePath(path)}Expected fields '{inSpecNotInActual}'\r\nBut fields were not found!");
             }
             else
             {

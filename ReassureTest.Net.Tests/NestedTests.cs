@@ -26,6 +26,16 @@ namespace ReassureTest.Tests
         }
 
         [Test]
+        public void When_expecting_more_fields_than_actual_in_nested_object_Then_report_missing_fields()
+        {
+            Reassure
+                .Catch(() => new NestedChildC { D = new NestedChildChildD { G = 3 } }.Is("{ D = { G = 3 h=4 KK=5 } S=? }"))
+                .Message.Is(@"`Path: 'D'.
+Expected fields 'h', 'KK'
+But fields were not found!`");
+        }
+
+        [Test]
         public void When_filtering_only_on_string_fields_Then_only_get_s2()
         {
             var cfg = Reassure.DefaultConfiguration.DeepClone();

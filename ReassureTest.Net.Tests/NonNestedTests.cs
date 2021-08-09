@@ -12,6 +12,19 @@ namespace ReassureTest.Tests
             new EmptyClass().Is("");
         }
 
+        [Test]
+        public void Assert_empty_class_must_be_empty()
+        {
+            Reassure.Catch(() => new EmptyClass().Is("3")).Message.Is(@"`Expected: 3*But was:  <empty>    (all fields have been filtered away)`");
+
+            Reassure.Catch(() => new EmptyClass().Is("{a=3}")).Message.Is(@"`Expected: {a=3}*But was:  <empty>    (all fields have been filtered away)`");
+        }
+
+        [Test]
+        public void When_expecting_more_fields_than_actual_in_root_Then_report_missing_fields()
+        {
+            Reassure.Catch(() => new OneField { I = 34 }.Is("{I = 34 j = 2 K = 50 }")).Message.Is("`Expected fields 'j', 'K'\r\nBut fields were not found!`");
+        }
 
         [Test]
         public void Assert_null_is_null()
