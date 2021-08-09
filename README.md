@@ -1,6 +1,12 @@
-﻿# ReassureTest
-![Lines of code](https://img.shields.io/tokei/lines/github/kbilsted/ReassureTest.Net?style=plastic)
-
+# ReassureTest
+<!--start-->
+[![Stats](https://img.shields.io/badge/Code_lines-786-ff69b4.svg)]()
+[![Stats](https://img.shields.io/badge/Test_lines-877-69ffb4.svg)]()
+[![Stats](https://img.shields.io/badge/Doc_lines-621-ffb469.svg)]() <!--end-->
+[![Nuget](https://img.shields.io/nuget/dt/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
+[![Nuget](https://img.shields.io/nuget/v/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
+[![Nuget](https://img.shields.io/nuget/vpre/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
+[![License](http://img.shields.io/badge/License-Apache_2-red.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
 
 *Making tests and testing fun, fast and easy...*
 

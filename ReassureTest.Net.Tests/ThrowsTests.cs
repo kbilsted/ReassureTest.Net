@@ -21,7 +21,7 @@ namespace ReassureTest.Tests
             Reassure.With(Reassure.DefaultConfiguration).Catch(() =>
             {
                 var exception = new Exception("eee");
-                exception.Data.Add("a","b");
+                exception.Data.Add("a", "b");
                 throw exception;
             }).Is(@"{
                 Message = `eee`
@@ -33,12 +33,12 @@ namespace ReassureTest.Tests
         [Test]
         public void Inline_func()
         {
-            Reassure.Catch(() => ((string)null).Length).Is(@"{
+            Reassure.Catch(() => ((string) null).Length).Is(@"{
                 Message = `Object reference not set to an instance of an object.`
                 Type = `System.NullReferenceException`
             }");
 
-            Reassure.With(Reassure.DefaultConfiguration).Catch(() => ((string)null).Length).Is(@"{
+            Reassure.With(Reassure.DefaultConfiguration).Catch(() => ((string) null).Length).Is(@"{
                 Message = `Object reference not set to an instance of an object.`
                 Type = `System.NullReferenceException`
             }");
