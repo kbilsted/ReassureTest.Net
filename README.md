@@ -97,10 +97,11 @@ We achieve these goals by using a novel new way of specifying asserts. Expected 
 
 # 1. Getting started 
 
-1. Install the nuget package `ReassureTest` from nuget.org (`dotnet add package ReassureTest`)
+1. Install the nuget package `ReassureTest` from nuget.org 
+  * `dotnet add package ReassureTest`
 2. Write your asserts using ReassureTest
-  * e.g. `calculator.Add(2, 3).Is("5");` 
-  * or `Reassure.Catch(() => illegalOrder.Handle()).Is(@"{ Message=&#96;Illegal number of widgets!&#96;}");`
+  * e.g. compare an order `calculator.Distribute(100, 3).Is("[33.33, 33.33, 33.34");` 
+  * or check for exceptions `Reassure.Catch(() => illegalOrder.Handle()).Is(@"{ Message=&#96;Illegal number of widgets!&#96;}");`
 3. Done...
 
 
