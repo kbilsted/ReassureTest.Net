@@ -1,5 +1,9 @@
 # Version history
 
+
+## v0.x.x
+* Add simple field filtering with `Without()`.
+
 ## v0.6.0
 * Bugfix string match with regex characters
 * Improve error messages for invalid specifications.

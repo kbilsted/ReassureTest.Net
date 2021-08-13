@@ -8,6 +8,17 @@ using ReassureTest.Implementation;
 
 namespace ReassureTest
 {
+    /// <summary>
+    /// return true to filter away field, otherwise use it unmodified
+    /// </summary>
+    public delegate bool WithoutPredicate(PropertyInfo pi);
+
+    /// <summary>Filter away fields or project their data to different values</summary>
+    /// <param name="parent">the object holding the field</param>
+    /// <param name="field">the value of the field</param>
+    /// <param name="pi">Meta data on the field</param>
+    public delegate Flow Projector(object parent, object field, PropertyInfo pi);
+
     public static class Reassure
     {
         /// <summary>
@@ -97,6 +108,22 @@ namespace ReassureTest
         public static ReassureRunContext With(this object actual, Configuration configuration) => new ReassureRunContext(actual, configuration);
 
         /// <summary>
+        /// inject a clone of the default configuration + projector
+        /// </summary>
+        public static ReassureRunContext With(this object actual, Projector projector)
+        {
+            var cfg = Reassure.DefaultConfiguration.DeepClone();
+            cfg.Harvesting.Add(projector);
+            return new ReassureRunContext(actual, cfg);
+        }
+
+        /// <summary>
+        /// inject a clone of the default configuration + filter
+        /// </summary>
+        public static ReassureRunContext Without(this object actual, WithoutPredicate predicate)
+            => With(actual, Configuration.HarvestingCfg.ToProjector(predicate));
+
+        /// <summary>
         /// Alter this to change the general behaviour of ReassureTest
         /// </summary>
         public static Configuration DefaultConfiguration = new Configuration(
@@ -110,7 +137,7 @@ namespace ReassureTest
                 guidHandling: Configuration.GuidHandling.Rolling
             ),
             new Configuration.HarvestingCfg(
-                projectors: new List<Configuration.HarvestingCfg.Projector>()
+                projectors: new List<Projector>()
                 {
                     ReusableProjections.FixDefaultImmutableArrayCanNotBeTraversed,
                     ReusableProjections.SimplifyExceptions,

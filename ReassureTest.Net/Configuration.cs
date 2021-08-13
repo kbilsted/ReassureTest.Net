@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 
 namespace ReassureTest
 {
@@ -65,16 +63,14 @@ namespace ReassureTest
         {
             public List<Projector> Projectors { get; set; }
 
-            /// <summary>Filter away fields or project their data to different values</summary>
-            /// <param name="parent">the object holding the field</param>
-            /// <param name="field">the value of the field</param>
-            /// <param name="pi">Meta data on the field</param>
-            public delegate Flow Projector(object parent, object field, PropertyInfo pi);
+            public static Projector ToProjector(WithoutPredicate p) => (parent, field, pi) => p(pi) ? Flow.Skip : Flow.Use(field);
 
             public HarvestingCfg(List<Projector> projectors)
             {
                 Projectors = new List<Projector>(projectors);
             }
+
+            public HarvestingCfg Add(WithoutPredicate p) => Add(ToProjector(p));
 
             public HarvestingCfg Add(Projector p)
             {

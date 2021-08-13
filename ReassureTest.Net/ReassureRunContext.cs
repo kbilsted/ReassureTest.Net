@@ -19,6 +19,14 @@ namespace ReassureTest
             this.actual = actual;
         }
 
+        public ReassureRunContext With(Projector p)
+        {
+            configuration.Harvesting.Add(p);
+            return this;
+        }
+
+        public ReassureRunContext Without(WithoutPredicate p) => With(Configuration.HarvestingCfg.ToProjector(p));
+
         public string Is(string expected)
         {
             var target = actual ?? Reassure.Catch(alternativeActual);

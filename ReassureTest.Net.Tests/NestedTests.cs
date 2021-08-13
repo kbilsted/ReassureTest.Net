@@ -46,6 +46,14 @@ But fields were not found!`");
         }
 
         [Test]
+        public void When_filtering_only_on_string_fields_using_without_Then_only_get_s2()
+        {
+            CreateNestedTop()
+                .Without(pi => pi.PropertyType != typeof(string))
+                .Is("{ S2 = `s2s2s2` }");
+        }
+
+        [Test]
         public void When_filtering_only_fields_starting_with_s_Then_only_get_s2()
         {
             var cfg = Reassure.DefaultConfiguration.DeepClone();
@@ -56,6 +64,14 @@ But fields were not found!`");
         }
 
         [Test]
+        public void When_filtering_only_fields_starting_with_s_using_without_Then_only_get_s2()
+        {
+            CreateNestedTop()
+                .Without(pi => !pi.Name.StartsWith("S"))
+                .Is("{ S2 = `s2s2s2` }");
+        }
+
+        [Test]
         public void When_filtering_on_values_of_string_fields_Then_only_get_s2()
         {
             var cfg = Reassure.DefaultConfiguration.DeepClone();
@@ -63,6 +79,23 @@ But fields were not found!`");
                 .Add((parent, field, pi) => pi.PropertyType == typeof(string) && field.Equals("hello") ? Flow.Use(field) : Flow.Skip);
 
             new ThreeStrings() { S1 = "world", S2 = "hello", S3 = "foobar" }.With(cfg).Is("{ S2 = `hello` }");
+        }
+
+        [Test]
+        public void When_filtering_on_values_of_string_fields_using_without_Then_only_get_s2()
+        {
+            new ThreeStrings() { S1 = "world", S2 = "hello", S3 = "foobar" }
+                .With((parent, field, pi) => pi.PropertyType == typeof(string) && field.Equals("hello") ? Flow.Use(field) : Flow.Skip)
+                .Is("{ S2 = `hello` }");
+        }
+
+        [Test]
+        public void When_multiple_filtering_on_named_fields_using_without_Then_only_get_s2()
+        {
+            new ThreeStrings() { S1 = "world", S2 = "hello", S3 = "foobar" }
+                .Without(pi => pi.Name == "S1")
+                .Without(pi => pi.Name == "S3")
+                .Is("{ S2 = `hello` }");
         }
 
         [Test]
@@ -80,12 +113,34 @@ But fields were not found!`");
         }
 
         [Test]
+        public void When_filtering_only_complex_types_using_without_Then_only_get_s2()
+        {
+            CreateNestedTop()
+                .Without(pi => pi.PropertyType.IsPrimitive)
+                .Is(@"{
+                C = {
+                    S = `some string`
+                }
+                S2 = `s2s2s2`
+            }");
+        }
+
+        [Test]
         public void When_filtering_all_types_Then_get_empty()
         {
             var cfg = Reassure.DefaultConfiguration.DeepClone();
             cfg.Harvesting.Add((parent, value, info) => Flow.Skip);
 
             CreateNestedTop().With(cfg).Is(@"");
+        }
+
+        [Test]
+        public void When_filtering_all_types_using_without_Then_get_empty()
+        {
+            var cfg = Reassure.DefaultConfiguration.DeepClone();
+            cfg.Harvesting.Add((parent, value, info) => Flow.Skip);
+
+            CreateNestedTop().Without(p => true).Is(@"");
         }
 
         [Test]
