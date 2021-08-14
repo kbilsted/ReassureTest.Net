@@ -63,14 +63,12 @@ namespace ReassureTest
         {
             public List<Projector> Projectors { get; set; }
 
-            public static Projector ToProjector(WithoutPredicate p) => (parent, field, pi) => p(pi) ? Flow.Skip : Flow.Use(field);
-
             public HarvestingCfg(List<Projector> projectors)
             {
                 Projectors = new List<Projector>(projectors);
             }
 
-            public HarvestingCfg Add(WithoutPredicate p) => Add(ToProjector(p));
+            public HarvestingCfg Add(WithoutPredicate p) => Add(Reassure.ToProjector(p));
 
             public HarvestingCfg Add(Projector p)
             {

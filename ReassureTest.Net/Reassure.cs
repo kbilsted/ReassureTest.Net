@@ -21,6 +21,8 @@ namespace ReassureTest
 
     public static class Reassure
     {
+        internal static Projector ToProjector(WithoutPredicate p) => (parent, field, pi) => p(pi) ? Flow.Skip : Flow.Use(field);
+
         /// <summary>
         /// Run code and catch the exception
         /// </summary>
@@ -112,7 +114,7 @@ namespace ReassureTest
         /// </summary>
         public static ReassureRunContext With(this object actual, Projector projector)
         {
-            var cfg = Reassure.DefaultConfiguration.DeepClone();
+            var cfg = DefaultConfiguration.DeepClone();
             cfg.Harvesting.Add(projector);
             return new ReassureRunContext(actual, cfg);
         }
@@ -121,7 +123,7 @@ namespace ReassureTest
         /// inject a clone of the default configuration + filter
         /// </summary>
         public static ReassureRunContext Without(this object actual, WithoutPredicate predicate)
-            => With(actual, Configuration.HarvestingCfg.ToProjector(predicate));
+            => With(actual, ToProjector(predicate));
 
         /// <summary>
         /// Alter this to change the general behaviour of ReassureTest

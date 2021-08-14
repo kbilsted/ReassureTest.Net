@@ -1,8 +1,8 @@
 # ReassureTest
 <!--start-->
-[![Stats](https://img.shields.io/badge/Code_lines-786-ff69b4.svg)]()
-[![Stats](https://img.shields.io/badge/Test_lines-877-69ffb4.svg)]()
-[![Stats](https://img.shields.io/badge/Doc_lines-621-ffb469.svg)]() <!--end-->
+[![Stats](https://img.shields.io/badge/Code_lines-797-ff69b4.svg)]()
+[![Stats](https://img.shields.io/badge/Test_lines-920-69ffb4.svg)]()
+[![Stats](https://img.shields.io/badge/Doc_lines-635-ffb469.svg)]()<!--end-->
 [![Nuget](https://img.shields.io/nuget/dt/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/v/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/vpre/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
@@ -97,13 +97,18 @@ We achieve these goals by using a novel new way of specifying asserts. Expected 
 
 # 1. Getting started 
 
-1. Install the nuget package `ReassureTest` from nuget.org 
-  * `dotnet add package ReassureTest`
-2. Write your asserts using ReassureTest
-  * e.g. compare an order `calculator.Distribute(100.0, 3).Is("[33.33, 33.33, 33.34");` 
-  * or check for exceptions `Reassure.Catch(() => illegalOrder.Handle()).Is(@"{ Message=&#96;Illegal number of widgets!&#96;}");`
-3. Done...
+Install the nuget package `ReassureTest` from nuget.org: `dotnet add package ReassureTest`
 
+You can use ReasureTest for any automated test. But typically when you move from unit testing to api tests, integration tests or component tests, the actual data we test on become larger and more complex. So you can argue that the diagram om "the testing pyramid" show the main focus of ReassureTest. 
+
+<img src="docs/devopsgroup_testing_pyramids_ideal_001.svg" width="40%">
+
+Check out these good references advocating moving up the "test pyramid" is beneficial:
+
+* "Why Most Unit Testing is Waste" by James O Coplien https://rbcs-us.com/documents/Why-Most-Unit-Testing-is-Waste.pdf 
+* "Unit Testing is Overrated" by Alexey Golub  https://tyrrrz.me/blog/unit-testing-is-overrated
+
+This project is an evolution of StatePrinter (https://github.com/kbilsted/StatePrinter/) so many of the concepts are originating from there.
 
 
 
@@ -112,9 +117,9 @@ We achieve these goals by using a novel new way of specifying asserts. Expected 
 
 # 2. An example workflow
 
-Asserts are expressed using an `Is()` method. Let's put it to action for testing a shopping basket implementation. 
-
 In this example we use Nunit for setting up and executing tests but **ReassureTest works with any testing framework**.
+
+Asserts are expressed using an `Is()` method. Let's put it to action for testing a shopping basket. 
 
 ```csharp
 [Test]
@@ -304,7 +309,11 @@ e.g.  `OrderLines = [ *, * ]` means that there are two order lines objects, both
 
 ### Strings
 * `*`: zero or more characters
-e.g. the string `"some text"` is matched by all of the following: `*`, `some *`, `* text`, `*me te*`.
+e.g. the string `"some text"` is matched by all of the following: 
+  * `*`, 
+  * `some *`, 
+  * `* text`, 
+  * `*me te*`.
 
 
 ### Guids
@@ -333,9 +342,10 @@ ex.Is(@"{
 
 <br/>
 <br/>
+
 # 5. Simple field filtering
 
-Often when comparing an object-graph, you want to ignore certain elements. As an alternative to using the wildcards `*` and `?`, you can filter away any fields. The simple filtering we discuss here is based on the predicate `PropertyInfo -> bool`. For more advanced filtering, read further below. 
+Often when comparing object-graphs, you want to ignore fields uninteresting to the test. As an alternative to using the wildcards `*` and `?`, you can filter away any fields. A simple filtering mechanism exists based on the predicate *PropertyInfo -> bool*. 
 
 To filter away every field not starting with the letter `"S"` we can simple use
 
@@ -345,9 +355,11 @@ var result = wiggles.Woggle()
     .Is("{ S2 = `s2s2s2` }");
 ```
 
+More elaborate filtering is also possible, see below.
 
 <br/>
 <br/>
+
 # 6. Data projection
 
 To simplify the output of an object graph, it is possible to change the value or fields - or even filtering them away. For example, for most tests, reassuring *auditing* fields may be more in the way than providing value.
@@ -516,10 +528,6 @@ public void Example()
 
 
 
-
-
-
-
 <br/>
 <br/>
 
@@ -607,23 +615,6 @@ order.Is(@" {
 
 
 
-
-<br/>
-<br/>
-
-# 9. Scope
-
-ReasureTest's focus primarily on automated api tests, integration tests and component tests - as depicted in "the testing pyramid". You can use it for unit tests as well, when you want to combine expected values.
-
-<img src="docs/devopsgroup_testing_pyramids_ideal_001.svg" width="40%">
-
-A lot of litterature on why moving up the "test pyramid" may be beneficial to you. Here are some of the better productions
-
-* "Why Most Unit Testing is Waste" by James O Coplien https://rbcs-us.com/documents/Why-Most-Unit-Testing-is-Waste.pdf 
-* "Unit Testing is Overrated" by Alexey Golub  https://tyrrrz.me/blog/unit-testing-is-overrated
-
-
-This project is an evolution of StatePrinter (https://github.com/kbilsted/StatePrinter/).
 
 
 <br>

@@ -102,7 +102,7 @@ But fields were not found!`");
         public void When_filtering_only_complex_types_Then_only_get_s2()
         {
             var cfg = Reassure.DefaultConfiguration.DeepClone();
-            cfg.Harvesting.Add((parent, value, info) => parent == null || !info.PropertyType.IsPrimitive ? Flow.Use(value) : Flow.Skip);
+            cfg.Harvesting.Add((parent, value, info) => !info.PropertyType.IsPrimitive ? Flow.Use(value) : Flow.Skip);
 
             CreateNestedTop().With(cfg).Is(@"{
                 C = {

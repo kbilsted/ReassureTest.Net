@@ -25,7 +25,7 @@ namespace ReassureTest
             return this;
         }
 
-        public ReassureRunContext Without(WithoutPredicate p) => With(Configuration.HarvestingCfg.ToProjector(p));
+        public ReassureRunContext Without(WithoutPredicate p) => With(Reassure.ToProjector(p));
 
         public string Is(string expected)
         {
