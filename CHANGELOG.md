@@ -1,8 +1,9 @@
 # Version history
 
 
-## v0.x.x
+## v0.7.0
 * Add simple field filtering with `Without()`.
+* Add tests.
 
 ## v0.6.0
 * Bugfix string match with regex characters
