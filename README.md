@@ -1,8 +1,8 @@
 # ReassureTest
 <!--start-->
-[![Stats](https://img.shields.io/badge/Code_lines-797-ff69b4.svg)]()
-[![Stats](https://img.shields.io/badge/Test_lines-920-69ffb4.svg)]()
-[![Stats](https://img.shields.io/badge/Doc_lines-635-ffb469.svg)]()<!--end-->
+[![Stats](https://img.shields.io/badge/Code_lines-801-ff69b4.svg)]()
+[![Stats](https://img.shields.io/badge/Test_lines-930-69ffb4.svg)]()
+[![Stats](https://img.shields.io/badge/Doc_lines-639-ffb469.svg)]()<!--end-->
 [![Nuget](https://img.shields.io/nuget/dt/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/v/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/vpre/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)

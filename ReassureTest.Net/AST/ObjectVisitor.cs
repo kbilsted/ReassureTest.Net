@@ -14,7 +14,7 @@ namespace ReassureTest.AST
         private int rollingGuidCounter;
         private readonly Dictionary<Guid, int> rollingGuidValues = new Dictionary<Guid, int>();
 
-        bool SimpleTypeHandling(object o, out AstSimpleValue result)
+        bool TrySimpleTypeHandling(object o, out AstSimpleValue? result)
         {
             if (o is int
                 || o is bool
@@ -63,7 +63,7 @@ namespace ReassureTest.AST
             this.configuration = configuration;
         }
 
-        public IAstNode VisitRoot(object o)
+        public IAstNode? VisitRoot(object o)
         {
             if (o is Exception e)
                 o = new SimplifiedException(e);
@@ -71,14 +71,14 @@ namespace ReassureTest.AST
             return Visit(o);
         }
 
-        IAstNode Visit(object o)
+        IAstNode? Visit(object? o)
         {
             // null
             if (o == null)
                 return AstSimpleValue.Null;
 
             // simple
-            if (SimpleTypeHandling(o, out var result))
+            if (TrySimpleTypeHandling(o, out var result))
                 return result;
             
             // re-discovered...
@@ -91,7 +91,7 @@ namespace ReassureTest.AST
             {
                 var arr = new AstArray();
                 foreach (var v in enumerable)
-                    arr.Add(Visit(v));
+                    arr.Add(Visit(v)!);
                 return arr;
             }
 
@@ -118,7 +118,7 @@ namespace ReassureTest.AST
                 : null;
         }
 
-        Flow Project(object parent, object fieldValue, PropertyInfo propertyInfo)
+        Flow Project(object parent, object? fieldValue, PropertyInfo propertyInfo)
         {
             Flow flow = Flow.Use(fieldValue);
 

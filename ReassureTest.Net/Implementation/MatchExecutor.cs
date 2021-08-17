@@ -100,7 +100,7 @@ namespace ReassureTest.Implementation
                 {
                     if (complex.Value.Values.TryGetValue(kv.Key, out var matcher))
                     {
-                        Match(matcher as IAssertEvaluator, kv.Value, AddPath(path, kv.Key));
+                        Match((matcher as IAssertEvaluator)!, kv.Value, AddPath(path, kv.Key));
                     }
                     else
                     {
@@ -197,31 +197,31 @@ But was:  ""{actualString.Replace("\r", "\\r").Replace("\n", "\\n")}""";
 
         public static string PrintablePath(string path) => path == "" ? "" : $"Path: '{path}'.\r\n";
 
-        public static void Compare(object expected, object actual, string path, Configuration cfg)
+        public static void Compare(object? expected, object? actual, string path, Configuration cfg)
         {
             if (expected == null)
             {
                 if (actual == null)
                     return;
 
-                string actualValue = actual is string ss ? $"\"{ss}\"" : actual.ToString();
+                string actualValue = (actual is string ss ? $"\"{ss}\"" : actual.ToString())!;
                 throw new AssertException($@"{PrintablePath(path)}Expected: null
 But was:  {actualValue}");
             }
 
             if (actual == null)
             {
-                string expectedValue = expected is string ss ? $"\"{ss}\"" : expected.ToString();
+                string expectedValue = (expected is string ss ? $"\"{ss}\"" : expected.ToString())!;
                 throw new AssertException($@"{PrintablePath(path)}Expected: {expectedValue}
 But was:  null");
 
             }
 
 
-            string theExpedted = expected is DateTime de
+            string theExpedted = (expected is DateTime de
                 ? de.ToString(cfg.Assertion.DateTimeFormat)
-                : expected.ToString();
-            string theActual = actual is DateTime da ? da.ToString(cfg.Assertion.DateTimeFormat) : actual.ToString();
+                : expected.ToString())!;
+            string theActual = (actual is DateTime da ? da.ToString(cfg.Assertion.DateTimeFormat) : actual.ToString())!;
             if (!theExpedted.Equals(theActual))
                 throw new AssertException($@"{PrintablePath(path)}Expected: {theExpedted}
 But was:  {theActual}");

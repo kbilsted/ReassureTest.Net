@@ -6,7 +6,7 @@ namespace ReassureTest.DSL
     public class DslToken
     {
         public readonly DslTokenizer.TokenKind Kind;
-        public readonly object Value;
+        public readonly object? Value;
         public readonly int PosStart;
         public readonly int PosEnd;
 

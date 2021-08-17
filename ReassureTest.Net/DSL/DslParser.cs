@@ -10,8 +10,8 @@ namespace ReassureTest.DSL
         private readonly DslTokenizer tokenizer;
         private readonly Configuration configuration;
         private int i;
-        DslToken[] tokens;
-        private string input;
+        DslToken[] tokens = new DslToken[0];
+        private string input = "";
 
         public DslParser(DslTokenizer tokenizer, Configuration configuration)
         {
@@ -19,7 +19,7 @@ namespace ReassureTest.DSL
             this.configuration = configuration;
         }
 
-        public IAstNode Parse(string s)
+        public IAstNode? Parse(string s)
         {
             if (s == null)
                 return null;
@@ -48,7 +48,7 @@ namespace ReassureTest.DSL
                 throw new InvalidOperationException($"Parse error. Expected '{s}', but input ended before it was found.");
 
             DslToken t = tokens[i];
-            return t.Kind == DslTokenizer.TokenKind.Meta && t.Value.ToString() == s;
+            return t.Kind == DslTokenizer.TokenKind.Meta && t.Value!.ToString() == s;
         }
 
         void EatMeta(string s)
@@ -69,11 +69,15 @@ namespace ReassureTest.DSL
             DslToken t = tokens[i];
             if (t.Kind != DslTokenizer.TokenKind.Value)
                 throw new InvalidOperationException($"Parse error. Expected a fieldname, but got '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: {i})\r\n{StringUtl.PreviewString(input, t.PosStart)}");
+
+            if (t.Value == null)
+                throw new NullReferenceException($"token value for token {i}");
+
             i++;
             return t.Value;
         }
 
-        object EatValueOrString()
+        object? EatValueOrString()
         {
             if (i >= tokens.Length)
                 throw new InvalidOperationException($"Parse error. Expected fieldname or a string, but input ended before it was found.");
@@ -81,6 +85,7 @@ namespace ReassureTest.DSL
             DslToken t = tokens[i];
             if (t.Kind != DslTokenizer.TokenKind.Value && t.Kind != DslTokenizer.TokenKind.String)
                 throw new InvalidOperationException($"Parse error. Expected a fieldname or a string, but got '{t.Value}' position: {t.PosStart} (of kind '{t.Kind}' at token: {i})\r\n{StringUtl.PreviewString(input, t.PosStart)}");
+
             i++;
             return t.Value;
         }

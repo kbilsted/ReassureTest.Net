@@ -34,6 +34,19 @@ namespace ReassureTest.Tests
         }
 
         [Test]
+        public void Assert_null_is_reference_null()
+        {
+            SimpleTypes st = null;
+            st.Is(null);
+        }
+
+        [Test]
+        public void Assert_value_is_not_reference_null()
+        {
+            Reassure.Catch(()=> new SimpleTypes().Is(null)).Message.Is("`Expected: null\r\nBut was:  ReassureTest.Tests.NonNestedTests+SimpleTypes`");
+        }
+
+        [Test]
         public void Assert_value_on_an_empty_class()
         {
             var ex = Assert.Throws<AssertionException>(() => new EmptyClass().Is("{ }"));

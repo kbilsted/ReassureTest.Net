@@ -64,8 +64,8 @@ namespace ReassureTest
 
         internal static string Is(this object actual, string expected, Configuration cfg)
         {
-            IAstNode astActual = new ObjectVisitor(cfg).VisitRoot(actual);
-            IAstNode expectedAst = new DslParser(new DslTokenizer(cfg), cfg).Parse(expected);
+            IAstNode? astActual = new ObjectVisitor(cfg).VisitRoot(actual);
+            IAstNode? expectedAst = new DslParser(new DslTokenizer(cfg), cfg).Parse(expected);
 
             string graph = new AstPrinter(cfg).PrintRoot(astActual);
 
@@ -84,7 +84,7 @@ namespace ReassureTest
                 else
                 {
                     var executor = new MatchExecutor(cfg);
-                    executor.MatchGraph(expectedAst as IAssertEvaluator, astActual);
+                    executor.MatchGraph((expectedAst as IAssertEvaluator)!, astActual!);
                 }
             }
             catch (Exception e)

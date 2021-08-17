@@ -34,6 +34,12 @@ namespace ReassureTest.Tests
         }
 
         [Test]
+        public void Array_containing_nulls()
+        {
+            new object[] {null, null}.Is(@"[ null, null ]");
+        }
+
+        [Test]
         public void Array()
         {
             Reassure.Is(new SimpleTypesArrays()

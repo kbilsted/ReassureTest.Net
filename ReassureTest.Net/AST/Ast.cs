@@ -16,9 +16,9 @@ namespace ReassureTest.AST
         public static readonly AstSimpleValue Null = new AstSimpleValue(null);
         public static readonly AstSimpleValue SeenBefore = new AstSimpleValue("[[SEEN BEFORE]]");
 
-        public object Value;
+        public object? Value;
 
-        public AstSimpleValue(object o)
+        public AstSimpleValue(object? o)
         {
             if (o is DslToken || o is DslToken[])
                 throw new ArgumentException($"Internal error: Illegal input data of type {o.GetType()}");

@@ -4,8 +4,8 @@ namespace ReassureTest
 {
     public class ReassureRunContext
     {
-        private readonly object actual;
-        private Action alternativeActual;
+        private readonly object? actual;
+        private Action? alternativeActual;
 
         private readonly Configuration configuration;
 
@@ -29,7 +29,9 @@ namespace ReassureTest
 
         public string Is(string expected)
         {
-            var target = actual ?? Reassure.Catch(alternativeActual);
+            var target = actual 
+                         ?? Reassure.Catch(alternativeActual 
+                                           ?? throw new InvalidOperationException("alternativeActual unexpectedly is null"));
 
             return target.Is(expected, configuration);
         }

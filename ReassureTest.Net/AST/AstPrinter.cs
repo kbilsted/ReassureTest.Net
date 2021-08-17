@@ -13,7 +13,7 @@ namespace ReassureTest.AST
             this.configuration = configuration;
         }
 
-        public string PrintRoot(IAstNode value)
+        public string PrintRoot(IAstNode? value)
         {
             if (value == null)
                 return "";
