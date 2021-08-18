@@ -2,7 +2,7 @@
 <!--start-->
 [![Stats](https://img.shields.io/badge/Code_lines-801-ff69b4.svg)]()
 [![Stats](https://img.shields.io/badge/Test_lines-930-69ffb4.svg)]()
-[![Stats](https://img.shields.io/badge/Doc_lines-639-ffb469.svg)]()<!--end-->
+[![Stats](https://img.shields.io/badge/Doc_lines-640-ffb469.svg)]()<!--end-->
 [![Nuget](https://img.shields.io/nuget/dt/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/v/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/vpre/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
@@ -229,10 +229,82 @@ ReassureTest uses configurable *fuzzy matching* to make asserts easier to read, 
 
 
 
+
 <br/>
 <br/>
 
-# 3. The specification language
+# 3. Fuzzy matching rules
+
+It is often very convenient to assert values non-strictly. We call this *"fuzzy matching"*, and it enables us to write asserts that are "good enough" to be valuable while at the same time making the testing much easier. Either since we can require less than complete control over all dependences or because the asserts are easier to express. 
+
+This is particular useful when you "move up the unit test pyramid". 
+
+Here we explain what ReassureTest's language support in terms of fuzzy matching.
+
+
+### Values
+* `?`: `null` or any value
+* `*`: any non-null value
+
+e.g. `SKU = *` means that we want the SKU to have any non-null value. It can also be used on complex values such as `OrderLines = *`.
+
+
+### Array elements
+* ``**``: zero or more elements (not implemented yet)
+* `*`: any element 
+
+e.g.  `OrderLines = [ *, * ]` means that there are two order lines objects, both not null. 
+
+
+### Dates
+* `today`: Today's date' (not implemented yet)
+* `now`: DateTime now
+* Dates are equal when difference is less than date slack
+
+
+### Decimal, float, double
+* `decimal`, `double`, `float` are equal when difference is less than decimal slack (not implemented yet)
+
+
+### Strings
+* `*`: zero or more characters
+e.g. the string `"some text"` is matched by all of the following: 
+  * `*`, 
+  * `some *`, 
+  * `* text`, 
+  * `*me te*`.
+* Newlines characters `\n` and `\r` can be unified or completely ignored (not implemented yet)
+
+
+### Guids
+* `guid-x` represents a unique guid value, without specifying the exact value. This is used for ensuring two or more guids are the same or different.
+
+
+### Exceptions
+* Exceptions are transformed into a simple form, a class containing `Message` and `Type`. A `Data` field is added only when it contains elements.
+
+```csharp
+var ex = new Exception("message") { Data = {{"a", "b"}} };
+
+ex.Is(@"{
+    Message = `message`
+    Data = [
+        {
+            Key = `a`
+            Value = `b`
+        }
+    ]
+    Type = `System.Exception`
+}");
+```
+
+
+
+
+<br/>
+<br/>
+
+# 4. The specification language
 
 We use a *Specification Language* for expressing asserts. It is a domain specific language targeted test scenarios. It understands fields and their values. It has been designed to be free of the noise that inevitably follow with writing asserts as code. There is no requirement on using new lines or `;` to separate asserts. Field names are not enclosed in `""`. Everything is as smooth as possible.
 
@@ -271,74 +343,6 @@ wildcard = "*" | "?" | "now"
 What is not evident from neither the explanation nor the grammer, is the slack that is used when comparing the actual and expected values. The slack values are configured through the `Configuration` class. See `Reassure.DefaultConfiguration`.
 
 
-<br/>
-<br/>
-
-# 4. Fuzzy matching rules
-
-It is often very convenient to assert values non-strictly. We call this *"fuzzy matching"*, and it enables us to write asserts that are "good enough" to be valuable while at the same time making the testing much easier. Either since we can require less than complete control over all dependences or because the asserts are easier to express. 
-
-This is particular useful when you "move up the unit test pyramid". 
-
-Here we explain what ReassureTest's language support in terms of fuzzy matching.
-
-
-### Values
-* `?`: `null` or any value
-* `*`: any non-null value
-
-e.g. `SKU = *` means that we want the SKU to have any non-null value. It can also be used on complex values such as `OrderLines = *`.
-
-
-### Array elements
-* ``**``: zero or more elements (not implemented)
-* `*`: any element 
-
-e.g.  `OrderLines = [ *, * ]` means that there are two order lines objects, both not null. 
-
-
-### Dates
-* `today`: Today's date' (not implemented)
-* `now`: DateTime now
-* Dates are equal when difference is less than date slack
-
-
-### Decimal, float, double
-* `decimal`, `double`, `float` are equal when difference is less than decimal slack (not implemented)
-
-
-### Strings
-* `*`: zero or more characters
-e.g. the string `"some text"` is matched by all of the following: 
-  * `*`, 
-  * `some *`, 
-  * `* text`, 
-  * `*me te*`.
-
-
-### Guids
-* `guid-x` represents a unique guid value, without specifying the exact value. This is used for ensuring two or more guids are the same or different.
-
-
-### Exceptions
-* Exceptions are transformed into a simple form, a class containing `Message` and `Type`. A `Data` field is added only when it contains elements.
-
-```csharp
-var ex = new Exception("message") { Data = {{"a", "b"}} };
-
-ex.Is(@"{
-    Message = `message`
-    Data = [
-        {
-            Key = `a`
-            Value = `b`
-        }
-    ]
-    Type = `System.Exception`
-}");
-```
-
-
 
 <br/>
 <br/>
@@ -347,13 +351,32 @@ ex.Is(@"{
 
 Often when comparing object-graphs, you want to ignore fields uninteresting to the test. As an alternative to using the wildcards `*` and `?`, you can filter away any fields. A simple filtering mechanism exists based on the predicate *PropertyInfo -> bool*. 
 
-To filter away every field not starting with the letter `"S"` we can simple use
+**Filter away every field not starting with `"S"`**
 
 ```csharp
-var result = wiggles.Woggle()
+wiggles.Woggle()
     .Without(pi => !pi.Name.StartsWith("S"))
     .Is("{ S2 = `s2s2s2` }");
 ```
+
+**Use multiple filters**
+
+```csharp
+new ThreeStrings() { S1 = "world", S2 = "hello", S3 = "foobar" }
+    .Without(pi => pi.Name == "S1")
+    .Without(pi => pi.Name == "S3")
+    .Is("{ S2 = `hello` }");
+```
+
+
+**Filter away fields of type `AuditingInfo`**
+
+```csharp
+order
+    .Without(pi => pi.PropertyType == typeof(AuditingInfo))
+    .Is("{ ... }");
+```
+
 
 More elaborate filtering is also possible, see below.
 
@@ -362,7 +385,7 @@ More elaborate filtering is also possible, see below.
 
 # 6. Data projection
 
-To simplify the output of an object graph, it is possible to change the value or fields - or even filtering them away. For example, for most tests, reassuring *auditing* fields may be more in the way than providing value.
+To simplify the output of an object graph, it is possible to change the value or fields - or even filtering them away. For example, for most tests, reassuring *auditing* fields may be more of a hinderance than providing value.
 
 ## 6.1 Simplify rich domain models
 
@@ -442,29 +465,8 @@ cfg.Harvesting.Add((parent, field, pi) =>
 
 We support filtering of fields. There are a number of ways you can filter away field. For example, based on the name of the field, the type of the field - or even its value!
 
-To do this you simply add instances of `Func<object, PropertyInfo, bool>`, that is a function taking a value, information about the field (the `PropertyInfo`) and returns true if the field is to be included. Otherwise it is filtered away.
+To do this you simply add instances of `Func<object, object, PropertyInfo, Flow>`, that is a function taking a parent value, a field value (the field is a field of "parent"), information about the field (the `PropertyInfo`) and returns a `Flow`.
 
-
-**Filtering so only string fields are left**
-
-```csharp
-var cfg = Reassure.DefaultConfiguration.DeepClone();
-
-cfg.Harvesting
-    .Add((parent, value, pi) => pi.PropertyType == typeof(string) ? Flow.Use(value) : Flow.Skip);
-
-someObject.With(cfg).Is("{ ... only string fields... }");
-```
-
-**Filtering only fields starting with "s"**
-
-```csharp
-var cfg = Reassure.DefaultConfiguration.DeepClone();
-cfg.Harvesting
-    .Add((parent, value, pi) => pi.Name.StartsWith("S") ? Flow.Use(value) : Flow.Skip);
-
-someObject.With(cfg).Is("{ StartTime = ... StopTime = ... }");
-```
 
 **Filtering only string fields holding value `hello`**
 
