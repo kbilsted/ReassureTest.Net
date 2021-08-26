@@ -1,8 +1,8 @@
 # ReassureTest
 <!--start-->
-[![Stats](https://img.shields.io/badge/Code_lines-801-ff69b4.svg)]()
-[![Stats](https://img.shields.io/badge/Test_lines-930-69ffb4.svg)]()
-[![Stats](https://img.shields.io/badge/Doc_lines-640-ffb469.svg)]()<!--end-->
+[![Stats](https://img.shields.io/badge/Code_lines-808-ff69b4.svg)]()
+[![Stats](https://img.shields.io/badge/Test_lines-949-69ffb4.svg)]()
+[![Stats](https://img.shields.io/badge/Doc_lines-636-ffb469.svg)]()<!--end-->
 [![Nuget](https://img.shields.io/nuget/dt/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/v/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/vpre/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
@@ -380,6 +380,8 @@ order
 
 More elaborate filtering is also possible, see below.
 
+
+
 <br/>
 <br/>
 
@@ -432,12 +434,10 @@ Unfortunately, this is too verbose for my liking - it unnecesarrily hurt readabi
 
 
 ```csharp
- var cfg = Reassure.DefaultConfiguration.DeepClone();
-cfg.Harvesting
-    .Add((parent, value, pi) => Flow.Use(value is OrderDate d ? d?.Value : value))
-    .Add((parent, value, pi) => Flow.Use(value is LatestDeliveryDate d ? d?.Value : value));
-
-order.With(cfg).Is(@"{
+order   
+    .With(cfg => cfg.Harvesting.Add((parent, value, pi) => Flow.Use(value is OrderDate d ? d?.Value : value)))
+    .With(cfg => cfg.Harvesting.Add((parent, value, pi) => Flow.Use(value is LatestDeliveryDate d ? d?.Value : value)))
+    .Is(@"{
     OrderDate = now
     LatestDeliveryDate = 2021-03-04T00:00:00
     Note = `Leave at front door`
@@ -471,11 +471,9 @@ To do this you simply add instances of `Func<object, object, PropertyInfo, Flow>
 **Filtering only string fields holding value `hello`**
 
 ```csharp
-var cfg = Reassure.DefaultConfiguration.DeepClone();
-cfg.Harvesting
-    .Add((parent, value, pi) => pi.PropertyType == typeof(string) && value.Equals("hello") ? Flow.Use(value) : Flow.Skip);
-
-new ThreeStrings() { S1 = "world", S2 = "hello", S3 = "foobar" }.With(cfg).Is("{ S2 = `hello` }");
+ new ThreeStrings() { S1 = "world", S2 = "hello", S3 = "foobar" }
+    .With((parent, field, pi) => pi.PropertyType == typeof(string) && field.Equals("hello") ? Flow.Use(field) : Flow.Skip)
+    .Is("{ S2 = `hello` }");
 ```
 
 

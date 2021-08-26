@@ -1,6 +1,9 @@
 # Version history
 
 
+## v0.x.0
+* Add fluent access to the configuration
+
 ## v0.7.0
 * Add simple field filtering with `Without()`.
 * Add tests.

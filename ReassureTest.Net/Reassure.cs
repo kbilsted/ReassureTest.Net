@@ -99,6 +99,10 @@ namespace ReassureTest
             return graph;
         }
 
+        public static ReassureRunContext With(this object actual, params Action<Configuration>[] changes) => 
+            new ReassureRunContext(actual, DefaultConfiguration.DeepClone())
+                .With(changes);
+
         /// <summary>
         /// inject a configuration into a throws
         /// </summary>

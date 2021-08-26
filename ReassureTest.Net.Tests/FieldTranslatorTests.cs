@@ -66,6 +66,29 @@ namespace ReassureTest.Tests
         }
 
         [Test]
+        public void Domain_types_can_be_simplified_config_3()
+        {
+            CreateOrder()
+                .With(cfg => cfg.Harvesting
+                    .Add((parent, value, pi) => Flow.Use(value is OrderDate d ? d?.Value : value))
+                    .Add((parent, value, pi) => Flow.Use(value is LatestDeliveryDate d ? d?.Value : value)))
+                .Is(@"{
+                OrderDate = now
+                LatestDeliveryDate = 2021-03-04T00:00:00
+                Note = `Leave at front door`
+            }");
+
+            CreateOrder()
+                .With(cfg => cfg.Harvesting.Add((parent, value, pi) => Flow.Use(value is OrderDate d ? d?.Value : value)))
+                .With(cfg => cfg.Harvesting.Add((parent, value, pi) => Flow.Use(value is LatestDeliveryDate d ? d?.Value : value)))
+                .Is(@"{
+                OrderDate = now
+                LatestDeliveryDate = 2021-03-04T00:00:00
+                Note = `Leave at front door`
+            }");
+        }
+
+        [Test]
         public void Domain_types_can_be_set_to_null()
         {
             var cfg = Reassure.DefaultConfiguration.DeepClone();

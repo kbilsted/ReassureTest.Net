@@ -27,6 +27,14 @@ namespace ReassureTest
 
         public ReassureRunContext Without(WithoutPredicate p) => With(Reassure.ToProjector(p));
 
+        public ReassureRunContext With(params Action<Configuration>[] changes)
+        {
+            foreach (var change in changes)
+                change(configuration);
+
+            return this;
+        }
+        
         public string Is(string expected)
         {
             var target = actual 
