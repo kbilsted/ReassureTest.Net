@@ -1,8 +1,8 @@
 # ReassureTest
 <!--start-->
-[![Stats](https://img.shields.io/badge/Code_lines-808-ff69b4.svg)]()
-[![Stats](https://img.shields.io/badge/Test_lines-949-69ffb4.svg)]()
-[![Stats](https://img.shields.io/badge/Doc_lines-636-ffb469.svg)]()<!--end-->
+[![Stats](https://img.shields.io/badge/Code_lines-818-ff69b4.svg)]()
+[![Stats](https://img.shields.io/badge/Test_lines-970-69ffb4.svg)]()
+[![Stats](https://img.shields.io/badge/Doc_lines-643-ffb469.svg)]()<!--end-->
 [![Nuget](https://img.shields.io/nuget/dt/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/v/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/vpre/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
@@ -242,7 +242,7 @@ This is particular useful when you "move up the unit test pyramid".
 Here we explain what ReassureTest's language support in terms of fuzzy matching.
 
 
-### Values
+### Any value
 * `?`: `null` or any value
 * `*`: any non-null value
 
@@ -267,17 +267,23 @@ e.g.  `OrderLines = [ *, * ]` means that there are two order lines objects, both
 
 
 ### Strings
+The string `"some text"` is matched by all of the following: 
+* <code>&#96;some text&#96;</code> 
 * `*`: zero or more characters
-e.g. the string `"some text"` is matched by all of the following: 
-  * `*`, 
-  * `some *`, 
-  * `* text`, 
-  * `*me te*`.
+  * <code>&#96;*&#96;</code> 
+  * <code>&#96;some *&#96;</code> 
+  * <code>&#96;* text&#96;</code>
+  * <code>&#96;*me te*&#96;</code>
 * Newlines characters `\n` and `\r` can be unified or completely ignored (not implemented yet)
 
 
 ### Guids
 * `guid-x` represents a unique guid value, without specifying the exact value. This is used for ensuring two or more guids are the same or different.
+
+
+### Enums
+* `?`: `null` or any value
+* `*`: any non-null value
 
 
 ### Exceptions

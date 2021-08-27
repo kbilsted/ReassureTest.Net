@@ -31,6 +31,12 @@ namespace ReassureTest.AST
                 return true;
             }
 
+            if (o.GetType().IsEnum)
+            {
+                result = new AstSimpleValue(new AstEnum(Enum.GetName(o.GetType(), o)!));
+                return true;
+            }
+
             if (o is Guid g)
             {
                 switch (configuration.Assertion.GuidHandling)
