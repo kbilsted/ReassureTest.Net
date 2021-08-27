@@ -1,7 +1,9 @@
 # Version history
 
+## v0.x.x
+next release
 
-## v0.x.0
+## v0.8.0
 * Add fluent access to the configuration
 * Add support for `enum` 
 
