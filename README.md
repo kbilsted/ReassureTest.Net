@@ -1,8 +1,8 @@
 # ReassureTest
 <!--start-->
 [![Stats](https://img.shields.io/badge/Code_lines-818-ff69b4.svg)]()
-[![Stats](https://img.shields.io/badge/Test_lines-970-69ffb4.svg)]()
-[![Stats](https://img.shields.io/badge/Doc_lines-643-ffb469.svg)]()<!--end-->
+[![Stats](https://img.shields.io/badge/Test_lines-971-69ffb4.svg)]()
+[![Stats](https://img.shields.io/badge/Doc_lines-649-ffb469.svg)]()<!--end-->
 [![Nuget](https://img.shields.io/nuget/dt/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/v/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/vpre/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
@@ -97,7 +97,7 @@ We achieve these goals by using a novel new way of specifying asserts. Expected 
 
 # 1. Getting started 
 
-Install the nuget package `ReassureTest` from nuget.org: `dotnet add package ReassureTest`
+Install the nuget package `ReassureTest` from nuget: `dotnet add package ReassureTest`
 
 You can use ReasureTest for any automated test. But typically when you move from unit testing to api tests, integration tests or component tests, the actual data we test on become larger and more complex. So you can argue that the diagram om "the testing pyramid" show the main focus of ReassureTest. 
 
@@ -333,17 +333,21 @@ A more precise (and readable) way to explain the language is by use of the exten
 
 ```ebnf
 Value    = Simple | Complex
-Simple   = number | bool | guid | string | date | wildcard 
+Simple   = number | bool | guid | string | date | wildcard | enum
 Complex  = Array | Object
 Array    = "[" Value* "]"
-Object   = "{" (name "=" Value)* "}"
+Object   = "{" (Name "=" Value)* "}"
+Name     = char (char | digit)*
                 
-number   = ["+"|"-"] Digit* "." Digit*
+number   = ["+"|"-"] digit* "." digit*
 bool     = "true" | "false"
 guid     = char{8} "-" char{4} "-" char{4} "-" char{4} "-" char{8}
 string   = "`" char* "`"
 date     = digit{4} "-" digit{2} - digit{2} "T" digit{2} ":" digit{2} ":" digit{2}
 wildcard = "*" | "?" | "now"
+enum     = char (char | digit)*
+digit    = 0..9
+char     = "a..Z_"
 ```
 
 What is not evident from neither the explanation nor the grammer, is the slack that is used when comparing the actual and expected values. The slack values are configured through the `Configuration` class. See `Reassure.DefaultConfiguration`.
