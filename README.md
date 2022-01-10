@@ -223,8 +223,24 @@ ReassureTest uses configurable *fuzzy matching* to make asserts easier to read, 
 * `Id = guid-0`, `Id = guid-1`, ... refer to actual guid values. Typically, what we think important about guid is that e.g. orderlines order id is the actual id of the order - but we care less about the value. 
 * `OrderDate = now` refer to the current clock rather than a set date. All date comparisons has an allowed slack, meaning that if the orderdate is slightly the value of "now" we allow `now` to be the expected value. 
 * Strings are surrounded by <code>&#96;&#96;</code> rather than `""`. This is quite deliberate, as it becomes easy tto copy-paste the output of ReasureTest into a C# string without the need for escape charaters. Ultimately, making it much easier to deal with.
+* The ordering of fields are not important you can specify in the order you want, as long as all fields are covered and the values are as the actual value
 
+i.e. the specification
+```
+{
+    A = 1
+    B = 2
+}
+```   
 
+is equivalent to
+
+```
+{
+    B = 2
+    A = 1
+}
+```   
 
 
 
@@ -626,6 +642,18 @@ order.Is(@" {
 
 
 
+<br/>
+<br/>
+
+# 9. Why not serialize to JSON and compare strings?
+
+In some ways ReassureTest is similar to json-serializing an object graph and doing a string-assert. In Many ways it is not the same though.
+
+JSON strings look awful in C# code since multiline strings escape `"` as `""`. It make test feel all wrong. 
+
+JSON is tedius to hand-edit. The format is mercyles and complains if you forget a `,` or have leave in a trailing comma!
+
+JSON does not allow you to do wildcard or other fuzzy matching.
 
 <br>
 <br>
