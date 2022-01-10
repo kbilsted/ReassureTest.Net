@@ -1,7 +1,7 @@
 # ReassureTest
 <!--start-->
 [![Stats](https://img.shields.io/badge/Code_lines-818-ff69b4.svg)]()
-[![Stats](https://img.shields.io/badge/Test_lines-971-69ffb4.svg)]()
+[![Stats](https://img.shields.io/badge/Test_lines-982-69ffb4.svg)]()
 [![Stats](https://img.shields.io/badge/Doc_lines-649-ffb469.svg)]()<!--end-->
 [![Nuget](https://img.shields.io/nuget/dt/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)
 [![Nuget](https://img.shields.io/nuget/v/ReassureTest.svg)](http://nuget.org/packages/ReassureTest)

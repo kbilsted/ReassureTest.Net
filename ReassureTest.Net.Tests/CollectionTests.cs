@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using NUnit.Framework;
 
@@ -87,6 +88,66 @@ namespace ReassureTest.Tests
             public long[] L { get; set; }
             public bool[] B { get; set; }
             public string[] S { get; set; }
+        }
+
+        [Test]
+        public void Dictionary_when_expecting_one_and_same_value_Then_succeed()
+        {
+            var d = new DictionaryHolder()
+            {
+                Dic = new Dictionary<string, string>() { { "hello", "world" } }
+            };
+
+            Reassure.Is(d, @"
+{ Dic = [
+        {
+            Key = `hello`
+            Value = `world`
+        }
+    ]}");
+        }
+
+        [Test]
+        [Ignore("Not working. Perhaps a dictionary is not an array of key-values")]
+        public void Dictionary_when_expecting_two_values_keys_out_of_order_Then_succeed()
+        {
+            var d = new DictionaryHolder()
+            {
+                Dic = new Dictionary<string, string>() {
+                    { "hello", "world" },
+                    { "foo", "bar" }
+                }
+            };
+
+            Reassure.Is(d, @"
+{ Dic = [
+        {
+            Key = `hello`
+            Value = `world`
+        },
+        {
+            Key = `foo`
+            Value = `bar`
+        }
+    ]}");
+
+            Reassure.Is(d, @"
+{ Dic = [
+        {
+            Key = `foo`
+            Value = `bar`
+        },
+        {
+            Key = `hello`
+            Value = `world`
+        },
+    ]}");
+        }
+
+
+        class DictionaryHolder
+        {
+            public Dictionary<string, string> Dic { get; set; }
         }
     }
 }
