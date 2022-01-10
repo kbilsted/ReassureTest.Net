@@ -78,6 +78,20 @@ namespace ReassureTest.Tests
                 Dec = 45.0
                 S = `hello world`
             }");
+
+
+            NewSimpleTypes().Is(@"{
+                Dec = 45.0
+                I = 42
+                Dob = 43
+                Float = 44
+                B = true
+                G = guid-0
+                L = 42978239382333
+                S2 = `hello ""Quotes""`
+                D = 2021-06-27T12:13:55
+                S = `hello world`
+            }");
         }
 
         [Test]
