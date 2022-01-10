@@ -25,10 +25,10 @@ namespace ReassureTest.Tests
         [Test]
         public void Default_ImmutableArray_should_not_throw_exception_when_traversed()
         {
-            new ImmitableArrayHolder().Is("");
+            new ImmutableArrayHolder().Is("");
         }
 
-        class ImmitableArrayHolder
+        class ImmutableArrayHolder
         {
             public ImmutableArray<int> arr = default;
         }
@@ -36,7 +36,7 @@ namespace ReassureTest.Tests
         [Test]
         public void Array_containing_nulls()
         {
-            new object[] {null, null}.Is(@"[ null, null ]");
+            new object[] { null, null }.Is(@"[ null, null ]");
         }
 
         [Test]
