@@ -17,6 +17,8 @@ namespace ReassureTest.AST
         bool TrySimpleTypeHandling(object o, out AstSimpleValue? result)
         {
             if (o is int
+                || o is char
+                || o is byte
                 || o is bool
                 || o is string
                 || o is long
