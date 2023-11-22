@@ -217,6 +217,10 @@ But was:  null");
 
             }
 
+            if (actual is char && expected is long expectedLong)
+            {
+                expected = (char)expectedLong;
+            }
 
             string theExpedted = (expected is DateTime de
                 ? de.ToString(cfg.Assertion.DateTimeFormat)
